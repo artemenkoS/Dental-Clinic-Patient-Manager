@@ -186,8 +186,8 @@ CREATE TABLE public.visit (
     "visitDate" timestamp with time zone,
     "doctorId" integer,
     "patientId" integer,
-    procedure integer,
-    author integer
+    "procedureId" integer,
+    "authorId" integer
 );
 
 
@@ -296,6 +296,7 @@ COPY public.patient (id, name, surname, phone) FROM stdin;
 31	Сергей	Сергей	+++++++
 32	Гриша	Сыркин	+77055493439
 33	Чингиз	Чингизов	+8832299329
+34	Игнат	Стрелец	+87773204421
 \.
 
 
@@ -342,8 +343,11 @@ COPY public.users (id, name, surname, login, password, role) FROM stdin;
 -- Data for Name: visit; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.visit (id, "visitDate", "doctorId", "patientId", procedure, author) FROM stdin;
-523	2023-10-18 15:00:00+05	7	9	2	7
+COPY public.visit (id, "visitDate", "doctorId", "patientId", "procedureId", "authorId") FROM stdin;
+562	2023-10-18 17:00:00+05	8	25	3	7
+564	2023-10-18 13:30:00+05	8	30	3	7
+561	2023-10-18 18:00:00+05	7	34	2	3
+563	2023-10-18 13:30:00+05	7	23	1	7
 556	2023-10-18 14:30:00+05	8	26	1	7
 \.
 
@@ -352,7 +356,7 @@ COPY public.visit (id, "visitDate", "doctorId", "patientId", procedure, author) 
 -- Name: patient_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.patient_id_seq', 33, true);
+SELECT pg_catalog.setval('public.patient_id_seq', 34, true);
 
 
 --
@@ -380,7 +384,7 @@ SELECT pg_catalog.setval('public.users_id_seq', 11, true);
 -- Name: visit_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.visit_id_seq', 558, true);
+SELECT pg_catalog.setval('public.visit_id_seq', 564, true);
 
 
 --
@@ -435,7 +439,7 @@ ALTER TABLE ONLY public.visit
 -- Name: fki_c; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX fki_c ON public.visit USING btree (procedure);
+CREATE INDEX fki_c ON public.visit USING btree ("procedureId");
 
 
 --
@@ -456,7 +460,7 @@ CREATE INDEX fki_history_author_fkey ON public.history USING btree (author);
 -- Name: fki_visit_author_fkey; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX fki_visit_author_fkey ON public.visit USING btree (author);
+CREATE INDEX fki_visit_author_fkey ON public.visit USING btree ("authorId");
 
 
 --
@@ -480,7 +484,7 @@ ALTER TABLE ONLY public.users
 --
 
 ALTER TABLE ONLY public.visit
-    ADD CONSTRAINT visit_author_fkey FOREIGN KEY (author) REFERENCES public.users(id) NOT VALID;
+    ADD CONSTRAINT visit_author_fkey FOREIGN KEY ("authorId") REFERENCES public.users(id) NOT VALID;
 
 
 --
@@ -504,7 +508,7 @@ ALTER TABLE ONLY public.visit
 --
 
 ALTER TABLE ONLY public.visit
-    ADD CONSTRAINT visit_procedure_fkey FOREIGN KEY (procedure) REFERENCES public.procedure(id) MATCH FULL NOT VALID;
+    ADD CONSTRAINT visit_procedure_fkey FOREIGN KEY ("procedureId") REFERENCES public.procedure(id) MATCH FULL NOT VALID;
 
 
 --
