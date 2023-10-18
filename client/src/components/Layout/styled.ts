@@ -1,22 +1,24 @@
-import styled from '@emotion/styled';
+import styled from "@emotion/styled";
 
-import { theme } from '../../styles/theme';
+import { theme } from "../../styles/theme";
 
 export const ContentWrapper = styled.main`
   display: flex;
   flex: 0 1 auto;
   width: 100%;
-  height: 100%;
+
   padding: ${theme.spacing(3)};
   max-width: 1200px;
   min-width: 800px;
 `;
 
 export const Header = styled.header`
-  height: 100px;
+  height: 70px;
   width: 100%;
   color: ${theme.palette.secondary.contrastText};
   padding: ${theme.spacing(2)};
+  position: absolute;
+  display: flex;
 
   background-color: ${theme.palette.primary.main};
 `;
@@ -40,5 +42,5 @@ export const Sidebar = styled.div`
 
 export const ContentLayout = styled.div`
   display: flex;
-  height: 100%;
+  padding: 70px 0;
 `;

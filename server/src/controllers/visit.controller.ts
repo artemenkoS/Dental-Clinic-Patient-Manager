@@ -4,9 +4,9 @@ import { prepareSqlQuery } from "../helpers/prepareSqlQuery";
 import db from "../db";
 
 export const createVisit = async (req: Request, res: Response) => {
-  const { visitDate, doctorId, patientId, procedure, author } = req.body;
+  const { visitDate, doctorId, patientId, procedureId, authorId } = req.body;
 
-  if (!visitDate || !doctorId || !patientId || !procedure) {
+  if (!visitDate || !doctorId || !patientId || !procedureId) {
     res.status(400).json({ message: "Не все обязательные поля заполнены" });
     return;
   }
@@ -27,8 +27,8 @@ export const createVisit = async (req: Request, res: Response) => {
     }
 
     const newVisit = await db.query(
-      `INSERT INTO visit ("visitDate", "doctorId", "patientId", "procedure", "author") values ($1, $2, $3, $4, $5) RETURNING *`,
-      [visitDate, doctorId, patientId, procedure, author]
+      `INSERT INTO visit ("visitDate", "doctorId", "patientId", "procedureId", "authorId") values ($1, $2, $3, $4, $5) RETURNING *`,
+      [visitDate, doctorId, patientId, procedureId, authorId]
     );
 
     res.status(201).json({

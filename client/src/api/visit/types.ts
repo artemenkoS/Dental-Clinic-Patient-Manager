@@ -1,11 +1,11 @@
-import { Pagination } from '../../types';
+import { Pagination } from "../../types";
 
 export interface Visit {
   id: number;
   visitDate: string;
   doctorId: number;
   patientId: number;
-  procedure: null | number;
+  procedureId: null | number;
 }
 
 export interface VisitDto {
@@ -20,13 +20,13 @@ export interface VisitParams {
   pageSize?: number;
   doctorId?: string;
   patientId?: string;
-  procedure?: string;
+  procedureId?: string;
 }
 
 export interface VisitMutationBody {
   visitDate: string;
   patientId: number;
   doctorId: number;
-  procedure: number;
-  author: number;
+  procedureId: number;
+  authorId: number;
 }
