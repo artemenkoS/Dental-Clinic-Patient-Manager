@@ -3,8 +3,7 @@ docker-compose -f docker-compose.dev.yml up --build
 
 Для бекапа БД:
 docker exec -it containerID bash
-
-pg_dump -U postgres -d aktis_patients -f /backups/filename.sql
+/usr/local/bin/backup_script.sh
 
 Для восстановления БД из бекапа:
 docker exec -it containerID bash

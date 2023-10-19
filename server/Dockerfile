@@ -5,5 +5,6 @@ COPY ./yarn.lock ./
 RUN yarn 
 COPY . .
 RUN yarn build
+RUN yarn build
 
 CMD ["yarn", "start:prod"]
