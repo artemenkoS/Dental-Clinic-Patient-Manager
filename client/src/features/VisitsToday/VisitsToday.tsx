@@ -22,6 +22,7 @@ export const VisitsToday = () => {
     isSuccess,
     isError,
   } = useGetVisitsQuery({ startDate: todayDate, page });
+  const { data: doctors } = useGetDoctorsQuery();
 
   const handlePaginationChange = (
     _: React.ChangeEvent<unknown>,
@@ -43,7 +44,7 @@ export const VisitsToday = () => {
   }
 
   if (isError) {
-    toast.error("Не удалось загрузить список записей."); // Use toast.error to show an error message
+    toast.error("Не удалось загрузить список записей.");
   }
 
   if (isSuccess && visits.data) {
