@@ -21,8 +21,7 @@ export const VisitsToday = () => {
     isLoading,
     isSuccess,
     isError,
-  } = useGetVisitsQuery({ startDate: todayDate, page }); // Use the page state here
-  const { data: doctors } = useGetDoctorsQuery();
+  } = useGetVisitsQuery({ startDate: todayDate, page });
 
   const handlePaginationChange = (
     _: React.ChangeEvent<unknown>,
