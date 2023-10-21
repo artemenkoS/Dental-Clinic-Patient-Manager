@@ -6,13 +6,14 @@ export const Wrapper = styled.div`
   height: 100%;
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
 `;
 
 export const List = styled.ul`
   margin: 0 0 ${theme.spacing(5)};
-  min-height: 400px;
-  max-height: 600px;
   overflow: auto;
+  flex: 1 0 auto;
 `;
 
 export const Slot = styled.li`

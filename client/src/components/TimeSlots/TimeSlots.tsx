@@ -17,9 +17,10 @@ export const TimeSlots = () => {
       {TIME_SLOTS.map((slot) => (
         <Slot
           type="button"
-          disabled={busySlots?.has(slot)}
-          color={selectedSlot === slot ? 'success' : 'primary'}
+          variant="outlined"
+          disabled={busySlots?.has(slot) || !busySlots}
           onClick={handleSelectSlot(slot)}
+          className={selectedSlot === slot ? 'selected' : ''}
         >
           {slot}
         </Slot>

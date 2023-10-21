@@ -1,12 +1,9 @@
-import EditIcon from "@mui/icons-material/Edit";
-import { IconButton } from "@mui/material";
+import EditIcon from '@mui/icons-material/Edit';
+import { IconButton } from '@mui/material';
 
-import { useAppDispatch } from "../../store/hooks";
-import {
-  setEditVisitModalOpened,
-  setEditableVisit,
-} from "../../store/slices/modalsSlice";
-import { Visit } from "../../api/visit/types";
+import { Visit } from '../../api/visit/types';
+import { useAppDispatch } from '../../store/hooks';
+import { setEditableVisit, setEditVisitModalOpened } from '../../store/slices/modalsSlice';
 
 interface Props {
   visit: Visit;

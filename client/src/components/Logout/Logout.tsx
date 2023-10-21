@@ -1,20 +1,14 @@
-import { Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 export const Logout = () => {
   const navigate = useNavigate();
   const handleClick = () => {
-    localStorage.setItem("token", "");
-    navigate("/login");
+    localStorage.setItem('token', '');
+    navigate('/login');
   };
   return (
-    <Button
-      variant="outlined"
-      color="inherit"
-      onClick={handleClick}
-      size="small"
-      sx={{ alignSelf: "flex-end" }}
-    >
+    <Button variant="outlined" color="inherit" onClick={handleClick} size="small" sx={{ alignSelf: 'flex-end' }}>
       Выйти
     </Button>
   );

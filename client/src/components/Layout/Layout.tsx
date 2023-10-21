@@ -1,11 +1,11 @@
 import { Outlet } from 'react-router-dom';
 
 import { Logout } from '../Logout/Logout';
-import { ContentLayout, ContentWrapper, Header, HeaderTitle, Sidebar } from './styled';
+import { ContentLayout, ContentWrapper, Header, HeaderTitle, Sidebar, Wrapper } from './styled';
 
 export const Layout = () => {
   return (
-    <div>
+    <Wrapper>
       <Header>
         <HeaderTitle>MyApp MyApp</HeaderTitle>
         <Logout />
@@ -16,6 +16,6 @@ export const Layout = () => {
           <Outlet />
         </ContentWrapper>
       </ContentLayout>
-    </div>
+    </Wrapper>
   );
 };

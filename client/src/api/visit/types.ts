@@ -1,4 +1,4 @@
-import { Pagination } from "../../types";
+import { Pagination } from '../../types';
 
 export interface Visit {
   id: number;

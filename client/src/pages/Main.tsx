@@ -1,8 +1,8 @@
-import { DeleteVisitModal } from "../components/DeleteVisitModal/DeleteVisitModal";
-import { EditVisit } from "../features/EditVisit/EditVisit";
-import { NewVisit } from "../features/NewVisit/NewVisit";
-import { NewVisitButton } from "../features/NewVisit/NewVisitButton";
-import { VisitsToday } from "../features/VisitsToday/VisitsToday";
+import { DeleteVisitModal } from '../components/DeleteVisitModal/DeleteVisitModal';
+import { EditVisit } from '../features/EditVisit/EditVisit';
+import { NewVisit } from '../features/NewVisit/NewVisit';
+import { NewVisitButton } from '../features/NewVisit/NewVisitButton';
+import { VisitsToday } from '../features/VisitsToday/VisitsToday';
 
 export const MainScreen = () => {
   return (

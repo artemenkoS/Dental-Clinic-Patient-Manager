@@ -1,8 +1,8 @@
-import format from 'date-fns/format';
+import dayjs from 'dayjs';
 
 export const getTodayDate = () => {
   const currentDate = new Date();
-  const formattedDate = format(currentDate, 'yyyy-MM-dd');
+  const formattedDate = dayjs(currentDate).format('YYYY-MM-DD');
 
   return formattedDate;
 };

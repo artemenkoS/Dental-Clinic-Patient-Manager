@@ -1,21 +1,21 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter } from 'react-router-dom';
 
-import App from "../App";
-import { IsAuth } from "../components/Layout/IsAuthed";
-import { AuthForm } from "../features/AuthForm/AuthForm";
-import { MainScreen } from "../pages/Main";
+import App from '../App';
+import { IsAuth } from '../components/Layout/IsAuthed';
+import { AuthForm } from '../features/AuthForm/AuthForm';
+import { MainScreen } from '../pages/Main';
 
 export const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <IsAuth />,
     children: [
       {
-        path: "/",
+        path: '/',
         element: <App />,
         children: [
           {
-            path: "/",
+            path: '/',
             element: <MainScreen />,
           },
         ],
@@ -23,7 +23,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: "/login",
+    path: '/login',
     element: <AuthForm />,
   },
 ]);

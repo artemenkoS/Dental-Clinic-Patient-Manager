@@ -1,7 +1,6 @@
 import 'react-day-picker/dist/style.css';
 
-import { format } from 'date-fns';
-import { ru } from 'date-fns/locale';
+import ru from 'date-fns/locale/ru';
 import React from 'react';
 import { DayClickEventHandler, DayPicker } from 'react-day-picker';
 
@@ -14,13 +13,9 @@ interface Props {
 }
 
 export const DatePicker: React.FC<Props> = ({ value, onChange }) => {
-  let footer = <p>Выберите дату.</p>;
-  if (value) {
-    footer = <p>Выбрано {format(value, 'yyyy-MM-dd')}.</p>;
-  }
   return (
     <Wrapper>
-      <DayPicker locale={ru} mode="single" selected={value} onDayClick={onChange} footer={footer} />
+      <DayPicker mode="single" locale={ru} selected={value} onDayClick={onChange} />
       <TimeSlots />
     </Wrapper>
   );

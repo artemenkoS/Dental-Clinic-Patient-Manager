@@ -1,7 +1,7 @@
-import styled from "@emotion/styled";
-import { Box } from "@mui/material";
+import styled from '@emotion/styled';
+import { Box } from '@mui/material';
 
-import { theme } from "../../styles/theme";
+import { theme } from '../../styles/theme';
 
 export const StyledBox = styled(Box)`
   position: absolute;

@@ -1,37 +1,25 @@
-import { DevTool } from "@hookform/devtools";
-import {
-  Button,
-  CircularProgress,
-  MenuItem,
-  Modal,
-  Typography,
-} from "@mui/material";
-import format from "date-fns/format";
-import * as React from "react";
-import { Controller, useForm } from "react-hook-form";
+import { DevTool } from '@hookform/devtools';
+import { Button, CircularProgress, MenuItem, Modal, Typography } from '@mui/material';
+import * as dayjs from 'dayjs';
+import * as utc from 'dayjs/plugin/utc';
+import * as React from 'react';
+import { Controller, useForm } from 'react-hook-form';
 
-import { useGetDoctorsQuery } from "../../api/doctor/doctorApi";
-import { useGetProceduresQuery } from "../../api/procedure/procedureApi";
-import { useGetUserQuery } from "../../api/user/userApi";
-import { useGetVisitsQuery } from "../../api/visit/visitApi";
-import { DatePicker } from "../../components/DatePicker/DatePicker";
-import { FormSelect } from "../../components/FormSelect/FormSelect";
-import { NewPatient } from "../../components/NewPatientForm/NewPatientForm";
-import { PatientAutocomplete } from "../../components/PatientAutocomplete/PatientAutocomplete";
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import {
-  selectedSlotSelector,
-  setSelectedSlot,
-} from "../../store/slices/visitSlice";
-import { setBusySlots } from "../../store/slices/visitSlice";
-import { AutocompleteOption } from "../../types";
-import { StyledBox } from "./styled";
-import {
-  editVisitModalSelector,
-  setEditVisitModalOpened,
-} from "../../store/slices/modalsSlice";
-
-import { VisitMutationBody } from "../../api/visit/types";
+import { useGetDoctorsQuery } from '../../api/doctor/doctorApi';
+import { useGetProceduresQuery } from '../../api/procedure/procedureApi';
+import { useGetUserQuery } from '../../api/user/userApi';
+import { VisitMutationBody } from '../../api/visit/types';
+import { useGetVisitsQuery } from '../../api/visit/visitApi';
+import { DatePicker } from '../../components/DatePicker/DatePicker';
+import { FormSelect } from '../../components/FormSelect/FormSelect';
+import { NewPatient } from '../../components/NewPatientForm/NewPatientForm';
+import { PatientAutocomplete } from '../../components/PatientAutocomplete/PatientAutocomplete';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { editVisitModalSelector, setEditVisitModalOpened } from '../../store/slices/modalsSlice';
+import { selectedSlotSelector, setSelectedSlot } from '../../store/slices/visitSlice';
+import { setBusySlots } from '../../store/slices/visitSlice';
+import { AutocompleteOption } from '../../types';
+import { StyledBox } from './styled';
 
 interface FormValues {
   visitDate: Date;
@@ -58,14 +46,16 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
 
     resetForm();
   };
+
+  dayjs.extend(utc);
   const selectedTimeSlot = useAppSelector(selectedSlotSelector);
 
   const defaulFormValues: FormValues = {
-    doctorId: "",
+    doctorId: '',
     patient: null,
-    procedureId: "",
+    procedureId: '',
     visitDate: new Date(),
-    authorId: "",
+    authorId: '',
   };
 
   const {
@@ -79,26 +69,29 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
   const { data: user, isLoading: isUserLoading } = useGetUserQuery();
 
   const { data: doctors, isLoading: isDoctorsloading } = useGetDoctorsQuery();
-  const { data: procedures, isLoading: isProceduresLoading } =
-    useGetProceduresQuery();
+  const { data: procedures, isLoading: isProceduresLoading } = useGetProceduresQuery();
   useGetVisitsQuery(
     {
-      doctorId: watch("doctorId"),
-      startDate: format(watch("visitDate"), "yyyy-MM-dd"),
+      doctorId: watch('doctorId'),
+      startDate: dayjs(watch('visitDate')).utc().format('YYYY-MM-DD'),
     },
-    { skip: !watch("doctorId") }
+    { skip: !watch('doctorId') }
   );
 
   const onSubmit = (data: FormValues) => {
     if (user && data.patient) {
+      const time = selectedTimeSlot ? selectedTimeSlot.split(':') : ['0', '0'];
+      data.visitDate.setHours(+time[0]);
+      data.visitDate.setMinutes(+time[1]);
+
+      console.log(time[0], time[1]);
+      console.log(data.visitDate);
+
       mutate({
         body: {
           doctorId: +data.doctorId,
           authorId: user.user.id,
-          visitDate: `${format(
-            data.visitDate,
-            "yyyy-MM-dd"
-          )} ${selectedTimeSlot}`,
+          visitDate: `${dayjs(data.visitDate).utc().format('YYYY-MM-DD HH:mm')}`,
           patientId: +data.patient.id,
           procedureId: +data.procedureId,
         },
@@ -118,14 +111,10 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
       <Modal open={isOpen} onClose={handleClose}>
         <StyledBox>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Typography
-              id="keep-mounted-modal-title"
-              variant="h6"
-              component="h2"
-            ></Typography>
+            <Typography id="keep-mounted-modal-title" variant="h6" component="h2"></Typography>
             <Controller
               name="doctorId"
-              rules={{ required: "Доктор не выбран" }}
+              rules={{ required: 'Доктор не выбран' }}
               control={control}
               render={({ field }) => (
                 <FormSelect label="Выберите доктора" {...field}>
@@ -140,13 +129,11 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
             <Controller
               name="procedureId"
               control={control}
-              rules={{ required: "Процедура не выбрана" }}
+              rules={{ required: 'Процедура не выбрана' }}
               render={({ field }) => (
                 <FormSelect label="Выберите процедуру" {...field}>
                   {procedures?.data.map((procedure) => (
-                    <MenuItem value={procedure.id.toString()}>
-                      {procedure.procedure}
-                    </MenuItem>
+                    <MenuItem value={procedure.id.toString()}>{procedure.procedure}</MenuItem>
                   ))}
                 </FormSelect>
               )}
@@ -154,27 +141,14 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
             <Controller
               name="patient"
               control={control}
-              rules={{ required: "Пациент не выбран" }}
+              rules={{ required: 'Пациент не выбран' }}
               render={({ field }) => (
-                <PatientAutocomplete
-                  label="Выберите пациента"
-                  value={field.value}
-                  onChange={field.onChange}
-                />
+                <PatientAutocomplete label="Выберите пациента" value={field.value} onChange={field.onChange} />
               )}
             />
             <NewPatient />
-            <Controller
-              name="visitDate"
-              control={control}
-              render={({ field }) => <DatePicker {...field} />}
-            />
-            <Button
-              type="submit"
-              variant="outlined"
-              fullWidth
-              disabled={!isValid}
-            >
+            <Controller name="visitDate" control={control} render={({ field }) => <DatePicker {...field} />} />
+            <Button type="submit" variant="outlined" fullWidth disabled={!isValid || !selectedTimeSlot}>
               Создать запись
             </Button>
           </form>

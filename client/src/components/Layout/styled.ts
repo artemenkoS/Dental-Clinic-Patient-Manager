@@ -1,12 +1,11 @@
-import styled from "@emotion/styled";
+import styled from '@emotion/styled';
 
-import { theme } from "../../styles/theme";
+import { theme } from '../../styles/theme';
 
 export const ContentWrapper = styled.main`
   display: flex;
   flex: 0 1 auto;
   width: 100%;
-
   padding: ${theme.spacing(3)};
   max-width: 1200px;
   min-width: 800px;
@@ -17,7 +16,6 @@ export const Header = styled.header`
   width: 100%;
   color: ${theme.palette.secondary.contrastText};
   padding: ${theme.spacing(2)};
-  position: absolute;
   display: flex;
 
   background-color: ${theme.palette.primary.main};
@@ -30,7 +28,7 @@ export const HeaderTitle = styled.h1`
 `;
 
 export const Sidebar = styled.div`
-  height: 100vh;
+  height: 100%;
   flex: 0 1 400px;
   min-width: 250px;
   background-color: ${theme.palette.primary.dark};
@@ -42,5 +40,11 @@ export const Sidebar = styled.div`
 
 export const ContentLayout = styled.div`
   display: flex;
-  padding: 70px 0;
+  height: 100%;
+`;
+
+export const Wrapper = styled.div`
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 `;

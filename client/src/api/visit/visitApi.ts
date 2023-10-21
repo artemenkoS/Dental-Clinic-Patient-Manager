@@ -1,58 +1,55 @@
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast';
 
-import { setBusySlots, setSelectedSlot } from "../../store/slices/visitSlice";
-import { apiSlice } from "../apiSlice";
-import { VisitDto, VisitMutationBody, VisitParams } from "./types";
-import { setEditableVisit } from "../../store/slices/modalsSlice";
+import { setEditableVisit } from '../../store/slices/modalsSlice';
+import { setBusySlots, setSelectedSlot } from '../../store/slices/visitSlice';
+import { apiSlice } from '../apiSlice';
+import { VisitDto, VisitMutationBody, VisitParams } from './types';
 
 export const visitApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getVisits: builder.query<VisitDto, VisitParams>({
       query: (params: VisitParams) => ({
         params: params,
-        url: "api/visit",
+        url: 'api/visit',
       }),
-      providesTags: ["Visit"],
+      providesTags: ['Visit'],
       keepUnusedDataFor: 0,
     }),
 
     createVisit: builder.mutation<VisitDto, { body: VisitMutationBody }>({
       query: ({ body }) => ({
         body,
-        url: "api/visit",
-        method: "POST",
+        url: 'api/visit',
+        method: 'POST',
       }),
-      invalidatesTags: ["Visit"],
+      invalidatesTags: ['Visit'],
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled;
           dispatch(setBusySlots(null));
           dispatch(setSelectedSlot(null));
-          toast.success("Запись успешно создана.");
+          toast.success('Запись успешно создана.');
         } catch (error) {
-          toast.error("Не удалось создать запись.");
+          toast.error('Не удалось создать запись.');
         }
       },
     }),
-    updateVisit: builder.mutation<
-      VisitDto,
-      { body: VisitMutationBody; id: number }
-    >({
+    updateVisit: builder.mutation<VisitDto, { body: VisitMutationBody; id: number }>({
       query: ({ body, id }) => ({
         body,
         url: `api/visit/${id}`,
-        method: "PATCH",
+        method: 'PATCH',
       }),
-      invalidatesTags: ["Visit"],
+      invalidatesTags: ['Visit'],
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled;
           dispatch(setBusySlots(null));
           dispatch(setSelectedSlot(null));
           dispatch(setEditableVisit(null));
-          toast.success("Запись успешно изменена.");
+          toast.success('Запись успешно изменена.');
         } catch (error) {
-          toast.error("Не удалось изменить запись.");
+          toast.error('Не удалось изменить запись.');
         }
       },
     }),
@@ -60,15 +57,15 @@ export const visitApi = apiSlice.injectEndpoints({
     deleteVisit: builder.mutation<VisitDto, number>({
       query: (id: number) => ({
         url: `api/visit/${id}`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
-      invalidatesTags: ["Visit"],
+      invalidatesTags: ['Visit'],
       async onQueryStarted(_, { queryFulfilled }) {
         try {
           await queryFulfilled;
-          toast.success("Запись успешно удалена.");
+          toast.success('Запись успешно удалена.');
         } catch (error) {
-          toast.error("Не удалось удалить запись.");
+          toast.error('Не удалось удалить запись.');
         }
       },
     }),

@@ -7,8 +7,8 @@ export const parseDate = (dateTimeString: string) => {
 
   const dateTime = new Date(timestamp);
 
-  const date = dateTime.toISOString().split("T")[0];
-  const time = dateTime.toISOString().split("T")[1].slice(0, 5);
+  const date = dateTime.toISOString().split('T')[0];
+  const time = dateTime.toISOString().split('T')[1].slice(0, 5);
 
   const result = {
     date: date,

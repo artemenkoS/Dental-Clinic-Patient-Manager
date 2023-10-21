@@ -1,8 +1,8 @@
-import type { PayloadAction } from "@reduxjs/toolkit";
-import { createSlice } from "@reduxjs/toolkit";
-import { Visit } from "../../api/visit/types";
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
-import { RootState } from "../store";
+import { Visit } from '../../api/visit/types';
+import { RootState } from '../store';
 
 interface ModalState {
   patientModal: { isOpen: boolean };
@@ -17,7 +17,7 @@ const initialState: ModalState = {
 };
 
 const modalSlice = createSlice({
-  name: "modal",
+  name: 'modal',
   initialState,
   reducers: {
     setPatientModalOpened(state, action: PayloadAction<boolean>) {
@@ -46,10 +46,7 @@ export const {
   setEditableVisit,
 } = modalSlice.actions;
 
-export const patientModalSelector = (state: RootState) =>
-  state.modalReducer.patientModal;
-export const editVisitModalSelector = (state: RootState) =>
-  state.modalReducer.editVisitModal;
-export const deleteVisitModalSelector = (state: RootState) =>
-  state.modalReducer.deleteVisitModal;
+export const patientModalSelector = (state: RootState) => state.modalReducer.patientModal;
+export const editVisitModalSelector = (state: RootState) => state.modalReducer.editVisitModal;
+export const deleteVisitModalSelector = (state: RootState) => state.modalReducer.deleteVisitModal;
 export default modalSlice.reducer;
