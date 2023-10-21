@@ -1,4 +1,4 @@
-import { DeleteVisitModal } from '../components/DeleteVisitModal/DeleteVisitModal';
+import { DeleteVisitModal } from '../features/DeleteVisitModal/DeleteVisitModal';
 import { EditVisit } from '../features/EditVisit/EditVisit';
 import { NewVisit } from '../features/NewVisit/NewVisit';
 import { NewVisitButton } from '../features/NewVisit/NewVisitButton';

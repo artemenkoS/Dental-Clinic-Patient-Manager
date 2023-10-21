@@ -6,8 +6,8 @@ import toast from 'react-hot-toast';
 
 import { useGetDoctorsQuery } from '../../api/doctor/doctorApi';
 import { useGetVisitsQuery } from '../../api/visit/visitApi';
-import { DeleteVisitButton } from '../../components/DeleteVisitModal/DeleteVisitButton';
 import { getTodayDate } from '../../helpers/getTodayDate';
+import { DeleteVisitButton } from '../DeleteVisitModal/DeleteVisitButton';
 import { EditVisitButton } from '../EditVisit/EditVisitButton';
 import { List, Slot, Wrapper } from './styled';
 

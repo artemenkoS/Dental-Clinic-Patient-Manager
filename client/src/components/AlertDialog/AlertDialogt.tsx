@@ -1,14 +1,25 @@
 import { Button, Modal, Typography } from '@mui/material';
 import * as React from 'react';
 
-import { useDeleteVisitMutation } from '../../api/visit/visitApi';
 import { useAppDispatch } from '../../store/hooks';
 import { useAppSelector } from '../../store/hooks';
 import { deleteVisitModalSelector } from '../../store/slices/modalsSlice';
 import { setDeleteVisitId, setDeleteVisitModalOpened } from '../../store/slices/modalsSlice';
 import { ButtonWrapper, StyledBox } from './styled';
 
-export const DeleteVisitModal: React.FC = () => {
+interface Props {
+  onClick: () => void;
+  cancelText?: string;
+  submitText?: string;
+  dialogText: string;
+}
+
+export const AlertDialog: React.FC<Props> = ({
+  onClick,
+  cancelText = 'Отменить',
+  submitText = 'Подтвердить',
+  dialogText,
+}) => {
   const dispatch = useAppDispatch();
 
   const modalState = useAppSelector(deleteVisitModalSelector);
@@ -18,30 +29,17 @@ export const DeleteVisitModal: React.FC = () => {
     dispatch(setDeleteVisitId(null));
   };
 
-  const handleDeleteVisit = () => {
-    if (modalState.visitId) mutate(modalState.visitId);
-  };
-
-  const [mutate, { isSuccess: deleteVisitSuccess, reset }] = useDeleteVisitMutation();
-
-  React.useEffect(() => {
-    if (deleteVisitSuccess) {
-      reset();
-      handleClose();
-    }
-  }, [deleteVisitSuccess]);
-
   return (
     <div>
       <Modal keepMounted open={modalState.isOpen} onClose={handleClose}>
         <StyledBox>
-          <Typography variant="h6">Вы точно хотите удалить данную запись?</Typography>
+          <Typography variant="h6">{dialogText}</Typography>
           <ButtonWrapper>
             <Button variant="outlined" size="large" onClick={handleClose}>
-              Отменить
+              {cancelText}
             </Button>
-            <Button type="submit" variant="contained" color="error" onClick={handleDeleteVisit}>
-              Удалить запись
+            <Button type="submit" variant="contained" color="error" onClick={onClick}>
+              {submitText}
             </Button>
           </ButtonWrapper>
         </StyledBox>

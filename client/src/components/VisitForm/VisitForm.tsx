@@ -15,7 +15,7 @@ import { FormSelect } from '../../components/FormSelect/FormSelect';
 import { NewPatient } from '../../components/NewPatientForm/NewPatientForm';
 import { PatientAutocomplete } from '../../components/PatientAutocomplete/PatientAutocomplete';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { editVisitModalSelector, setEditVisitModalOpened } from '../../store/slices/modalsSlice';
+import { editVisitModalSelector, setEditableVisit, setEditVisitModalOpened } from '../../store/slices/modalsSlice';
 import { selectedSlotSelector, setSelectedSlot } from '../../store/slices/visitSlice';
 import { setBusySlots } from '../../store/slices/visitSlice';
 import { AutocompleteOption } from '../../types';
@@ -43,6 +43,7 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
     dispatch(setEditVisitModalOpened(false));
     dispatch(setSelectedSlot(null));
     dispatch(setBusySlots(null));
+    dispatch(setEditableVisit(null));
 
     resetForm();
   };
@@ -70,12 +71,15 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
 
   const { data: doctors, isLoading: isDoctorsloading } = useGetDoctorsQuery();
   const { data: procedures, isLoading: isProceduresLoading } = useGetProceduresQuery();
+
+  const formValues = watch();
+
   useGetVisitsQuery(
     {
-      doctorId: watch('doctorId'),
-      startDate: dayjs(watch('visitDate')).utc().format('YYYY-MM-DD'),
+      doctorId: formValues.doctorId,
+      startDate: dayjs(formValues.visitDate).format('YYYY-MM-DD'),
     },
-    { skip: !watch('doctorId') }
+    { skip: !formValues.doctorId }
   );
 
   const onSubmit = (data: FormValues) => {
