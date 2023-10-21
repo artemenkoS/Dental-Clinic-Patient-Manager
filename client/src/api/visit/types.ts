@@ -5,12 +5,14 @@ export interface Visit {
   visitDate: string;
   doctorId: number;
   patientId: number;
-  procedureId: null | number;
+  procedureId: number;
+  authorId: number;
 }
 
 export interface VisitDto {
   data: Visit[];
   pagination: Pagination;
+  message?: string;
 }
 
 export interface VisitParams {

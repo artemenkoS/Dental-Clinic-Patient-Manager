@@ -60,7 +60,7 @@ export const getVisits = async (req: Request, res: Response) => {
     }
 
     if (visits.rowCount === 0) {
-      res.status(404).json({ message: "Записи не найдены" });
+      res.status(200).json({ message: "Записи не найдены" });
     } else {
       res.status(200).json({
         data: visits.rows,
@@ -91,21 +91,49 @@ export const getOneVisit = async (req: Request, res: Response) => {
 };
 
 export const updateVisit = async (req: Request, res: Response) => {
-  const { date, doctor, patient, id } = req.body;
+  const { visitDate, doctorId, patientId, procedureId, authorId } = req.body;
+  const id = req.params.id;
+
+  if (!visitDate || !doctorId || !patientId || !procedureId || !authorId) {
+    return res
+      .status(400)
+      .json({ message: "Не все обязательные поля заполнены" });
+  }
 
   try {
-    const updatedVisit = await db.query(
-      `UPDATE visit set visitDate =  $1, doctorId = $2, patient= $3 where id = $4 RETURNING *`,
-      [date, doctor, patient, id]
+    const doctorRole = await db.query(
+      `SELECT * FROM role WHERE role = 'doctor'`
     );
 
-    res.status(201).json({
-      patient: updatedVisit.rows[0],
-      message: "Запись успешно изменена.",
-    });
+    const user = await db.query(`SELECT * FROM users WHERE id = $1 `, [
+      doctorId,
+    ]);
+
+    if (user.rows[0].role !== doctorRole.rows[0].id) {
+      return res
+        .status(400)
+        .json({ message: "Нельзя записать к этому пользователю" });
+    }
+
+    const updatedVisit = await db.query(
+      `UPDATE visit 
+       SET "visitDate" = $1, "doctorId" = $2, "patientId" = $3, "procedureId" = $4, "authorId" = $5
+       WHERE id = $6
+       RETURNING *`,
+      [visitDate, doctorId, patientId, procedureId, authorId, id]
+    );
+
+    if (updatedVisit.rows[0]) {
+      res.status(200).json({
+        visit: updatedVisit.rows[0],
+        message: "Запись успешно обновлена.",
+      });
+    } else {
+      res.status(404).json({ message: "Запись не найдена." });
+    }
   } catch (error) {
-    console.error("Ошибка при изменении записи", error);
-    res.status(500).json({ message: "Произошла ошибка при создании записи." });
+    console.error("Ошибка при обновлении записи:", error);
+    res.status(500).json({ message: "Произошла ошибка при обновлении записи" });
   }
 };
 
