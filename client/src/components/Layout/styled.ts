@@ -17,7 +17,6 @@ export const Header = styled.header`
   color: ${theme.palette.secondary.contrastText};
   padding: ${theme.spacing(2)};
   display: flex;
-
   background-color: ${theme.palette.primary.main};
 `;
 
@@ -34,7 +33,7 @@ export const Sidebar = styled.div`
   background-color: ${theme.palette.primary.dark};
   padding: ${theme.spacing(2)};
   font-size: ${theme.spacing(3)};
-  color: ${theme.palette.secondary.contrastText};
+  color: ${theme.palette.primary.light};
   overflow: scroll;
 `;
 

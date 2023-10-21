@@ -1,5 +1,5 @@
 import { DevTool } from '@hookform/devtools';
-import { Button, CircularProgress, MenuItem, Modal, Typography } from '@mui/material';
+import { Button, CircularProgress, Grid, MenuItem, Modal, Typography } from '@mui/material';
 import * as dayjs from 'dayjs';
 import * as utc from 'dayjs/plugin/utc';
 import * as React from 'react';
@@ -19,7 +19,7 @@ import { editVisitModalSelector, setEditableVisit, setEditVisitModalOpened } fro
 import { selectedSlotSelector, setSelectedSlot } from '../../store/slices/visitSlice';
 import { setBusySlots } from '../../store/slices/visitSlice';
 import { AutocompleteOption } from '../../types';
-import { StyledBox } from './styled';
+import { Container } from './styled';
 
 interface FormValues {
   visitDate: Date;
@@ -113,50 +113,57 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
   return (
     <div>
       <Modal open={isOpen} onClose={handleClose}>
-        <StyledBox>
+        <Container>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Typography id="keep-mounted-modal-title" variant="h6" component="h2"></Typography>
-            <Controller
-              name="doctorId"
-              rules={{ required: 'Доктор не выбран' }}
-              control={control}
-              render={({ field }) => (
-                <FormSelect label="Выберите доктора" {...field}>
-                  {doctors?.data.map((doctor) => (
-                    <MenuItem value={doctor.id.toString()}>
-                      {doctor.name} {doctor.surname}
-                    </MenuItem>
-                  ))}
-                </FormSelect>
-              )}
-            />
-            <Controller
-              name="procedureId"
-              control={control}
-              rules={{ required: 'Процедура не выбрана' }}
-              render={({ field }) => (
-                <FormSelect label="Выберите процедуру" {...field}>
-                  {procedures?.data.map((procedure) => (
-                    <MenuItem value={procedure.id.toString()}>{procedure.procedure}</MenuItem>
-                  ))}
-                </FormSelect>
-              )}
-            />
-            <Controller
-              name="patient"
-              control={control}
-              rules={{ required: 'Пациент не выбран' }}
-              render={({ field }) => (
-                <PatientAutocomplete label="Выберите пациента" value={field.value} onChange={field.onChange} />
-              )}
-            />
+            <Grid container direction="column" spacing={2}>
+              <Grid item>
+                <Controller
+                  name="doctorId"
+                  rules={{ required: 'Доктор не выбран' }}
+                  control={control}
+                  render={({ field }) => (
+                    <FormSelect label="Выберите доктора" {...field}>
+                      {doctors?.data.map((doctor) => (
+                        <MenuItem value={doctor.id.toString()}>
+                          {doctor.name} {doctor.surname}
+                        </MenuItem>
+                      ))}
+                    </FormSelect>
+                  )}
+                />
+              </Grid>
+              <Grid item>
+                <Controller
+                  name="procedureId"
+                  control={control}
+                  rules={{ required: 'Процедура не выбрана' }}
+                  render={({ field }) => (
+                    <FormSelect label="Выберите процедуру" {...field}>
+                      {procedures?.data.map((procedure) => (
+                        <MenuItem value={procedure.id.toString()}>{procedure.procedure}</MenuItem>
+                      ))}
+                    </FormSelect>
+                  )}
+                />
+              </Grid>
+              <Grid item xs={2}>
+                <Controller
+                  name="patient"
+                  control={control}
+                  rules={{ required: 'Пациент не выбран' }}
+                  render={({ field }) => (
+                    <PatientAutocomplete label="Выберите пациента" value={field.value} onChange={field.onChange} />
+                  )}
+                />
+              </Grid>
+            </Grid>
             <NewPatient />
             <Controller name="visitDate" control={control} render={({ field }) => <DatePicker {...field} />} />
             <Button type="submit" variant="outlined" fullWidth disabled={!isValid || !selectedTimeSlot}>
               Создать запись
             </Button>
           </form>
-        </StyledBox>
+        </Container>
       </Modal>
       <DevTool control={control} />
     </div>

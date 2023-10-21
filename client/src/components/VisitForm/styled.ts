@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 
 import { theme } from '../../styles/theme';
 
-export const StyledBox = styled(Box)`
+export const Container = styled(Box)`
   position: absolute;
   top: 50%;
   left: 50%;
@@ -11,4 +11,5 @@ export const StyledBox = styled(Box)`
   width: 800px;
   background-color: ${theme.palette.background.paper};
   padding: ${theme.spacing(3)};
+  border-radius: ${theme.spacing(1)};
 `;

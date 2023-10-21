@@ -5,7 +5,7 @@ import { useAppDispatch } from '../../store/hooks';
 import { useAppSelector } from '../../store/hooks';
 import { deleteVisitModalSelector } from '../../store/slices/modalsSlice';
 import { setDeleteVisitId, setDeleteVisitModalOpened } from '../../store/slices/modalsSlice';
-import { ButtonWrapper, StyledBox } from './styled';
+import { ButtonWrapper, Container } from './styled';
 
 interface Props {
   onClick: () => void;
@@ -32,7 +32,7 @@ export const AlertDialog: React.FC<Props> = ({
   return (
     <div>
       <Modal keepMounted open={modalState.isOpen} onClose={handleClose}>
-        <StyledBox>
+        <Container>
           <Typography variant="h6">{dialogText}</Typography>
           <ButtonWrapper>
             <Button variant="outlined" size="large" onClick={handleClose}>
@@ -42,7 +42,7 @@ export const AlertDialog: React.FC<Props> = ({
               {submitText}
             </Button>
           </ButtonWrapper>
-        </StyledBox>
+        </Container>
       </Modal>
     </div>
   );

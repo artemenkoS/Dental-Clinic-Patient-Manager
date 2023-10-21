@@ -11,7 +11,7 @@ export const Wrapper = styled.div`
 `;
 
 export const List = styled.ul`
-  margin: 0 0 ${theme.spacing(5)};
+  margin: 0 ${theme.spacing(2)} ${theme.spacing(5)};
   overflow: auto;
   flex: 1 0 auto;
 `;
@@ -21,6 +21,6 @@ export const Slot = styled.li`
   display: flex;
   align-items: center;
   gap: ${theme.spacing(1)};
-  margin: ${theme.spacing(1)};
+  margin-bottom: ${theme.spacing(1)};
   padding: ${theme.spacing(1)};
 `;

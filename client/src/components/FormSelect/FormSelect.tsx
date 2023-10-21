@@ -15,7 +15,7 @@ export const FormSelect: React.FC<Props> = (props) => {
   const { label, value, onChange, children, error } = props;
 
   return (
-    <Box sx={{ minWidth: 120, marginBottom: theme.spacing(2) }}>
+    <Box sx={{ minWidth: 120 }}>
       <FormControl fullWidth error={!!error}>
         <InputLabel>{label}</InputLabel>
         <Select

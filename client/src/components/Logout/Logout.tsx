@@ -8,7 +8,7 @@ export const Logout = () => {
     navigate('/login');
   };
   return (
-    <Button variant="outlined" color="inherit" onClick={handleClick} size="small" sx={{ alignSelf: 'flex-end' }}>
+    <Button variant="outlined" color="inherit" onClick={handleClick} size="small">
       Выйти
     </Button>
   );

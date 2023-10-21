@@ -14,16 +14,10 @@ export const globalStyle = () => css`
     font-family: 'Nunito';
     font-weight: 400;
     overflow: hidden;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
   }
 
   input:-webkit-autofill {
     box-shadow: inset 0 0 0 100px #fff;
     outline: none;
-  }
-
-  ::-webkit-scrollbar {
-    width: 0;
   }
 `;

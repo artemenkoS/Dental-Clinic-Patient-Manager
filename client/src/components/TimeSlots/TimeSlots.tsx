@@ -14,8 +14,9 @@ export const TimeSlots = () => {
   };
   return (
     <Wrapper>
-      {TIME_SLOTS.map((slot) => (
+      {TIME_SLOTS.map((slot, i) => (
         <Slot
+          key={i}
           type="button"
           variant="outlined"
           disabled={busySlots?.has(slot) || !busySlots}
