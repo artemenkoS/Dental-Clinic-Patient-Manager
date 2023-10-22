@@ -13,7 +13,7 @@ export const Wrapper = styled.div`
 export const List = styled.ul`
   margin: 0 ${theme.spacing(2)} ${theme.spacing(5)};
   overflow: auto;
-  flex: 1 0 auto;
+  flex: 1 0 500px;
 `;
 
 export const Slot = styled.li`
