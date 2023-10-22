@@ -1,8 +1,6 @@
 import { Box, FormControl, FormHelperText, InputLabel, Select, SelectChangeEvent } from '@mui/material';
 import * as React from 'react';
 
-import { theme } from '../../styles/theme';
-
 interface Props {
   label: string;
   value: string;

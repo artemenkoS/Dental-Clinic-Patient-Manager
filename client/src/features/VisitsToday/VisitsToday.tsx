@@ -18,7 +18,7 @@ export const VisitsToday = () => {
 
   const [page, setPage] = useState<number>(1);
 
-  const { data: visits, isLoading, isSuccess, isError } = useGetVisitsQuery({ startDate: todayDate, page });
+  const { data: visits, isLoading, isError } = useGetVisitsQuery({ startDate: todayDate, page });
   const { data: doctors } = useGetDoctorsQuery();
 
   const handlePaginationChange = (_: React.ChangeEvent<unknown>, value: number) => {
