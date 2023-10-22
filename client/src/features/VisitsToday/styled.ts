@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { theme } from '../../styles/theme';
 
 export const Wrapper = styled.div`
-  height: 100%;
+  max-height: 800px;
   margin: 0;
   padding: 0;
   display: flex;
