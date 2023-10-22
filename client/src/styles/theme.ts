@@ -7,7 +7,7 @@ export const theme = createTheme({
       light: '#70D4FF',
     },
     success: {
-      main: '#23ae95',
+      main: '#177245',
     },
   },
 
