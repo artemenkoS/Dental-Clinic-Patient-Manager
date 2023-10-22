@@ -41,7 +41,7 @@ export const VisitsToday = () => {
     toast.error('Не удалось загрузить список записей.');
   }
 
-  if (isSuccess && !visits?.data) {
+  if (!visits?.data) {
     return <Typography>{visits?.message}</Typography>;
   }
   return (
