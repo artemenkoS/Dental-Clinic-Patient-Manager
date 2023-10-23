@@ -12,7 +12,7 @@ export const createLogRecord = async (req: Request, res: Response) => {
 
   try {
     const newLogRecord = await db.query(
-      `INSERT INTO history (authorId, doctorId, visitDate, changes) values ($1, $2, $3, $4) RETURNING *`,
+      `INSERT INTO history ("authorId", "doctorId", "visitDate", "changes") values ($1, $2, $3, $4) RETURNING *`,
       [authorId, doctorId, visitDate, changes]
     );
 

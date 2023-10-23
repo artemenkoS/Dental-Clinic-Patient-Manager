@@ -36,13 +36,23 @@ create TABLE procedure (
 
 create TABLE users (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255),
-    surname VARCHAR(255),
-    login VARCHAR(255),
-    password VARCHAR(255),
-    role INTEGER,
-    FOREIGN KEY ("role") REFERENCES role(id)
+    authorId INTEGER,
+    doctorId INTEGER,
+    visitDate VARCHAR(255),
+    changes: json
+    FOREIGN KEY ("authorId") REFERENCES users(id)
 )
+
+
+CREATE TABLE history (
+    id SERIAL PRIMARY KEY,
+    "authorId" INTEGER REFERENCES users(id),
+    "doctorId" INTEGER,
+    "visitDate" VARCHAR(255),
+    changes JSON
+);
+
+
 
 
 

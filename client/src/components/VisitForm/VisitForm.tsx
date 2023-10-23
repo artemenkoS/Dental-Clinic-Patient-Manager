@@ -6,6 +6,7 @@ import * as React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
 import { useGetDoctorsQuery } from '../../api/doctor/doctorApi';
+import { useCreateLogRecordMutation } from '../../api/history/historyApi';
 import { useGetProceduresQuery } from '../../api/procedure/procedureApi';
 import { useGetUserQuery } from '../../api/user/userApi';
 import { VisitMutationBody } from '../../api/visit/types';
@@ -74,6 +75,8 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
   const { data: procedures, isLoading: isProceduresLoading } = useGetProceduresQuery();
   const submitText = useAppSelector(editVisitModalSelector).submitText;
 
+  const [createLogRecordMutate] = useCreateLogRecordMutation();
+
   const formValues = watch();
 
   useGetVisitsQuery(
@@ -102,6 +105,18 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
           procedureId: +data.procedureId,
         },
         id: values?.id,
+      });
+      createLogRecordMutate({
+        doctorId: +data.doctorId,
+        authorId: user.user.id,
+        visitDate: `${dayjs(data.visitDate).utc().format('YYYY-MM-DD HH:mm')}`,
+        changes: {
+          doctorId: +data.doctorId,
+          authorId: user.user.id,
+          visitDate: `${dayjs(data.visitDate).utc().format('YYYY-MM-DD HH:mm')}`,
+          patientId: +data.patient.id,
+          procedureId: +data.procedureId,
+        },
       });
       resetForm(defaulFormValues);
       handleClose();

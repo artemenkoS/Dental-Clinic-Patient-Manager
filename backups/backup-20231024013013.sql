@@ -26,14 +26,36 @@ SET default_table_access_method = heap;
 
 CREATE TABLE public.history (
     id integer NOT NULL,
-    author integer,
-    "visitDate" timestamp with time zone,
-    changes json,
-    "doctorId" integer
+    "authorId" integer,
+    "doctorId" integer,
+    "visitDate" character varying(255),
+    changes json
 );
 
 
 ALTER TABLE public.history OWNER TO postgres;
+
+--
+-- Name: history_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.history_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.history_id_seq OWNER TO postgres;
+
+--
+-- Name: history_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.history_id_seq OWNED BY public.history.id;
+
 
 --
 -- Name: patient; Type: TABLE; Schema: public; Owner: postgres
@@ -183,7 +205,7 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 CREATE TABLE public.visit (
     id integer NOT NULL,
-    "visitDate" timestamp with time zone,
+    "visitDate" timestamp without time zone,
     "doctorId" integer,
     "patientId" integer,
     "procedureId" integer,
@@ -213,6 +235,13 @@ ALTER SEQUENCE public.visit_id_seq OWNER TO postgres;
 --
 
 ALTER SEQUENCE public.visit_id_seq OWNED BY public.visit.id;
+
+
+--
+-- Name: history id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.history ALTER COLUMN id SET DEFAULT nextval('public.history_id_seq'::regclass);
 
 
 --
@@ -254,7 +283,9 @@ ALTER TABLE ONLY public.visit ALTER COLUMN id SET DEFAULT nextval('public.visit_
 -- Data for Name: history; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.history (id, author, "visitDate", changes, "doctorId") FROM stdin;
+COPY public.history (id, "authorId", "doctorId", "visitDate", changes) FROM stdin;
+1	7	4	2023-10-24 08:00	{"doctorId":4,"authorId":7,"visitDate":"2023-10-24 08:00","patientId":21,"procedureId":2}
+2	7	8	2023-10-24 12:00	{"doctorId":8,"authorId":7,"visitDate":"2023-10-24 12:00","patientId":9,"procedureId":2}
 \.
 
 
@@ -297,6 +328,10 @@ COPY public.patient (id, name, surname, phone) FROM stdin;
 32	Гриша	Сыркин	+77055493439
 33	Чингиз	Чингизов	+8832299329
 34	Игнат	Стрелец	+87773204421
+35	aaa	aaa	aaa
+36	Антон	Еее	1222
+37	Сергей	Нуртас	23331223
+38	Testest	test	+7701117021
 \.
 
 
@@ -344,21 +379,50 @@ COPY public.users (id, name, surname, login, password, role) FROM stdin;
 --
 
 COPY public.visit (id, "visitDate", "doctorId", "patientId", "procedureId", "authorId") FROM stdin;
-562	2023-10-18 17:00:00+05	8	25	3	7
-564	2023-10-18 13:30:00+05	8	30	3	7
-561	2023-10-18 18:00:00+05	7	34	2	3
-563	2023-10-18 13:30:00+05	7	23	1	7
-556	2023-10-18 14:30:00+05	8	26	1	7
-565	2023-10-19 14:30:00+05	8	29	2	3
-567	2023-10-19 18:00:00+05	7	29	2	3
+624	2023-10-22 07:00:00	8	29	2	5
+634	2023-10-22 08:30:00	7	29	2	7
+635	2023-10-22 12:00:00	8	29	2	7
+636	2023-10-22 12:30:00	7	29	1	7
+642	2023-10-22 11:00:00	7	9	1	7
+643	2023-10-22 08:00:00	8	17	3	7
+644	2023-10-22 09:30:00	8	10	2	7
+645	2023-10-22 08:00:00	10	10	3	7
+647	2023-10-22 06:30:00	7	29	2	7
+648	2023-10-22 13:00:00	7	29	1	7
+649	2023-10-22 12:30:00	10	16	1	7
+650	2023-10-22 05:30:00	7	29	2	7
+652	2023-10-22 10:30:00	8	29	1	7
+626	2023-10-22 07:30:00	10	8	3	7
+627	2023-10-22 07:00:00	7	8	2	7
+625	2023-10-22 08:30:00	8	8	1	7
+630	2023-10-22 07:30:00	4	29	2	7
+653	2023-10-22 09:00:00	7	29	3	3
+646	2023-10-22 07:30:00	8	10	2	3
+631	2023-10-22 07:30:00	7	29	2	7
+654	2023-10-22 12:00:00	7	24	1	7
+628	2023-10-22 10:30:00	7	29	1	7
+641	2023-10-22 13:30:00	8	29	2	7
+656	2023-10-23 10:00:00	10	29	1	7
+655	2023-10-23 08:00:00	7	29	2	7
+658	2023-10-23 09:30:00	7	8	1	7
+659	2023-10-23 09:30:00	8	26	1	7
+618	2023-10-24 08:00:00	4	21	2	7
+660	2023-10-24 12:00:00	8	9	2	7
 \.
+
+
+--
+-- Name: history_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.history_id_seq', 2, true);
 
 
 --
 -- Name: patient_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.patient_id_seq', 34, true);
+SELECT pg_catalog.setval('public.patient_id_seq', 38, true);
 
 
 --
@@ -386,7 +450,7 @@ SELECT pg_catalog.setval('public.users_id_seq', 11, true);
 -- Name: visit_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.visit_id_seq', 567, true);
+SELECT pg_catalog.setval('public.visit_id_seq', 660, true);
 
 
 --
@@ -445,20 +509,6 @@ CREATE INDEX fki_c ON public.visit USING btree ("procedureId");
 
 
 --
--- Name: fki_f; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX fki_f ON public.history USING btree ("visitDate");
-
-
---
--- Name: fki_history_author_fkey; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX fki_history_author_fkey ON public.history USING btree (author);
-
-
---
 -- Name: fki_visit_author_fkey; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -466,11 +516,11 @@ CREATE INDEX fki_visit_author_fkey ON public.visit USING btree ("authorId");
 
 
 --
--- Name: history history_author_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: history history_authorId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.history
-    ADD CONSTRAINT history_author_fkey FOREIGN KEY (author) REFERENCES public.users(id) NOT VALID;
+    ADD CONSTRAINT "history_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES public.users(id);
 
 
 --
