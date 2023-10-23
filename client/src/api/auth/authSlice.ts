@@ -1,20 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-hot-toast';
 
-import { RootState } from '../../store/store';
 import { authApi } from './authApi';
 import { AuthResponse } from './types';
 
 interface User {
   user: AuthResponse['data'] | null;
-  token: string | null;
-  isAuthed: boolean;
 }
 
 const initialState: User = {
   user: null,
-  isAuthed: false,
-  token: null,
 };
 
 const userSlice = createSlice({
@@ -23,14 +18,12 @@ const userSlice = createSlice({
   reducers: {},
 
   extraReducers: (builder) => {
-    builder.addMatcher(authApi.endpoints.auth.matchFulfilled, (state, { payload }) => {
-      state.isAuthed = true;
+    builder.addMatcher(authApi.endpoints.auth.matchFulfilled, (_, { payload }) => {
       localStorage.setItem('token', payload.token);
 
       toast.success('Успешная авторизация.');
     });
-    builder.addMatcher(authApi.endpoints.auth.matchRejected, (state) => {
-      state.isAuthed = false;
+    builder.addMatcher(authApi.endpoints.auth.matchRejected, () => {
       localStorage.setItem('token', '');
 
       toast.error('Ошибка авторищации.');
@@ -38,5 +31,4 @@ const userSlice = createSlice({
   },
 });
 
-export const selectIsAuthed = (state: RootState) => state.userReducer.isAuthed;
 export default userSlice.reducer;

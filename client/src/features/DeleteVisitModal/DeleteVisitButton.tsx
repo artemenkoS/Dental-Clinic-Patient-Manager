@@ -21,4 +21,3 @@ export const DeleteVisitButton: React.FC<Props> = ({ id }) => {
   );
 };
 
-// () => dispatch(setPatientModalOpened(true))

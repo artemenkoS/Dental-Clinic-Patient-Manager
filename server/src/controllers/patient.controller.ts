@@ -62,6 +62,7 @@ export const getPatients = async (req: Request, res: Response) => {
         currentPage: page,
         pageSize: pageSize,
         totalPages,
+        totalCount,
       },
     });
   } catch (error) {

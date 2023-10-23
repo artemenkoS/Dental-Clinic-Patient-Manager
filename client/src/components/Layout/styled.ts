@@ -9,6 +9,8 @@ export const ContentWrapper = styled.main`
   padding: ${theme.spacing(3)};
   max-width: 1200px;
   min-width: 800px;
+
+  gap: ${theme.spacing(2)};
 `;
 
 export const Header = styled.header`

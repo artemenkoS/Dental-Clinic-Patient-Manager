@@ -7,17 +7,17 @@ import { RootState } from '../store';
 interface ModalState {
   patientModal: { isOpen: boolean };
   deleteVisitModal: { isOpen: boolean; visitId: number | null };
-  editVisitModal: { isOpen: boolean; editableVisit: Visit | null };
+  editVisitModal: { isOpen: boolean; editableVisit: Visit | null; submitText: string };
 }
 
 const initialState: ModalState = {
   patientModal: { isOpen: false },
   deleteVisitModal: { isOpen: false, visitId: null },
-  editVisitModal: { isOpen: false, editableVisit: null },
+  editVisitModal: { isOpen: false, editableVisit: null, submitText: 'Создать запись' },
 };
 
-const modalSlice = createSlice({
-  name: 'modal',
+const modalsSlice = createSlice({
+  name: 'modals',
   initialState,
   reducers: {
     setPatientModalOpened(state, action: PayloadAction<boolean>) {
@@ -25,6 +25,9 @@ const modalSlice = createSlice({
     },
     setEditVisitModalOpened(state, action: PayloadAction<boolean>) {
       state.editVisitModal.isOpen = action.payload;
+    },
+    setEditVisitModalSubmitText(state, action: PayloadAction<string>) {
+      state.editVisitModal.submitText = action.payload;
     },
     setEditableVisit(state, action: PayloadAction<Visit | null>) {
       state.editVisitModal.editableVisit = action.payload;
@@ -44,9 +47,10 @@ export const {
   setDeleteVisitId,
   setEditVisitModalOpened,
   setEditableVisit,
-} = modalSlice.actions;
+  setEditVisitModalSubmitText,
+} = modalsSlice.actions;
 
-export const patientModalSelector = (state: RootState) => state.modalReducer.patientModal;
-export const editVisitModalSelector = (state: RootState) => state.modalReducer.editVisitModal;
-export const deleteVisitModalSelector = (state: RootState) => state.modalReducer.deleteVisitModal;
-export default modalSlice.reducer;
+export const patientModalSelector = (state: RootState) => state.modalsReducer.patientModal;
+export const editVisitModalSelector = (state: RootState) => state.modalsReducer.editVisitModal;
+export const deleteVisitModalSelector = (state: RootState) => state.modalsReducer.deleteVisitModal;
+export default modalsSlice.reducer;

@@ -12,4 +12,11 @@ export interface PatientDto {
   pagination: Pagination;
 }
 
+export interface PatientParams {
+  page?: number;
+  pageSize?: number;
+  name?: string;
+  surname?: string;
+}
+
 export type PatientPayload = Omit<Patient, 'id'>;

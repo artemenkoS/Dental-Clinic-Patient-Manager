@@ -5,7 +5,7 @@ import * as React from 'react';
 import { useGetFormatedPatientsQuery } from '../../api/patient/patientApi';
 import { theme } from '../../styles/theme';
 import { AutocompleteOption } from '../../types';
-import { OpenPatientButton } from '../NewPatientForm/OpenPatienButton';
+import { NewPatienButton } from '../NewPatientForm/NewPatienButton';
 
 export type RawOption = {
   id: number;
@@ -38,7 +38,7 @@ export const PatientAutocomplete: React.FC<Props> = (props) => {
             setInputValue('');
           }}
           options={!inputValue ? [] : patients ?? []}
-          noOptionsText={!inputValue ? 'Введите имя или фамилию пациента' : <OpenPatientButton />}
+          noOptionsText={!inputValue ? 'Введите имя или фамилию пациента' : <NewPatienButton />}
           renderInput={(params) => (
             <div>
               <TextField

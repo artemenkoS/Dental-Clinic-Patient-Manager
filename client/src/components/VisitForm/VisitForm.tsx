@@ -27,11 +27,12 @@ interface FormValues {
   doctorId: string;
   procedureId: string;
   authorId: string;
-  id?: number;
+  id?: number | undefined;
 }
 
 interface Props {
-  mutate: (data: { body: VisitMutationBody; id?: number }) => void;
+  mutate: (data: { body: VisitMutationBody; id: number }) => void;
+
   values?: FormValues;
 }
 
@@ -71,6 +72,7 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
 
   const { data: doctors, isLoading: isDoctorsloading } = useGetDoctorsQuery();
   const { data: procedures, isLoading: isProceduresLoading } = useGetProceduresQuery();
+  const submitText = useAppSelector(editVisitModalSelector).submitText;
 
   const formValues = watch();
 
@@ -160,7 +162,7 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
             <NewPatient />
             <Controller name="visitDate" control={control} render={({ field }) => <DatePicker {...field} />} />
             <Button type="submit" variant="outlined" fullWidth disabled={!isValid || !selectedTimeSlot}>
-              Создать запись
+              {submitText}
             </Button>
           </form>
         </Container>

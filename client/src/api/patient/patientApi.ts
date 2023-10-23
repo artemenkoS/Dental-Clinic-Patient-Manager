@@ -2,13 +2,14 @@ import toast from 'react-hot-toast';
 
 import { AutocompleteOption } from '../../types';
 import { apiSlice } from '../apiSlice';
-import { Patient, PatientDto, PatientPayload } from './types';
+import { Patient, PatientDto, PatientParams, PatientPayload } from './types';
 
 export const userApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getPatients: builder.query<PatientDto, void>({
-      query: () => ({
+    getPatients: builder.query<PatientDto, PatientParams>({
+      query: (params: PatientParams) => ({
         url: 'api/patient',
+        params,
       }),
       providesTags: ['Patient'],
     }),

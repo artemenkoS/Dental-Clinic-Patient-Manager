@@ -1,3 +1,6 @@
+// import { MutationTrigger } from '@reduxjs/toolkit/dist/query/react/buildHooks';
+// import { BaseQueryFn, FetchArgs, FetchBaseQueryError, MutationDefinition } from '@reduxjs/toolkit/query';
+
 import { Pagination } from '../../types';
 
 export interface Visit {
@@ -32,3 +35,28 @@ export interface VisitMutationBody {
   procedureId: number;
   authorId: number;
 }
+
+// export type CreateVisitQuery = MutationTrigger<
+//   MutationDefinition<
+//     {
+//       body: VisitMutationBody;
+//     },
+//     BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError>,
+//     'Visit' | 'Patient',
+//     VisitDto,
+//     'apiSlice'
+//   >
+// >;
+
+// export type EditVisitQuery = MutationTrigger<
+//   MutationDefinition<
+//     {
+//       body: VisitMutationBody;
+//       id: number;
+//     },
+//     BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError>,
+//     'Visit' | 'Patient',
+//     VisitDto,
+//     'apiSlice'
+//   >
+// >;
