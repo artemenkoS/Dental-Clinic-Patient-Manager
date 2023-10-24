@@ -3,17 +3,17 @@ import { Request, Response } from "express";
 import db from "../db";
 
 export const createLogRecord = async (req: Request, res: Response) => {
-  const { authorId, doctorId, changes, visitDate } = req.body;
+  const { authorId, doctorId, changes, visitDate, status } = req.body;
 
-  if (!authorId || !doctorId || !visitDate || !changes) {
+  if (!authorId || !doctorId || !visitDate || !status) {
     res.status(400).json("Не все обязательные поля заполнены");
     return;
   }
 
   try {
     const newLogRecord = await db.query(
-      `INSERT INTO history ("authorId", "doctorId", "visitDate", "changes") values ($1, $2, $3, $4) RETURNING *`,
-      [authorId, doctorId, visitDate, changes]
+      `INSERT INTO history ("authorId", "doctorId", "visitDate", "changes", "status") values ($1, $2, $3, $4, $5) RETURNING *`,
+      [authorId, doctorId, visitDate, changes, status]
     );
 
     res.status(201).json({

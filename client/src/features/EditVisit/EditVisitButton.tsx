@@ -3,7 +3,12 @@ import { IconButton } from '@mui/material';
 
 import { Visit } from '../../api/visit/types';
 import { useAppDispatch } from '../../store/hooks';
-import { setEditableVisit, setEditVisitModalOpened, setEditVisitModalSubmitText } from '../../store/slices/modalsSlice';
+import {
+  setEditableVisit,
+  setEditLogStatus,
+  setEditVisitModalOpened,
+  setEditVisitModalSubmitText,
+} from '../../store/slices/modalsSlice';
 
 interface Props {
   visit: Visit;
@@ -15,6 +20,7 @@ export const EditVisitButton: React.FC<Props> = ({ visit }) => {
     dispatch(setEditableVisit(visit));
     dispatch(setEditVisitModalOpened(true));
     dispatch(setEditVisitModalSubmitText('Изменить запись'));
+    dispatch(setEditLogStatus('edit'));
   };
   return (
     <IconButton onClick={onClick}>

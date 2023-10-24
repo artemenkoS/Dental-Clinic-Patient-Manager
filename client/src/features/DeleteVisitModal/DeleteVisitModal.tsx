@@ -1,16 +1,20 @@
 import * as React from 'react';
 
+import { useCreateLogRecordMutation } from '../../api/history/historyApi';
+import { useGetUserQuery } from '../../api/user/userApi';
 import { useDeleteVisitMutation } from '../../api/visit/visitApi';
 import { AlertDialog } from '../../components/AlertDialog/AlertDialogt';
 import { useAppDispatch } from '../../store/hooks';
 import { useAppSelector } from '../../store/hooks';
-import { deleteVisitModalSelector } from '../../store/slices/modalsSlice';
+import { deleteVisitModalSelector, logStatusSelector } from '../../store/slices/modalsSlice';
 import { setDeleteVisitId, setDeleteVisitModalOpened } from '../../store/slices/modalsSlice';
 
 export const DeleteVisitModal: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  const modalState = useAppSelector(deleteVisitModalSelector);
+  const { data: user } = useGetUserQuery();
+  const { visit } = useAppSelector(deleteVisitModalSelector);
+  const logStatus = useAppSelector(logStatusSelector);
 
   const handleClose = () => {
     dispatch(setDeleteVisitModalOpened(false));
@@ -18,10 +22,20 @@ export const DeleteVisitModal: React.FC = () => {
   };
 
   const handleDeleteVisit = () => {
-    if (modalState.visitId) mutate(modalState.visitId);
+    if (visit && user) {
+      mutate(visit.id);
+      createLogRecordMutate({
+        authorId: user.user.id,
+        doctorId: visit.doctorId,
+        visitDate: visit.visitDate,
+        changes: null,
+        status: logStatus,
+      });
+    }
   };
 
   const [mutate, { isSuccess: deleteVisitSuccess, reset }] = useDeleteVisitMutation();
+  const [createLogRecordMutate] = useCreateLogRecordMutation();
 
   React.useEffect(() => {
     if (deleteVisitSuccess) {

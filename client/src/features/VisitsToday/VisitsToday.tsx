@@ -56,7 +56,7 @@ export const VisitsToday = () => {
               <Typography>
                 {formattedDate} Доктор {doctor?.surname}
               </Typography>
-              <DeleteVisitButton id={visit.id} />
+              <DeleteVisitButton visit={visit} />
               <EditVisitButton visit={visit} />
             </Slot>
           );

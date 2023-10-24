@@ -16,7 +16,12 @@ import { FormSelect } from '../../components/FormSelect/FormSelect';
 import { NewPatient } from '../../components/NewPatientForm/NewPatientForm';
 import { PatientAutocomplete } from '../../components/PatientAutocomplete/PatientAutocomplete';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { editVisitModalSelector, setEditableVisit, setEditVisitModalOpened } from '../../store/slices/modalsSlice';
+import {
+  editVisitModalSelector,
+  logStatusSelector,
+  setEditableVisit,
+  setEditVisitModalOpened,
+} from '../../store/slices/modalsSlice';
 import { selectedSlotSelector, setSelectedSlot } from '../../store/slices/visitSlice';
 import { setBusySlots } from '../../store/slices/visitSlice';
 import { AutocompleteOption } from '../../types';
@@ -73,7 +78,8 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
 
   const { data: doctors, isLoading: isDoctorsloading } = useGetDoctorsQuery();
   const { data: procedures, isLoading: isProceduresLoading } = useGetProceduresQuery();
-  const submitText = useAppSelector(editVisitModalSelector).submitText;
+  const { submitText } = useAppSelector(editVisitModalSelector);
+  const logStatus = useAppSelector(logStatusSelector);
 
   const [createLogRecordMutate] = useCreateLogRecordMutation();
 
@@ -117,6 +123,7 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
           patientId: +data.patient.id,
           procedureId: +data.procedureId,
         },
+        status: logStatus,
       });
       resetForm(defaulFormValues);
       handleClose();

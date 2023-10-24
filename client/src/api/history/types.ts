@@ -1,8 +1,10 @@
+import { LogStatus } from '../../types';
 import { Visit } from '../visit/types';
 
 export interface LogRecord {
   authorId: number;
   doctorId: number;
   visitDate: string;
-  changes: Partial<Visit>;
+  changes: Partial<Visit> | null;
+  status: LogStatus;
 }

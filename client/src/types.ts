@@ -8,3 +8,5 @@ export interface AutocompleteOption {
   id: number;
   label: string;
 }
+
+export type LogStatus = 'create' | 'edit' | 'delete';

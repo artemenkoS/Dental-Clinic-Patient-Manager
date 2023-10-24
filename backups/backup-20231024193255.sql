@@ -28,8 +28,9 @@ CREATE TABLE public.history (
     id integer NOT NULL,
     "authorId" integer,
     "doctorId" integer,
-    "visitDate" character varying(255),
-    changes json
+    changes json,
+    status character varying(255),
+    "visitDate" timestamp without time zone
 );
 
 
@@ -283,9 +284,14 @@ ALTER TABLE ONLY public.visit ALTER COLUMN id SET DEFAULT nextval('public.visit_
 -- Data for Name: history; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.history (id, "authorId", "doctorId", "visitDate", changes) FROM stdin;
-1	7	4	2023-10-24 08:00	{"doctorId":4,"authorId":7,"visitDate":"2023-10-24 08:00","patientId":21,"procedureId":2}
-2	7	8	2023-10-24 12:00	{"doctorId":8,"authorId":7,"visitDate":"2023-10-24 12:00","patientId":9,"procedureId":2}
+COPY public.history (id, "authorId", "doctorId", changes, status, "visitDate") FROM stdin;
+14	7	10	{"doctorId":10,"authorId":7,"visitDate":"2023-10-24 04:30","patientId":29,"procedureId":2}	create	2023-10-24 04:30:00
+15	7	10	{"doctorId":10,"authorId":7,"visitDate":"2023-10-24 07:00","patientId":21,"procedureId":2}	edit	2023-10-24 07:00:00
+16	7	10	\N	delete	2023-10-24 07:00:00
+17	7	4	{"doctorId":4,"authorId":7,"visitDate":"2023-10-24 08:00","patientId":21,"procedureId":2}	edit	2023-10-24 08:00:00
+18	7	8	{"doctorId":8,"authorId":7,"visitDate":"2023-10-24 04:30","patientId":21,"procedureId":2}	edit	2023-10-24 04:30:00
+19	7	7	{"doctorId":7,"authorId":7,"visitDate":"2023-10-24 09:30","patientId":15,"procedureId":1}	create	2023-10-24 09:30:00
+20	7	7	\N	delete	2023-10-24 09:30:00
 \.
 
 
@@ -407,7 +413,7 @@ COPY public.visit (id, "visitDate", "doctorId", "patientId", "procedureId", "aut
 658	2023-10-23 09:30:00	7	8	1	7
 659	2023-10-23 09:30:00	8	26	1	7
 618	2023-10-24 08:00:00	4	21	2	7
-660	2023-10-24 12:00:00	8	9	2	7
+660	2023-10-24 04:30:00	8	21	2	7
 \.
 
 
@@ -415,7 +421,7 @@ COPY public.visit (id, "visitDate", "doctorId", "patientId", "procedureId", "aut
 -- Name: history_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.history_id_seq', 2, true);
+SELECT pg_catalog.setval('public.history_id_seq', 20, true);
 
 
 --
@@ -450,7 +456,7 @@ SELECT pg_catalog.setval('public.users_id_seq', 11, true);
 -- Name: visit_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.visit_id_seq', 660, true);
+SELECT pg_catalog.setval('public.visit_id_seq', 665, true);
 
 
 --
