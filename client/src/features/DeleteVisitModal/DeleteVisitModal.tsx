@@ -44,5 +44,11 @@ export const DeleteVisitModal: React.FC = () => {
     }
   }, [deleteVisitSuccess]);
 
-  return <AlertDialog dialogText="Вы точно хотите удалить данную запись?" onClick={handleDeleteVisit} />;
+  return (
+    <AlertDialog
+      dialogText="Вы точно хотите удалить данную запись?"
+      onClick={handleDeleteVisit}
+      handleClose={handleClose}
+    />
+  );
 };

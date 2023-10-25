@@ -1,7 +1,7 @@
 import toast from 'react-hot-toast';
 
 import { setEditableVisit } from '../../store/slices/modalsSlice';
-import { setBusySlots, setSelectedSlot } from '../../store/slices/visitSlice';
+import { resetSlots } from '../../store/slices/visitSlice';
 import { apiSlice } from '../apiSlice';
 import { VisitDto, VisitMutationBody, VisitParams } from './types';
 
@@ -26,8 +26,7 @@ export const visitApi = apiSlice.injectEndpoints({
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled;
-          dispatch(setBusySlots(null));
-          dispatch(setSelectedSlot(null));
+          dispatch(resetSlots());
           toast.success('Запись успешно создана.');
         } catch (error) {
           toast.error('Не удалось создать запись.');
@@ -44,8 +43,7 @@ export const visitApi = apiSlice.injectEndpoints({
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled;
-          dispatch(setBusySlots(null));
-          dispatch(setSelectedSlot(null));
+          dispatch(resetSlots());
           dispatch(setEditableVisit(null));
           toast.success('Запись успешно изменена.');
         } catch (error) {

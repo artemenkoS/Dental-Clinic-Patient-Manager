@@ -16,14 +16,8 @@ import { FormSelect } from '../../components/FormSelect/FormSelect';
 import { NewPatient } from '../../components/NewPatientForm/NewPatientForm';
 import { PatientAutocomplete } from '../../components/PatientAutocomplete/PatientAutocomplete';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import {
-  editVisitModalSelector,
-  logStatusSelector,
-  setEditableVisit,
-  setEditVisitModalOpened,
-} from '../../store/slices/modalsSlice';
-import { selectedSlotSelector, setSelectedSlot } from '../../store/slices/visitSlice';
-import { setBusySlots } from '../../store/slices/visitSlice';
+import { editVisitModalSelector, setEditableVisit, setEditVisitModalOpened } from '../../store/slices/modalsSlice';
+import { resetSlots, selectedSlotSelector } from '../../store/slices/visitSlice';
 import { AutocompleteOption } from '../../types';
 import { Container } from './styled';
 
@@ -37,8 +31,7 @@ interface FormValues {
 }
 
 interface Props {
-  mutate: (data: { body: VisitMutationBody; id: number }) => void;
-
+  mutate: (body: VisitMutationBody, id?: number) => void;
   values?: FormValues;
 }
 
@@ -48,9 +41,8 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
 
   const handleClose = () => {
     dispatch(setEditVisitModalOpened(false));
-    dispatch(setSelectedSlot(null));
-    dispatch(setBusySlots(null));
     dispatch(setEditableVisit(null));
+    dispatch(resetSlots());
 
     resetForm();
   };
@@ -79,7 +71,6 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
   const { data: doctors, isLoading: isDoctorsloading } = useGetDoctorsQuery();
   const { data: procedures, isLoading: isProceduresLoading } = useGetProceduresQuery();
   const { submitText } = useAppSelector(editVisitModalSelector);
-  const logStatus = useAppSelector(logStatusSelector);
 
   const [createLogRecordMutate] = useCreateLogRecordMutation();
 
@@ -102,16 +93,16 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
       console.log(time[0], time[1]);
       console.log(data.visitDate);
 
-      mutate({
-        body: {
+      mutate(
+        {
           doctorId: +data.doctorId,
           authorId: user.user.id,
           visitDate: `${dayjs(data.visitDate).utc().format('YYYY-MM-DD HH:mm')}`,
           patientId: +data.patient.id,
           procedureId: +data.procedureId,
         },
-        id: values?.id,
-      });
+        values?.id
+      );
       createLogRecordMutate({
         doctorId: +data.doctorId,
         authorId: user.user.id,
@@ -123,7 +114,7 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
           patientId: +data.patient.id,
           procedureId: +data.procedureId,
         },
-        status: logStatus,
+        status: data.procedureId ? 'edit' : 'create',
       });
       resetForm(defaulFormValues);
       handleClose();

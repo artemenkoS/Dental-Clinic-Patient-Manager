@@ -1,21 +1,20 @@
 import * as React from 'react';
 
 import { useGetFormatedPatientQuery } from '../../api/patient/patientApi';
+import { VisitMutationBody } from '../../api/visit/types';
 import { useUpdateVisitMutation } from '../../api/visit/visitApi';
 import { VisitForm } from '../../components/VisitForm/VisitForm';
 import { parseDate } from '../../helpers/parseDate';
 import { useAppDispatch } from '../../store/hooks';
 import { useAppSelector } from '../../store/hooks';
 import { editVisitModalSelector } from '../../store/slices/modalsSlice';
-import { setSelectedSlot } from '../../store/slices/visitSlice';
-import { setBusySlots } from '../../store/slices/visitSlice';
+import { resetSlots } from '../../store/slices/visitSlice';
 
 export const EditVisit = () => {
   const dispatch = useAppDispatch();
 
   const handleClose = () => {
-    dispatch(setSelectedSlot(null));
-    dispatch(setBusySlots(null));
+    dispatch(resetSlots());
   };
   const visit = useAppSelector(editVisitModalSelector).editableVisit;
   const { data: patient } = useGetFormatedPatientQuery(visit?.patientId?.toString() || '', {
@@ -25,7 +24,7 @@ export const EditVisit = () => {
 
   console.log(patient);
 
-  const [mutate, { isSuccess: createVisitSuccess, reset }] = useUpdateVisitMutation();
+  const [updateVisit, { isSuccess: createVisitSuccess, reset }] = useUpdateVisitMutation();
 
   React.useEffect(() => {
     if (createVisitSuccess) {
@@ -33,6 +32,10 @@ export const EditVisit = () => {
       handleClose();
     }
   }, [createVisitSuccess]);
+
+  const mutate = (body: VisitMutationBody, id?: number) => {
+    id && updateVisit({ body, id });
+  };
 
   return (
     visit &&

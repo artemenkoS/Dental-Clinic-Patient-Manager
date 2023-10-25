@@ -22,6 +22,10 @@ const visitSlice = createSlice({
     setSelectedSlot(state, action: PayloadAction<string | null>) {
       state.selectedSlot = action.payload;
     },
+    resetSlots(state) {
+      state.selectedSlot = null;
+      state.busySlots = null;
+    },
   },
   extraReducers: (builder) => {
     builder.addMatcher(visitApi.endpoints.getVisits.matchFulfilled, (state, { payload, meta }) => {
@@ -39,7 +43,7 @@ const visitSlice = createSlice({
   },
 });
 
-export const { setBusySlots, setSelectedSlot } = visitSlice.actions;
+export const { setBusySlots, setSelectedSlot, resetSlots } = visitSlice.actions;
 
 export const busySlotsSelector = (state: RootState) => state.visitReducer.busySlots;
 export const selectedSlotSelector = (state: RootState) => state.visitReducer.selectedSlot;
