@@ -9,6 +9,7 @@ import doctorRoutes from "./routes/doctor.route";
 import userRoutes from "./routes/user.route";
 import procedureRoutes from "./routes/procedure.route";
 import historyRoute from "./routes/history.route";
+import roleRouter from "./routes/role.router";
 
 const PORT = process.env.PORT || 8080;
 
@@ -24,5 +25,6 @@ server.use("/api", doctorRoutes);
 server.use("/api", userRoutes);
 server.use("/api", authRoutes);
 server.use("/api", historyRoute);
+server.use("/api", roleRouter);
 
 server.listen(PORT, () => console.log(`server started on port ${PORT}`));

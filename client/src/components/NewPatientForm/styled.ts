@@ -12,7 +12,3 @@ export const StyledBox = styled(Box)`
   background-color: ${theme.palette.background.paper};
   padding: ${theme.spacing(3)};
 `;
-
-export const StyledTextField = styled(TextField)`
-  margin-bottom: ${theme.spacing(2)};
-`;
