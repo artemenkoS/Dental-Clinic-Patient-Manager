@@ -6,7 +6,7 @@ import { useDeleteVisitMutation } from '../../api/visit/visitApi';
 import { AlertDialog } from '../../components/AlertDialog/AlertDialogt';
 import { useAppDispatch } from '../../store/hooks';
 import { useAppSelector } from '../../store/hooks';
-import { deleteVisitModalSelector, logStatusSelector } from '../../store/slices/modalsSlice';
+import { deleteVisitModalSelector } from '../../store/slices/modalsSlice';
 import { setDeleteVisitId, setDeleteVisitModalOpened } from '../../store/slices/modalsSlice';
 
 export const DeleteVisitModal: React.FC = () => {
@@ -14,7 +14,6 @@ export const DeleteVisitModal: React.FC = () => {
 
   const { data: user } = useGetUserQuery();
   const { visit } = useAppSelector(deleteVisitModalSelector);
-  const logStatus = useAppSelector(logStatusSelector);
 
   const handleClose = () => {
     dispatch(setDeleteVisitModalOpened(false));
@@ -29,7 +28,7 @@ export const DeleteVisitModal: React.FC = () => {
         doctorId: visit.doctorId,
         visitDate: visit.visitDate,
         changes: null,
-        status: logStatus,
+        status: 'delete',
       });
     }
   };

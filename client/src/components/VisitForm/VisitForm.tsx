@@ -114,7 +114,7 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
           patientId: +data.patient.id,
           procedureId: +data.procedureId,
         },
-        status: data.procedureId ? 'edit' : 'create',
+        status: values?.id ? 'edit' : 'create',
       });
       resetForm(defaulFormValues);
       handleClose();
