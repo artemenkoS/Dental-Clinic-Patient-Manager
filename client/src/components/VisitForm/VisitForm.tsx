@@ -97,7 +97,7 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
         {
           doctorId: +data.doctorId,
           authorId: user.user.id,
-          visitDate: `${dayjs(data.visitDate).utc().format('YYYY-MM-DD HH:mm')}`,
+          visitDate: `${data.visitDate.toISOString()}`,
           patientId: +data.patient.id,
           procedureId: +data.procedureId,
         },
@@ -106,11 +106,11 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
       createLogRecordMutate({
         doctorId: +data.doctorId,
         authorId: user.user.id,
-        visitDate: `${dayjs(data.visitDate).utc().format('YYYY-MM-DD HH:mm')}`,
+        visitDate: `${data.visitDate.toISOString()}`,
         changes: {
           doctorId: +data.doctorId,
           authorId: user.user.id,
-          visitDate: `${dayjs(data.visitDate).utc().format('YYYY-MM-DD HH:mm')}`,
+          visitDate: `${data.visitDate.toISOString()}`,
           patientId: +data.patient.id,
           procedureId: +data.procedureId,
         },
