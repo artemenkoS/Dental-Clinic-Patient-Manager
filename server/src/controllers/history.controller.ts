@@ -3,7 +3,8 @@ import { Request, Response } from "express";
 import db from "../db";
 
 export const createLogRecord = async (req: Request, res: Response) => {
-  const { authorId, doctorId, changes, visitDate, status } = req.body;
+  const { authorId, doctorId, changes, visitDate, status, createdAt } =
+    req.body;
 
   if (!authorId || !doctorId || !visitDate || !status) {
     res.status(400).json("Не все обязательные поля заполнены");
@@ -12,8 +13,8 @@ export const createLogRecord = async (req: Request, res: Response) => {
 
   try {
     const newLogRecord = await db.query(
-      `INSERT INTO history ("authorId", "doctorId", "visitDate", "changes", "status") values ($1, $2, $3, $4, $5) RETURNING *`,
-      [authorId, doctorId, visitDate, changes, status]
+      `INSERT INTO history ("authorId", "doctorId", "visitDate", "changes", "status", "createdAt") values ($1, $2, $3, $4, $5, $6) RETURNING *`,
+      [authorId, doctorId, visitDate, changes, status, createdAt]
     );
 
     res.status(201).json({
@@ -31,7 +32,7 @@ export const getHistory = async (req: Request, res: Response) => {
     const pageSize = req.query.pageSize ? +req.query.pageSize : 10;
     const offset = (page - 1) * pageSize;
 
-    let query = `SELECT * FROM history`;
+    let query = `SELECT * FROM history  ORDER BY "createdAt" DESC LIMIT $1 OFFSET $2`;
 
     const result = await db.query(query, [pageSize, offset]);
 
@@ -45,6 +46,7 @@ export const getHistory = async (req: Request, res: Response) => {
         currentPage: page,
         pageSize: pageSize,
         totalPages,
+        totalCount,
       },
     });
   } catch (error) {

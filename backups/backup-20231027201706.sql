@@ -30,7 +30,8 @@ CREATE TABLE public.history (
     "doctorId" integer,
     changes json,
     status character varying(255),
-    "visitDate" timestamp without time zone
+    "visitDate" timestamp without time zone,
+    "createdAt" timestamp without time zone
 );
 
 
@@ -284,14 +285,23 @@ ALTER TABLE ONLY public.visit ALTER COLUMN id SET DEFAULT nextval('public.visit_
 -- Data for Name: history; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.history (id, "authorId", "doctorId", changes, status, "visitDate") FROM stdin;
-14	7	10	{"doctorId":10,"authorId":7,"visitDate":"2023-10-24 04:30","patientId":29,"procedureId":2}	create	2023-10-24 04:30:00
-15	7	10	{"doctorId":10,"authorId":7,"visitDate":"2023-10-24 07:00","patientId":21,"procedureId":2}	edit	2023-10-24 07:00:00
-16	7	10	\N	delete	2023-10-24 07:00:00
-17	7	4	{"doctorId":4,"authorId":7,"visitDate":"2023-10-24 08:00","patientId":21,"procedureId":2}	edit	2023-10-24 08:00:00
-18	7	8	{"doctorId":8,"authorId":7,"visitDate":"2023-10-24 04:30","patientId":21,"procedureId":2}	edit	2023-10-24 04:30:00
-19	7	7	{"doctorId":7,"authorId":7,"visitDate":"2023-10-24 09:30","patientId":15,"procedureId":1}	create	2023-10-24 09:30:00
-20	7	7	\N	delete	2023-10-24 09:30:00
+COPY public.history (id, "authorId", "doctorId", changes, status, "visitDate", "createdAt") FROM stdin;
+96	3	10	\N	delete	2023-10-27 10:30:46.519	2023-10-27 15:11:14.319
+97	3	8	{"doctorId":8,"authorId":3,"visitDate":"2023-10-27T07:00:00.000Z","patientId":8,"procedureId":1}	edit	2023-10-27 07:00:00	2023-10-27 15:11:46.583
+98	3	7	{"doctorId":7,"authorId":3,"visitDate":"2023-10-27T08:00:00.000Z","patientId":8,"procedureId":1}	edit	2023-10-27 08:00:00	2023-10-27 15:11:49.293
+99	3	7	{"doctorId":7,"authorId":3,"visitDate":"2023-10-27T12:00:00.000Z","patientId":29,"procedureId":1}	edit	2023-10-27 12:00:00	2023-10-27 15:11:51.834
+100	3	7	{"doctorId":7,"authorId":3,"visitDate":"2023-10-27T13:00:00.000Z","patientId":8,"procedureId":1}	edit	2023-10-27 13:00:00	2023-10-27 15:11:54.416
+101	3	7	{"doctorId":7,"authorId":3,"visitDate":"2023-10-27T13:30:00.000Z","patientId":29,"procedureId":1}	edit	2023-10-27 13:30:00	2023-10-27 15:11:56.73
+102	3	7	\N	delete	2023-10-27 13:30:00	2023-10-27 15:11:58.389
+103	3	10	{"doctorId":10,"authorId":3,"visitDate":"2023-10-27T09:30:43.321Z","patientId":29,"procedureId":1}	create	2023-10-27 09:30:43.321	2023-10-27 15:12:06.562
+104	3	10	{"doctorId":10,"authorId":3,"visitDate":"2023-10-27T07:00:00.000Z","patientId":29,"procedureId":1}	edit	2023-10-27 07:00:00	2023-10-27 15:13:04.453
+105	3	7	\N	delete	2023-10-27 10:30:15.395	2023-10-27 15:13:05.815
+106	3	10	\N	delete	2023-10-27 07:00:00	2023-10-27 15:13:07.152
+107	3	8	{"doctorId":8,"authorId":3,"visitDate":"2023-10-27T13:30:01.106Z","patientId":29,"procedureId":1}	create	2023-10-27 13:30:01.106	2023-10-27 15:13:13.734
+108	3	4	{"doctorId":4,"authorId":3,"visitDate":"2023-10-27T07:00:12.999Z","patientId":12,"procedureId":2}	create	2023-10-27 07:00:12.999	2023-10-27 15:13:21.754
+109	3	7	{"doctorId":7,"authorId":3,"visitDate":"2023-10-27T12:00:20.944Z","patientId":26,"procedureId":3}	create	2023-10-27 12:00:20.944	2023-10-27 15:13:39.99
+110	3	8	{"doctorId":8,"authorId":3,"visitDate":"2023-10-27T10:30:39.327Z","patientId":10,"procedureId":2}	create	2023-10-27 10:30:39.327	2023-10-27 15:13:51.769
+111	3	7	{"doctorId":7,"authorId":3,"visitDate":"2023-10-27T10:00:00.000Z","patientId":29,"procedureId":3}	edit	2023-10-27 10:00:00	2023-10-27 15:13:55.632
 \.
 
 
@@ -338,6 +348,12 @@ COPY public.patient (id, name, surname, phone) FROM stdin;
 36	Антон	Еее	1222
 37	Сергей	Нуртас	23331223
 38	Testest	test	+7701117021
+39	test	test	+77055491890
+40	Сергей	Нуртас	+77055493454
+41	yyyy	yyyy	yyyy
+42	ааа	ааа	ааа
+43	Сергей	Алибеков	1222
+44	Сергей	Касымов	2333
 \.
 
 
@@ -385,6 +401,7 @@ COPY public.users (id, name, surname, login, password, role) FROM stdin;
 --
 
 COPY public.visit (id, "visitDate", "doctorId", "patientId", "procedureId", "authorId") FROM stdin;
+677	2023-10-27 07:00:00	8	8	1	3
 624	2023-10-22 07:00:00	8	29	2	5
 634	2023-10-22 08:30:00	7	29	2	7
 635	2023-10-22 12:00:00	8	29	2	7
@@ -409,11 +426,19 @@ COPY public.visit (id, "visitDate", "doctorId", "patientId", "procedureId", "aut
 628	2023-10-22 10:30:00	7	29	1	7
 641	2023-10-22 13:30:00	8	29	2	7
 656	2023-10-23 10:00:00	10	29	1	7
+680	2023-10-27 13:30:01.106	8	29	1	3
 655	2023-10-23 08:00:00	7	29	2	7
 658	2023-10-23 09:30:00	7	8	1	7
 659	2023-10-23 09:30:00	8	26	1	7
-618	2023-10-24 08:00:00	4	21	2	7
+681	2023-10-27 07:00:12.999	4	12	2	3
+683	2023-10-27 10:30:39.327	8	10	2	3
+682	2023-10-27 10:00:00	7	29	3	3
 660	2023-10-24 04:30:00	8	21	2	7
+618	2023-10-24 08:30:00	4	21	2	7
+667	2023-10-25 12:00:00	7	29	1	7
+670	2023-10-25 10:30:00	7	29	2	7
+671	2023-10-25 07:30:29.474	7	41	2	7
+672	2023-10-26 09:30:00	7	42	1	3
 \.
 
 
@@ -421,14 +446,14 @@ COPY public.visit (id, "visitDate", "doctorId", "patientId", "procedureId", "aut
 -- Name: history_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.history_id_seq', 20, true);
+SELECT pg_catalog.setval('public.history_id_seq', 111, true);
 
 
 --
 -- Name: patient_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.patient_id_seq', 38, true);
+SELECT pg_catalog.setval('public.patient_id_seq', 44, true);
 
 
 --
@@ -456,7 +481,7 @@ SELECT pg_catalog.setval('public.users_id_seq', 11, true);
 -- Name: visit_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.visit_id_seq', 665, true);
+SELECT pg_catalog.setval('public.visit_id_seq', 683, true);
 
 
 --

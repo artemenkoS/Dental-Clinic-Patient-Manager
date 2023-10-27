@@ -4,7 +4,7 @@ import db from "../db";
 
 export const getRoles = async (req: Request, res: Response) => {
   try {
-    const result = await db.query(`SELECT * FROM history`);
+    const result = await db.query(`SELECT * FROM role`);
 
     res.status(200).json({
       data: result.rows,

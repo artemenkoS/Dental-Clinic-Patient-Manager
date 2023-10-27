@@ -4,6 +4,10 @@ import { User } from './types';
 interface UserDto {
   user: User;
 }
+interface UsersDto {
+  data: User[];
+}
+
 export const userApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getUser: builder.query<UserDto, void>({
@@ -12,7 +16,13 @@ export const userApi = apiSlice.injectEndpoints({
       }),
       keepUnusedDataFor: 0,
     }),
+    getAllUsers: builder.query<UsersDto, void>({
+      query: () => ({
+        url: 'api/users',
+      }),
+      keepUnusedDataFor: 0,
+    }),
   }),
 });
 
-export const { useGetUserQuery } = userApi;
+export const { useGetUserQuery, useGetAllUsersQuery } = userApi;

@@ -8,6 +8,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useGetDoctorsQuery } from '../../api/doctor/doctorApi';
 import { useCreateLogRecordMutation } from '../../api/history/historyApi';
 import { useGetProceduresQuery } from '../../api/procedure/procedureApi';
+import { useGetRolesQuery } from '../../api/role/rolesApi';
 import { useGetUserQuery } from '../../api/user/userApi';
 import { VisitMutationBody } from '../../api/visit/types';
 import { useGetVisitsQuery } from '../../api/visit/visitApi';
@@ -36,6 +37,22 @@ interface Props {
 }
 
 export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
+  const { data: user, isLoading: isUserLoading } = useGetUserQuery();
+
+  const { data: doctors, isLoading: isDoctorsloading } = useGetDoctorsQuery();
+
+  const { data: roles } = useGetRolesQuery();
+
+  const doctorRole = React.useMemo(() => {
+    return roles?.data.filter((role) => role.role === 'doctor')[0];
+  }, [roles]);
+
+  const doctor = React.useMemo(() => {
+    if (doctorRole) {
+      return doctors?.data.filter((doctor) => doctor.id === user?.user.id)[0];
+    }
+  }, [doctors, user]);
+
   const isOpen = useAppSelector(editVisitModalSelector).isOpen;
   const dispatch = useAppDispatch();
 
@@ -51,7 +68,7 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
   const selectedTimeSlot = useAppSelector(selectedSlotSelector);
 
   const defaulFormValues: FormValues = {
-    doctorId: '',
+    doctorId: doctor ? doctor.id.toString() : '',
     patient: null,
     procedureId: '',
     visitDate: new Date(),
@@ -66,9 +83,12 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
     formState: { isValid },
   } = useForm<FormValues>({ defaultValues: values ?? defaulFormValues });
 
-  const { data: user, isLoading: isUserLoading } = useGetUserQuery();
+  React.useEffect(() => {
+    if (user?.user.role === doctorRole?.id) {
+      console.log(true);
+    }
+  }, [user, doctorRole]);
 
-  const { data: doctors, isLoading: isDoctorsloading } = useGetDoctorsQuery();
   const { data: procedures, isLoading: isProceduresLoading } = useGetProceduresQuery();
   const { submitText } = useAppSelector(editVisitModalSelector);
 
@@ -115,6 +135,7 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
           procedureId: +data.procedureId,
         },
         status: values?.id ? 'edit' : 'create',
+        createdAt: new Date().toISOString(),
       });
       resetForm(defaulFormValues);
       handleClose();
@@ -138,11 +159,17 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
                   control={control}
                   render={({ field }) => (
                     <FormSelect label="Выберите доктора" {...field}>
-                      {doctors?.data.map((doctor) => (
+                      {doctor ? (
                         <MenuItem value={doctor.id.toString()}>
                           {doctor.name} {doctor.surname}
                         </MenuItem>
-                      ))}
+                      ) : (
+                        doctors?.data.map((doctor) => (
+                          <MenuItem value={doctor.id.toString()}>
+                            {doctor.name} {doctor.surname}
+                          </MenuItem>
+                        ))
+                      )}
                     </FormSelect>
                   )}
                 />

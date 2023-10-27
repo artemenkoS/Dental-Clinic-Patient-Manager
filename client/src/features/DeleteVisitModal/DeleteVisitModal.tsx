@@ -29,6 +29,7 @@ export const DeleteVisitModal: React.FC = () => {
         visitDate: visit.visitDate,
         changes: null,
         status: 'delete',
+        createdAt: new Date().toISOString(),
       });
     }
   };

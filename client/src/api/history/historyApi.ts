@@ -1,21 +1,22 @@
 import { Pagination } from '../../types';
 import { apiSlice } from '../apiSlice';
-import { LogRecord } from './types';
+import { HistoryParams, LogRecord } from './types';
 
-interface VisitDto {
-  user: LogRecord[];
+interface HistoryDto {
+  data: LogRecord[];
   pagination: Pagination;
 }
 
 export const userApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getHistory: builder.query<VisitDto, void>({
-      query: () => ({
+    getHistory: builder.query<HistoryDto, HistoryParams>({
+      query: (params: HistoryParams) => ({
         url: 'api/history',
+        params,
       }),
       keepUnusedDataFor: 0,
     }),
-    createLogRecord: builder.mutation<VisitDto, LogRecord>({
+    createLogRecord: builder.mutation<HistoryDto, Omit<LogRecord, 'id'>>({
       query: (body: LogRecord) => ({
         url: 'api/history',
         body,

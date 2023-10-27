@@ -20,9 +20,9 @@ export const PaginatedTable: React.FC<Props> = ({ columns, rows, paginationModel
       }}
       rowCount={rowCount}
       paginationMode="server"
-      pageSizeOptions={[5]}
       disableRowSelectionOnClick
       onPaginationModelChange={onPaginationChange}
+      autoHeight
     />
   );
 };
