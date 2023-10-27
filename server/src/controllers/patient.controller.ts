@@ -42,7 +42,7 @@ export const getPatients = async (req: Request, res: Response) => {
 
     const queryParams = [];
 
-    if (sort.length) {
+    if (sort?.length) {
       JSON.parse(sort).forEach((item: { field: string; sort: string }) => {
         query += ` ORDER by ${item.field} ${item.sort}`;
       });
