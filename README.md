@@ -1,5 +1,5 @@
 Для запуска в режиме разработки:
-docker-compose -f docker-compose.dev.yml up --build --no-cache
+docker-compose -f docker-compose.dev.yml up --build
 
 Для бекапа БД:
 docker exec -it containerID bash
