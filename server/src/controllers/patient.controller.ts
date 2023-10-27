@@ -31,10 +31,23 @@ export const getPatients = async (req: Request, res: Response) => {
     const page = req.query.page ? +req.query.page : 1;
     const pageSize = req.query.pageSize ? +req.query.pageSize : 10;
     const offset = (page - 1) * pageSize;
+    const sort = req.query.sort as string;
+    console.log(sort, "SORT", typeof sort);
+
+    if (sort) {
+      console.log(JSON.parse(sort), typeof JSON.parse(sort));
+    }
 
     let query = `SELECT * FROM patient`;
 
     const queryParams = [];
+
+    if (sort.length) {
+      JSON.parse(sort).forEach((item: { field: string; sort: string }) => {
+        query += ` ORDER by ${item.field} ${item.sort}`;
+      });
+      console.log(query);
+    }
 
     if (req.query.search) {
       query += ` WHERE (REPLACE(name, ' ', '') || REPLACE(surname, ' ', '')) ILIKE $1`;

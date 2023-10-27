@@ -1,5 +1,5 @@
 import { CircularProgress } from '@mui/material';
-import { GridColDef, GridPaginationModel } from '@mui/x-data-grid';
+import { GridColDef, GridPaginationModel, GridSortModel } from '@mui/x-data-grid';
 import dayjs from 'dayjs';
 import ru from 'dayjs/locale/ru';
 import React from 'react';
@@ -8,16 +8,27 @@ import { useGetHistoryQuery } from '../../api/history/historyApi';
 import { useGetAllUsersQuery } from '../../api/user/userApi';
 import { PaginatedTable } from '../../components/PaginatedTable/PaginatedTable';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { patientsTableCurrentPageSelector, setPatientsTableCurrentPage } from '../../store/slices/tablesSlice';
+import {
+  historyTableCurrentPageSelector,
+  historyTableCurrentSortModelSelector,
+  setHistoryTableCurrentPage,
+  setHistoryTableSortModel,
+} from '../../store/slices/tablesSlice';
 import { formatHistoryData } from './helpers';
 
 dayjs.locale(ru);
 
 export const HistoryTable = () => {
-  const currentPage = useAppSelector(patientsTableCurrentPageSelector);
+  const currentPage = useAppSelector(historyTableCurrentPageSelector);
   const dispatch = useAppDispatch();
 
-  const { data: history, isLoading } = useGetHistoryQuery({ page: currentPage + 1 ?? 1 });
+  const sort = useAppSelector(historyTableCurrentSortModelSelector);
+
+  const { data: history, isLoading } = useGetHistoryQuery({
+    page: currentPage + 1 ?? 1,
+    pageSize: 20,
+    sort: JSON.stringify(sort),
+  });
 
   const { data: users } = useGetAllUsersQuery();
 
@@ -34,10 +45,14 @@ export const HistoryTable = () => {
     pageSize: pagination?.pageSize,
   };
 
+  const onSortModelChange = (e: GridSortModel) => {
+    dispatch(setHistoryTableSortModel(e));
+  };
+
   const rowCount = pagination?.totalCount ?? 10;
 
   const onPaginationModelChange = (e: GridPaginationModel) => {
-    dispatch(setPatientsTableCurrentPage(e.page));
+    dispatch(setHistoryTableCurrentPage(e.page));
   };
 
   const columns: GridColDef[] = [
@@ -61,7 +76,8 @@ export const HistoryTable = () => {
         rowCount={rowCount}
         rows={rows}
         onPaginationChange={onPaginationModelChange}
-      ></PaginatedTable>
+        onSortModelChange={onSortModelChange}
+      />
     )
   );
 };

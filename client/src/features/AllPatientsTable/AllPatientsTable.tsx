@@ -1,16 +1,28 @@
 import { CircularProgress } from '@mui/material';
-import { GridColDef, GridPaginationModel } from '@mui/x-data-grid';
+import { GridColDef, GridPaginationModel, GridSortModel } from '@mui/x-data-grid';
 
 import { useGetPatientsQuery } from '../../api/patient/patientApi';
 import { PaginatedTable } from '../../components/PaginatedTable/PaginatedTable';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { patientsTableCurrentPageSelector, setPatientsTableCurrentPage } from '../../store/slices/tablesSlice';
+import {
+  patientsTableCurrentPageSelector,
+  patientsTableCurrentSortModelSelector,
+  setPatientsTableCurrentPage,
+  setPatientsTableSortModel,
+} from '../../store/slices/tablesSlice';
 
 export const AllPatientsTable = () => {
   const currentPage = useAppSelector(patientsTableCurrentPageSelector);
   const dispatch = useAppDispatch();
 
-  const { data: patients, isLoading } = useGetPatientsQuery({ page: currentPage + 1 ?? 1 });
+  const sort = useAppSelector(patientsTableCurrentSortModelSelector);
+  console.log(sort);
+
+  const { data: patients, isLoading } = useGetPatientsQuery({
+    page: currentPage + 1 ?? 1,
+    pageSize: 25,
+    sort: JSON.stringify(sort),
+  });
 
   const rows = patients?.data;
   const pagination = patients?.pagination;
@@ -26,6 +38,10 @@ export const AllPatientsTable = () => {
 
   const onPaginationModelChange = (e: GridPaginationModel) => {
     dispatch(setPatientsTableCurrentPage(e.page));
+  };
+
+  const onSortModelChange = (e: GridSortModel) => {
+    dispatch(setPatientsTableSortModel(e));
   };
 
   const columns: GridColDef[] = [
@@ -47,7 +63,8 @@ export const AllPatientsTable = () => {
         rowCount={rowCount}
         rows={rows}
         onPaginationChange={onPaginationModelChange}
-      ></PaginatedTable>
+        onSortModelChange={onSortModelChange}
+      />
     )
   );
 };

@@ -1,3 +1,5 @@
+import { GridSortModel } from '@mui/x-data-grid';
+
 import { Pagination } from '../../types';
 
 export interface Patient {
@@ -17,6 +19,7 @@ export interface PatientParams {
   pageSize?: number;
   name?: string;
   surname?: string;
+  sort?: string;
 }
 
 export type PatientPayload = Omit<Patient, 'id'>;

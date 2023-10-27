@@ -1,4 +1,6 @@
-import { DataGrid, GridColDef, GridPaginationModel, GridValidRowModel } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridPaginationModel, GridSortModel, GridValidRowModel } from '@mui/x-data-grid';
+
+import { Wrapper } from './styled';
 
 interface Props {
   columns: GridColDef[];
@@ -6,23 +8,34 @@ interface Props {
   paginationModel: Partial<GridPaginationModel>;
   rowCount: number;
   onPaginationChange: (e: GridPaginationModel) => void;
+  onSortModelChange?: (e: GridSortModel) => void;
 }
 
-export const PaginatedTable: React.FC<Props> = ({ columns, rows, paginationModel, rowCount, onPaginationChange }) => {
+export const PaginatedTable: React.FC<Props> = ({
+  columns,
+  rows,
+  paginationModel,
+  rowCount,
+  onPaginationChange,
+  onSortModelChange,
+}) => {
   return (
-    <DataGrid
-      rows={rows}
-      columns={columns}
-      initialState={{
-        pagination: {
-          paginationModel,
-        },
-      }}
-      rowCount={rowCount}
-      paginationMode="server"
-      disableRowSelectionOnClick
-      onPaginationModelChange={onPaginationChange}
-      autoHeight
-    />
+    <Wrapper>
+      <DataGrid
+        rows={rows}
+        columns={columns}
+        initialState={{
+          pagination: {
+            paginationModel,
+          },
+        }}
+        rowCount={rowCount}
+        paginationMode="server"
+        sortingMode="server"
+        disableRowSelectionOnClick
+        onPaginationModelChange={onPaginationChange}
+        onSortModelChange={onSortModelChange}
+      />
+    </Wrapper>
   );
 };

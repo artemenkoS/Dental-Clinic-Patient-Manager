@@ -14,4 +14,5 @@ export interface LogRecord {
 export interface HistoryParams {
   page?: number;
   pageSize?: number;
+  sort?: string;
 }

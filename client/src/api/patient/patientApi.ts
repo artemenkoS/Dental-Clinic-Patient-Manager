@@ -11,6 +11,7 @@ export const userApi = apiSlice.injectEndpoints({
         url: 'api/patient',
         params,
       }),
+      keepUnusedDataFor: 0,
       providesTags: ['Patient'],
     }),
     getFormatedPatients: builder.query<AutocompleteOption[], { search: string }>({
