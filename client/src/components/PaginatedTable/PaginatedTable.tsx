@@ -35,6 +35,7 @@ export const PaginatedTable: React.FC<Props> = ({
         disableRowSelectionOnClick
         onPaginationModelChange={onPaginationChange}
         onSortModelChange={onSortModelChange}
+        pageSizeOptions={[5, 10, 25]}
       />
     </Wrapper>
   );

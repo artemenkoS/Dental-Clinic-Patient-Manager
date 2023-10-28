@@ -9,9 +9,9 @@ import { useGetAllUsersQuery } from '../../api/user/userApi';
 import { PaginatedTable } from '../../components/PaginatedTable/PaginatedTable';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
-  historyTableCurrentPageSelector,
   historyTableCurrentSortModelSelector,
-  setHistoryTableCurrentPage,
+  historyTablePaginationSelector,
+  setHistoryTablePagination,
   setHistoryTableSortModel,
 } from '../../store/slices/tablesSlice';
 import { formatHistoryData } from './helpers';
@@ -19,14 +19,14 @@ import { formatHistoryData } from './helpers';
 dayjs.locale(ru);
 
 export const HistoryTable = () => {
-  const currentPage = useAppSelector(historyTableCurrentPageSelector);
+  const pagination = useAppSelector(historyTablePaginationSelector);
   const dispatch = useAppDispatch();
 
   const sort = useAppSelector(historyTableCurrentSortModelSelector);
 
   const { data: history, isLoading } = useGetHistoryQuery({
-    page: currentPage + 1 ?? 1,
-    pageSize: 20,
+    page: pagination.page + 1 ?? 1,
+    pageSize: pagination.pageSize,
     sort: JSON.stringify(sort),
   });
 
@@ -38,10 +38,8 @@ export const HistoryTable = () => {
     }
   }, [history, users]);
 
-  const pagination = history?.pagination;
-
   const paginationModel = {
-    page: pagination && pagination.currentPage - 1,
+    page: pagination.page - 1,
     pageSize: pagination?.pageSize,
   };
 
@@ -49,10 +47,10 @@ export const HistoryTable = () => {
     dispatch(setHistoryTableSortModel(e));
   };
 
-  const rowCount = pagination?.totalCount ?? 10;
+  const rowCount = history?.pagination.totalCount;
 
   const onPaginationModelChange = (e: GridPaginationModel) => {
-    dispatch(setHistoryTableCurrentPage(e.page));
+    dispatch(setHistoryTablePagination(e));
   };
 
   const columns: GridColDef[] = [
@@ -73,7 +71,7 @@ export const HistoryTable = () => {
       <PaginatedTable
         columns={columns}
         paginationModel={paginationModel}
-        rowCount={rowCount}
+        rowCount={rowCount ?? 10}
         rows={rows}
         onPaginationChange={onPaginationModelChange}
         onSortModelChange={onSortModelChange}

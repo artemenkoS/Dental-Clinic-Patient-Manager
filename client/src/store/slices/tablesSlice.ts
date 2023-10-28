@@ -1,31 +1,31 @@
-import { GridSortModel } from '@mui/x-data-grid';
+import { GridPaginationModel, GridSortModel } from '@mui/x-data-grid';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
 import { RootState } from '../store';
 
 interface TablesState {
-  patientsTable: { currentPage: number; sortModel: GridSortModel };
-  historyTable: { currentPage: number; sortModel: GridSortModel };
+  patientsTable: { pagination: GridPaginationModel; sortModel: GridSortModel };
+  historyTable: { pagination: GridPaginationModel; sortModel: GridSortModel };
 }
 
 const initialState: TablesState = {
-  patientsTable: { currentPage: 0, sortModel: [] },
-  historyTable: { currentPage: 0, sortModel: [] },
+  patientsTable: { pagination: { page: 0, pageSize: 10 }, sortModel: [] },
+  historyTable: { pagination: { page: 0, pageSize: 10 }, sortModel: [] },
 };
 
 const tablesSlice = createSlice({
   name: 'tables',
   initialState,
   reducers: {
-    setPatientsTableCurrentPage(state, action: PayloadAction<number>) {
-      state.patientsTable.currentPage = action.payload;
+    setPatientsTablePagination(state, action: PayloadAction<GridPaginationModel>) {
+      state.patientsTable.pagination = action.payload;
     },
     setPatientsTableSortModel(state, action: PayloadAction<GridSortModel>) {
       state.patientsTable.sortModel = action.payload;
     },
-    setHistoryTableCurrentPage(state, action: PayloadAction<number>) {
-      state.historyTable.currentPage = action.payload;
+    setHistoryTablePagination(state, action: PayloadAction<GridPaginationModel>) {
+      state.historyTable.pagination = action.payload;
     },
     setHistoryTableSortModel(state, action: PayloadAction<GridSortModel>) {
       state.historyTable.sortModel = action.payload;
@@ -34,15 +34,15 @@ const tablesSlice = createSlice({
 });
 
 export const {
-  setPatientsTableCurrentPage,
+  setPatientsTablePagination,
   setPatientsTableSortModel,
-  setHistoryTableCurrentPage,
+  setHistoryTablePagination,
   setHistoryTableSortModel,
 } = tablesSlice.actions;
 
-export const patientsTableCurrentPageSelector = (state: RootState) => state.tablesReducer.patientsTable.currentPage;
+export const patientsTablePaginationSelector = (state: RootState) => state.tablesReducer.patientsTable.pagination;
 export const patientsTableCurrentSortModelSelector = (state: RootState) => state.tablesReducer.patientsTable.sortModel;
-export const historyTableCurrentPageSelector = (state: RootState) => state.tablesReducer.historyTable.currentPage;
+export const historyTablePaginationSelector = (state: RootState) => state.tablesReducer.historyTable.pagination;
 export const historyTableCurrentSortModelSelector = (state: RootState) => state.tablesReducer.historyTable.sortModel;
 
 export default tablesSlice.reducer;
