@@ -27,7 +27,7 @@ export const HistoryTable = () => {
   const { data: history, isLoading } = useGetHistoryQuery({
     page: pagination.page + 1 ?? 1,
     pageSize: pagination.pageSize,
-    sort: JSON.stringify(sort),
+    sort: JSON.stringify(sort, null, 4),
   });
 
   const { data: users } = useGetAllUsersQuery();

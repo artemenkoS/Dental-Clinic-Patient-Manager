@@ -15,6 +15,7 @@ export const userApi = apiSlice.injectEndpoints({
         params,
       }),
       keepUnusedDataFor: 0,
+      providesTags: ['History'],
     }),
     createLogRecord: builder.mutation<HistoryDto, Omit<LogRecord, 'id'>>({
       query: (body: LogRecord) => ({
@@ -22,6 +23,7 @@ export const userApi = apiSlice.injectEndpoints({
         body,
         method: 'POST',
       }),
+      invalidatesTags: ['History'],
     }),
   }),
 });

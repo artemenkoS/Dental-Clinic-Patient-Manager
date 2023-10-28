@@ -1,5 +1,3 @@
-import { GridSortModel } from '@mui/x-data-grid';
-
 import { Pagination } from '../../types';
 
 export interface Patient {
