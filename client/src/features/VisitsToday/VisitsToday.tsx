@@ -1,6 +1,5 @@
 import { CircularProgress, Pagination, Typography } from '@mui/material';
 import dayjs from 'dayjs';
-import ru from 'dayjs/locale/ru';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 
@@ -13,8 +12,6 @@ import { List, Slot, Wrapper } from './styled';
 
 export const VisitsToday = () => {
   const todayDate = getTodayDate();
-
-  dayjs.locale(ru);
 
   const [page, setPage] = useState<number>(1);
 

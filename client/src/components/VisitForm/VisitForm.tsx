@@ -1,7 +1,6 @@
 import { DevTool } from '@hookform/devtools';
 import { Button, CircularProgress, Grid, MenuItem, Modal } from '@mui/material';
 import * as dayjs from 'dayjs';
-import * as utc from 'dayjs/plugin/utc';
 import * as React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
@@ -64,7 +63,6 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
     resetForm();
   };
 
-  dayjs.extend(utc);
   const selectedTimeSlot = useAppSelector(selectedSlotSelector);
 
   const defaulFormValues: FormValues = {

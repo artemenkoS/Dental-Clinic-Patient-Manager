@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 import { apiSlice } from '../api/apiSlice';
-import userReducer from '../api/auth/authSlice';
+import userReducer from './slices/authSlice';
 import modalsSlice from './slices/modalsSlice';
 import tablesReducer from './slices/tablesSlice';
 import visitReducer from './slices/visitSlice';

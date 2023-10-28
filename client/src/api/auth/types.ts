@@ -7,8 +7,7 @@ export interface AuthResponse {
   message: string;
   token: string;
   data: {
-    name: string;
-    surname: string;
+    id: number;
     role: number;
   };
 }

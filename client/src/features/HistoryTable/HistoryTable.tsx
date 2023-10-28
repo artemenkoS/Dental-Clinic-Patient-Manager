@@ -1,7 +1,5 @@
 import { CircularProgress } from '@mui/material';
 import { GridColDef, GridPaginationModel, GridSortModel } from '@mui/x-data-grid';
-import dayjs from 'dayjs';
-import ru from 'dayjs/locale/ru';
 import React from 'react';
 
 import { useGetHistoryQuery } from '../../api/history/historyApi';
@@ -15,8 +13,6 @@ import {
   setHistoryTableSortModel,
 } from '../../store/slices/tablesSlice';
 import { formatHistoryData } from './helpers';
-
-dayjs.locale(ru);
 
 export const HistoryTable = () => {
   const pagination = useAppSelector(historyTablePaginationSelector);

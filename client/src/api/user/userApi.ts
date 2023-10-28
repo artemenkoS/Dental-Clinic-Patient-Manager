@@ -1,7 +1,7 @@
 import { apiSlice } from '../apiSlice';
 import { User } from './types';
 
-interface UserDto {
+export interface UserDto {
   user: User;
 }
 interface UsersDto {

@@ -82,8 +82,7 @@ export const loginUser = async (
       message: "Успешная авторизация.",
       token: token,
       data: {
-        name: user.rows[0].name,
-        surname: user.rows[0].surname,
+        id: user.rows[0].id,
         role: user.rows[0].role,
       },
     });
