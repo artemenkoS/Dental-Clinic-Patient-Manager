@@ -1,9 +1,7 @@
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import { IconButton, Typography } from '@mui/material';
-import { ru } from 'date-fns/locale';
 import dayjs from 'dayjs';
-import { DayPicker } from 'react-day-picker';
 
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { visitDateSelector } from '../../store/slices/visitSlice';
