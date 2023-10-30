@@ -4,10 +4,10 @@ import { theme } from '../../styles/theme';
 
 export const ContentWrapper = styled.main`
   display: flex;
-  flex: 0 1 auto;
+  flex: 1 1 auto;
   width: 100%;
   padding: ${theme.spacing(3)};
-  max-width: 1200px;
+  max-width: 1500px;
   min-width: 800px;
 
   gap: ${theme.spacing(2)};
@@ -30,8 +30,8 @@ export const HeaderTitle = styled.h1`
 
 export const Sidebar = styled.div`
   height: 100%;
-  flex: 0 1 400px;
-  min-width: 250px;
+  flex: 0 1 200px;
+  min-width: 150px;
   background-color: ${theme.palette.primary.dark};
   padding: ${theme.spacing(2)};
   font-size: ${theme.spacing(3)};

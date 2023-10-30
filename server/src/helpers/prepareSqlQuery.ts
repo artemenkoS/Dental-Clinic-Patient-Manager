@@ -55,7 +55,7 @@ export const prepareSqlQuery = (reqQuery: ParsedQs) => {
 
   const offset = (+page - 1) * +pageSize;
 
-  let query = `SELECT * FROM visit`;
+  let query = `SELECT * FROM visit `;
   let totalCountQuery = `SELECT count(*) FROM visit`;
 
   if (whereClauses.length > 0) {
@@ -63,9 +63,13 @@ export const prepareSqlQuery = (reqQuery: ParsedQs) => {
     totalCountQuery += ` WHERE ${whereClauses.join(" AND ")}`;
   }
 
+  query += ` ORDER BY "visitDate" ASC`;
+
   query += ` LIMIT $${queryParams.length + 1} OFFSET $${
     queryParams.length + 2
   }`;
+
+  console.log(query);
   queryParams.push(pageSize, offset);
 
   return { query, queryParams, totalCountQuery, totalCountQueryParams };

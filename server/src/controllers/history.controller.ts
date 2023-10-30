@@ -29,12 +29,10 @@ export const createLogRecord = async (req: Request, res: Response) => {
 export const getHistory = async (req: Request, res: Response) => {
   try {
     const page = req.query.page ? +req.query.page : 1;
-    console.log(req.query);
     const pageSize = req.query.pageSize ? +req.query.pageSize : 10;
     const offset = (page - 1) * pageSize;
 
     const sort = req.query.sort as string;
-    console.log(sort, "SORT", typeof sort);
 
     let sortQuery = ` ORDER BY "createdAt" DESC`;
 
@@ -52,7 +50,6 @@ export const getHistory = async (req: Request, res: Response) => {
           }
         );
       }
-      console.log(sortQuery);
     }
 
     let query = `SELECT * FROM history${sortQuery} LIMIT $1 OFFSET $2`;

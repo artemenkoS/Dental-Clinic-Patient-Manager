@@ -6,6 +6,7 @@ import { theme } from '../../styles/theme';
 export const Link = styled(NavLink)`
   text-decoration: none;
   color: ${theme.palette.secondary.contrastText};
+  font-size: 20px;
   border-bottom: 2px solid transparent;
   &.active {
     border-bottom: 2px solid ${theme.palette.primary.main};

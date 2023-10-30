@@ -8,7 +8,6 @@ import { useGetDoctorsQuery } from '../../api/doctor/doctorApi';
 import { useCreateLogRecordMutation } from '../../api/history/historyApi';
 import { useGetProceduresQuery } from '../../api/procedure/procedureApi';
 import { useGetRolesQuery } from '../../api/role/rolesApi';
-import { useGetUserQuery } from '../../api/user/userApi';
 import { VisitMutationBody } from '../../api/visit/types';
 import { useGetVisitsQuery } from '../../api/visit/visitApi';
 import { DatePicker } from '../../components/DatePicker/DatePicker';
@@ -16,8 +15,9 @@ import { FormSelect } from '../../components/FormSelect/FormSelect';
 import { NewPatient } from '../../components/NewPatientForm/NewPatientForm';
 import { PatientAutocomplete } from '../../components/PatientAutocomplete/PatientAutocomplete';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { userSelector } from '../../store/slices/authSlice';
 import { editVisitModalSelector, setEditableVisit, setEditVisitModalOpened } from '../../store/slices/modalsSlice';
-import { resetSlots, selectedSlotSelector } from '../../store/slices/visitSlice';
+import { resetSlots, selectedSlotSelector, visitDateSelector } from '../../store/slices/visitSlice';
 import { AutocompleteOption } from '../../types';
 import { Container } from './styled';
 
@@ -31,24 +31,24 @@ interface FormValues {
 }
 
 interface Props {
-  mutate: (body: VisitMutationBody, id?: number) => void;
+  onSubmit: (body: VisitMutationBody, id?: number) => void;
   values?: FormValues;
 }
 
-export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
-  const { data: user, isLoading: isUserLoading } = useGetUserQuery();
+export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
+  const user = useAppSelector(userSelector);
 
   const { data: doctors, isLoading: isDoctorsloading } = useGetDoctorsQuery();
 
   const { data: roles } = useGetRolesQuery();
 
   const doctorRole = React.useMemo(() => {
-    return roles?.data.filter((role) => role.role === 'doctor')[0];
+    return roles?.data.find((role) => role.role === 'doctor');
   }, [roles]);
 
   const doctor = React.useMemo(() => {
     if (doctorRole) {
-      return doctors?.data.filter((doctor) => doctor.id === user?.user.id)[0];
+      return doctors?.data.find((doctor) => doctor.id === user?.id);
     }
   }, [doctors, user]);
 
@@ -62,16 +62,20 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
 
     resetForm();
   };
-
+  const date = useAppSelector(visitDateSelector);
   const selectedTimeSlot = useAppSelector(selectedSlotSelector);
 
-  const defaulFormValues: FormValues = {
+  console.log(new Date(date));
+
+  const defaultFormValues: FormValues = {
     doctorId: doctor ? doctor.id.toString() : '',
     patient: null,
     procedureId: '',
-    visitDate: new Date(),
+    visitDate: new Date(date),
     authorId: '',
   };
+
+  console.log(defaultFormValues);
 
   const {
     handleSubmit,
@@ -79,13 +83,9 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
     watch,
     reset: resetForm,
     formState: { isValid },
-  } = useForm<FormValues>({ defaultValues: values ?? defaulFormValues });
+  } = useForm<FormValues>({ defaultValues: values ?? defaultFormValues });
 
-  React.useEffect(() => {
-    if (user?.user.role === doctorRole?.id) {
-      console.log(true);
-    }
-  }, [user, doctorRole]);
+  React.useEffect(() => resetForm(defaultFormValues), [date]);
 
   const { data: procedures, isLoading: isProceduresLoading } = useGetProceduresQuery();
   const { submitText } = useAppSelector(editVisitModalSelector);
@@ -102,19 +102,16 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
     { skip: !formValues.doctorId }
   );
 
-  const onSubmit = (data: FormValues) => {
+  const formSubmit = (data: FormValues) => {
     if (user && data.patient) {
       const time = selectedTimeSlot ? selectedTimeSlot.split(':') : ['0', '0'];
       data.visitDate.setHours(+time[0]);
       data.visitDate.setMinutes(+time[1]);
 
-      console.log(time[0], time[1]);
-      console.log(data.visitDate);
-
-      mutate(
+      onSubmit(
         {
           doctorId: +data.doctorId,
-          authorId: user.user.id,
+          authorId: user.id,
           visitDate: `${data.visitDate.toISOString()}`,
           patientId: +data.patient.id,
           procedureId: +data.procedureId,
@@ -123,11 +120,11 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
       );
       createLogRecordMutate({
         doctorId: +data.doctorId,
-        authorId: user.user.id,
+        authorId: user.id,
         visitDate: `${data.visitDate.toISOString()}`,
         changes: {
           doctorId: +data.doctorId,
-          authorId: user.user.id,
+          authorId: user.id,
           visitDate: `${data.visitDate.toISOString()}`,
           patientId: +data.patient.id,
           procedureId: +data.procedureId,
@@ -135,12 +132,12 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
         status: values?.id ? 'edit' : 'create',
         createdAt: new Date().toISOString(),
       });
-      resetForm(defaulFormValues);
+      resetForm(defaultFormValues);
       handleClose();
     }
   };
 
-  if (isUserLoading || isDoctorsloading || isProceduresLoading) {
+  if (isDoctorsloading || isProceduresLoading) {
     return <CircularProgress />;
   }
 
@@ -148,7 +145,7 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
     <div>
       <Modal open={isOpen} onClose={handleClose}>
         <Container>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(formSubmit)}>
             <Grid container direction="column" spacing={2}>
               <Grid item>
                 <Controller
@@ -198,7 +195,14 @@ export const VisitForm: React.FC<Props> = ({ mutate, values }) => {
               </Grid>
             </Grid>
             <NewPatient />
-            <Controller name="visitDate" control={control} render={({ field }) => <DatePicker {...field} />} />
+            <Controller
+              name="visitDate"
+              control={control}
+              render={({ field }) => {
+                console.log(field);
+                return <DatePicker {...field} />;
+              }}
+            />
             <Button type="submit" variant="outlined" fullWidth disabled={!isValid || !selectedTimeSlot}>
               {submitText}
             </Button>

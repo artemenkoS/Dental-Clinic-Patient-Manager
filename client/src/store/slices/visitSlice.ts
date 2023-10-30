@@ -8,9 +8,10 @@ import { RootState } from '../store';
 interface VisitState {
   busySlots: Set<unknown> | null;
   selectedSlot: string | null;
+  visitDate: string;
 }
 
-const initialState: VisitState = { busySlots: null, selectedSlot: null };
+const initialState: VisitState = { busySlots: null, selectedSlot: null, visitDate: new Date().toISOString() };
 
 const visitSlice = createSlice({
   name: 'visit',
@@ -19,6 +20,10 @@ const visitSlice = createSlice({
     setBusySlots(state, action: PayloadAction<Set<unknown> | null>) {
       state.busySlots = action.payload;
     },
+    setVisitDate(state, action: PayloadAction<string>) {
+      state.visitDate = action.payload;
+    },
+
     setSelectedSlot(state, action: PayloadAction<string | null>) {
       state.selectedSlot = action.payload;
     },
@@ -43,8 +48,9 @@ const visitSlice = createSlice({
   },
 });
 
-export const { setBusySlots, setSelectedSlot, resetSlots } = visitSlice.actions;
+export const { setBusySlots, setSelectedSlot, resetSlots, setVisitDate } = visitSlice.actions;
 
 export const busySlotsSelector = (state: RootState) => state.visitReducer.busySlots;
+export const visitDateSelector = (state: RootState) => state.visitReducer.visitDate;
 export const selectedSlotSelector = (state: RootState) => state.visitReducer.selectedSlot;
 export default visitSlice.reducer;

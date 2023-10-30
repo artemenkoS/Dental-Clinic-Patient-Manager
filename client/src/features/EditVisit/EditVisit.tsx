@@ -33,7 +33,7 @@ export const EditVisit = () => {
     }
   }, [createVisitSuccess]);
 
-  const mutate = (body: VisitMutationBody, id?: number) => {
+  const handleSubmit = (body: VisitMutationBody, id?: number) => {
     id && updateVisit({ body, id });
   };
 
@@ -42,7 +42,7 @@ export const EditVisit = () => {
     patient &&
     date && (
       <VisitForm
-        mutate={mutate}
+        onSubmit={handleSubmit}
         values={{
           ...visit,
           patient: patient,

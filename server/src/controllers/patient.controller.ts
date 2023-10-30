@@ -32,11 +32,6 @@ export const getPatients = async (req: Request, res: Response) => {
     const pageSize = req.query.pageSize ? +req.query.pageSize : 10;
     const offset = (page - 1) * pageSize;
     const sort = req.query.sort as string;
-    console.log(sort, "SORT", typeof sort);
-
-    if (sort) {
-      console.log(JSON.parse(sort), typeof JSON.parse(sort));
-    }
 
     let query = `SELECT * FROM patient`;
 
@@ -46,7 +41,6 @@ export const getPatients = async (req: Request, res: Response) => {
       JSON.parse(sort).forEach((item: { field: string; sort: string }) => {
         query += ` ORDER by ${item.field} ${item.sort}`;
       });
-      console.log(query);
     }
 
     if (req.query.search) {
@@ -54,30 +48,45 @@ export const getPatients = async (req: Request, res: Response) => {
       queryParams.push(`%${req.query.search.toString().replace(/\s/g, "")}%`);
     }
 
-    query += ` LIMIT $${queryParams.length + 1} OFFSET $${
-      queryParams.length + 2
-    }`;
+    if (req.query.ids) {
+      const ids: string[] = req.query.ids.toString().split(",");
 
-    const result = await db.query(query, [...queryParams, pageSize, offset]);
+      query = `
+        SELECT * FROM patient
+        WHERE id IN (${ids.map((id, index) => `$${index + 1}`).join(",")})
+      `;
 
-    const totalCountQuery = await db.query(
-      `SELECT COUNT(*) FROM patient${
-        queryParams.length > 0 ? " WHERE name ILIKE $1 OR surname ILIKE $1" : ""
-      }`,
-      queryParams
-    );
-    const totalCount = +totalCountQuery.rows[0].count;
-    const totalPages = Math.ceil(totalCount / pageSize);
+      const result = await db.query(query, ids);
 
-    res.status(200).json({
-      data: result.rows,
-      pagination: {
-        currentPage: page,
-        pageSize: pageSize,
-        totalPages,
-        totalCount,
-      },
-    });
+      res.status(200).json({ data: result.rows });
+    } else {
+      query += ` LIMIT $${queryParams.length + 1} OFFSET $${
+        queryParams.length + 2
+      }`;
+
+      const result = await db.query(query, [...queryParams, pageSize, offset]);
+
+      const totalCountQuery = await db.query(
+        `SELECT COUNT(*) FROM patient${
+          queryParams.length > 0
+            ? " WHERE name ILIKE $1 OR surname ILIKE $1"
+            : ""
+        }`,
+        queryParams
+      );
+      const totalCount = +totalCountQuery.rows[0].count;
+      const totalPages = Math.ceil(totalCount / pageSize);
+
+      res.status(200).json({
+        data: result.rows,
+        pagination: {
+          currentPage: page,
+          pageSize: pageSize,
+          totalPages,
+          totalCount,
+        },
+      });
+    }
   } catch (error) {
     console.error("Произошла ошибка при получении списка пациентов:", error);
     res.status(500).json("Произошла ошибка при получении списка пациентов");

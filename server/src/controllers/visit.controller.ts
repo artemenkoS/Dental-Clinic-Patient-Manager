@@ -50,7 +50,6 @@ export const getVisits = async (req: Request, res: Response) => {
 
     const page = req.query.page ? +req.query.page : 1;
     const pageSize = req.query.pageSize ? +req.query.pageSize : 10;
-    console.log(totalCountQuery, "TOTALCOUNTQUERY,", queryParams);
 
     const totalCount = await db.query(totalCountQuery, totalCountQueryParams);
 

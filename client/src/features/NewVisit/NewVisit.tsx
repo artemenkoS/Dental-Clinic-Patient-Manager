@@ -13,9 +13,9 @@ export const NewVisit = () => {
     }
   }, [createVisitSuccess]);
 
-  const mutate = (body: VisitMutationBody) => {
+  const handleSubmit = (body: VisitMutationBody) => {
     createVisit({ body });
   };
 
-  return <VisitForm mutate={mutate} />;
+  return <VisitForm onSubmit={handleSubmit} />;
 };

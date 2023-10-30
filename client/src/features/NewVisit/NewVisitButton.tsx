@@ -11,7 +11,13 @@ export const NewVisitButton: React.FC = () => {
     dispatch(setEditVisitModalSubmitText('Создать запись'));
   };
   return (
-    <Button onClick={onClick} variant="outlined" color="success" sx={{ height: theme.spacing(4) }}>
+    <Button
+      onClick={onClick}
+      variant="outlined"
+      color="success"
+      size="large"
+      sx={{ height: theme.spacing(4), alignSelf: 'flex-end', position: 'absolute', right: theme.spacing(3) }}
+    >
       Создать запись
     </Button>
   );

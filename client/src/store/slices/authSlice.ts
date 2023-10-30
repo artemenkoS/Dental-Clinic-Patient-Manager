@@ -27,7 +27,6 @@ const userSlice = createSlice({
     builder.addMatcher(authApi.endpoints.auth.matchFulfilled, (store, { payload }: { payload: AuthResponse }) => {
       localStorage.setItem('token', payload.token);
       store.user = payload.data;
-      console.log(store);
 
       toast.success('Успешная авторизация.');
     });
@@ -38,8 +37,6 @@ const userSlice = createSlice({
     });
     builder.addMatcher(userApi.endpoints.getUser.matchFulfilled, (store, { payload }: { payload: UserDto }) => {
       store.user = { id: payload.user.id, role: payload.user.role };
-      console.log(store);
-      console.log(payload);
     });
     builder.addMatcher(authApi.endpoints.auth.matchRejected, () => {
       localStorage.setItem('token', '');

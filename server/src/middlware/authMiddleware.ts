@@ -17,8 +17,6 @@ export const isAuthed = (req: Request, res: Response, next: NextFunction) => {
     res.locals.user = decodedToken;
     next();
   } catch (error) {
-    console.log(error);
-
     return res.status(401).json({ message: "Пользователь не авторизован" });
   }
 };

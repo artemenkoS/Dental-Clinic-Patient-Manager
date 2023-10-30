@@ -2,14 +2,21 @@ import toast from 'react-hot-toast';
 
 import { AutocompleteOption } from '../../types';
 import { apiSlice } from '../apiSlice';
-import { Patient, PatientDto, PatientParams, PatientPayload } from './types';
+import { Patient, PatientDto, PatientParams, PatientPayload, PatientsDto } from './types';
 
 export const userApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getPatients: builder.query<PatientDto, PatientParams>({
+    getPatients: builder.query<PatientsDto, PatientParams>({
       query: (params: PatientParams) => ({
         url: 'api/patient',
         params,
+      }),
+      keepUnusedDataFor: 0,
+      providesTags: ['Patient'],
+    }),
+    getOnePatient: builder.query<PatientDto, number>({
+      query: (id: number) => ({
+        url: `api/patient/${id}`,
       }),
       keepUnusedDataFor: 0,
       providesTags: ['Patient'],
@@ -20,7 +27,7 @@ export const userApi = apiSlice.injectEndpoints({
         params,
         keepalive: false,
       }),
-      transformResponse: (rawResult: PatientDto) => {
+      transformResponse: (rawResult: PatientsDto) => {
         return rawResult.data.map((item) => ({
           id: item.id,
           label: `${item.name} ${item.surname}`,
@@ -66,6 +73,7 @@ export const userApi = apiSlice.injectEndpoints({
 export const {
   useGetPatientsQuery,
   useGetFormatedPatientsQuery,
+  useLazyGetOnePatientQuery,
   useGetFormatedPatientQuery,
   useCreatePatientMutation,
 } = userApi;

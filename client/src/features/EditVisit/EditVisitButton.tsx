@@ -7,9 +7,10 @@ import { setEditableVisit, setEditVisitModalOpened, setEditVisitModalSubmitText 
 
 interface Props {
   visit: Visit;
+  disabled?: boolean;
 }
 
-export const EditVisitButton: React.FC<Props> = ({ visit }) => {
+export const EditVisitButton: React.FC<Props> = ({ visit, disabled }) => {
   const dispatch = useAppDispatch();
   const onClick = () => {
     dispatch(setEditableVisit(visit));
@@ -17,7 +18,7 @@ export const EditVisitButton: React.FC<Props> = ({ visit }) => {
     dispatch(setEditVisitModalSubmitText('Изменить запись'));
   };
   return (
-    <IconButton onClick={onClick}>
+    <IconButton onClick={onClick} disabled={disabled}>
       <EditIcon />
     </IconButton>
   );

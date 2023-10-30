@@ -7,16 +7,17 @@ import { setDeleteVisitId, setDeleteVisitModalOpened } from '../../store/slices/
 
 interface Props {
   visit: Visit;
+  disabled?: boolean;
 }
 
-export const DeleteVisitButton: React.FC<Props> = ({ visit }) => {
+export const DeleteVisitButton: React.FC<Props> = ({ visit, disabled }) => {
   const dispatch = useAppDispatch();
   const onClick = () => {
     dispatch(setDeleteVisitId(visit));
     dispatch(setDeleteVisitModalOpened(true));
   };
   return (
-    <IconButton onClick={onClick}>
+    <IconButton onClick={onClick} disabled={disabled}>
       <DeleteIcon />
     </IconButton>
   );
