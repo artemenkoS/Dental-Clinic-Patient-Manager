@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import { Visit } from '../api/visit/types';
 export const getBusySlots = (visits: Visit[] | undefined) => {
   const timeSet = new Set();
-  if (!visits) return timeSet;
+  if (!visits) return [];
 
   visits.forEach((visit) => {
     const visitDate = new Date(visit.visitDate);
@@ -12,5 +12,5 @@ export const getBusySlots = (visits: Visit[] | undefined) => {
     timeSet.add(formattedTime);
   });
 
-  return timeSet;
+  return Array.from(timeSet);
 };

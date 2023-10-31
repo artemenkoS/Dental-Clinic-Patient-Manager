@@ -6,7 +6,7 @@ import { Slot, Wrapper } from './styled';
 
 export const TimeSlots = () => {
   const dispatch = useAppDispatch();
-  const busySlots = useAppSelector(busySlotsSelector);
+  const busySlots = new Set(useAppSelector(busySlotsSelector));
   const selectedSlot = useAppSelector(selectedSlotSelector);
 
   const handleSelectSlot = (slot: string) => () => {

@@ -13,7 +13,6 @@ interface Props {
 }
 
 export const DatePicker: React.FC<Props> = ({ value, onChange }) => {
-  console.log(value);
   return (
     <Wrapper>
       <DayPicker mode="single" locale={ru} selected={value} onDayClick={onChange} />

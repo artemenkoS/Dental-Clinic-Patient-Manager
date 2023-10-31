@@ -1,4 +1,4 @@
-import { DevTool } from '@hookform/devtools';
+// import { DevTool } from '@hookform/devtools';
 import { Button, CircularProgress, Grid, MenuItem, Modal } from '@mui/material';
 import dayjs from 'dayjs';
 import * as React from 'react';
@@ -153,7 +153,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
                   rules={{ required: 'Доктор не выбран' }}
                   control={control}
                   render={({ field }) => (
-                    <FormSelect label="Выберите доктора" {...field}>
+                    <FormSelect label="Выберите доктора" onChange={field.onChange} value={field.value}>
                       {doctor ? (
                         <MenuItem value={doctor.id.toString()}>
                           {doctor.name} {doctor.surname}
@@ -175,7 +175,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
                   control={control}
                   rules={{ required: 'Процедура не выбрана' }}
                   render={({ field }) => (
-                    <FormSelect label="Выберите процедуру" {...field}>
+                    <FormSelect label="Выберите процедуру" onChange={field.onChange} value={field.value}>
                       {procedures?.data.map((procedure) => (
                         <MenuItem value={procedure.id.toString()}>{procedure.procedure}</MenuItem>
                       ))}
@@ -200,7 +200,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
               control={control}
               render={({ field }) => {
                 console.log(field);
-                return <DatePicker {...field} />;
+                return <DatePicker onChange={field.onChange} value={field.value} />;
               }}
             />
             <Button type="submit" variant="outlined" fullWidth disabled={!isValid || !selectedTimeSlot}>
@@ -209,7 +209,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
           </form>
         </Container>
       </Modal>
-      <DevTool control={control} />
+      {/* {import.meta.env.DEV && <DevTool control={control} />} */}
     </div>
   );
 };

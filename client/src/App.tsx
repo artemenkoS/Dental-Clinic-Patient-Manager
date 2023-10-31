@@ -1,7 +1,7 @@
 import { CircularProgress } from '@mui/material';
 import dayjs from 'dayjs';
 import ru from 'dayjs/locale/ru';
-import * as utc from 'dayjs/plugin/utc';
+import utc from 'dayjs/plugin/utc';
 
 import { useGetUserQuery } from './api/user/userApi';
 import { Layout } from './components/Layout/Layout';

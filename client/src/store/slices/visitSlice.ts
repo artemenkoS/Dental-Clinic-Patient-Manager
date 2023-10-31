@@ -6,7 +6,7 @@ import { getBusySlots } from '../../helpers/getBusySlots';
 import { RootState } from '../store';
 
 interface VisitState {
-  busySlots: Set<unknown> | null;
+  busySlots: Array<unknown> | null;
   selectedSlot: string | null;
   visitDate: string;
 }
@@ -17,7 +17,7 @@ const visitSlice = createSlice({
   name: 'visit',
   initialState,
   reducers: {
-    setBusySlots(state, action: PayloadAction<Set<unknown> | null>) {
+    setBusySlots(state, action: PayloadAction<Array<unknown> | null>) {
       state.busySlots = action.payload;
     },
     setVisitDate(state, action: PayloadAction<string>) {
