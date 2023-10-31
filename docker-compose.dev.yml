@@ -36,6 +36,8 @@ services:
     volumes:
       - /app/node_modules/
       - ./client:/app
+    enviroment:
+      - VITE_API_URL=http://localhost:8000/
 
   pgadmin:
     image: dpage/pgadmin4

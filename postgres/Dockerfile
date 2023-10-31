@@ -1,6 +1,6 @@
 FROM postgres:16
 
-RUN apt-get update && apt-get install -y cron supervisor
+RUN  apt-get update && apt-get install -y cron supervisor
 COPY backup.sh /usr/local/bin/backup_script.sh
 RUN chmod +x /usr/local/bin/backup_script.sh
 COPY crontab /etc/cron.d/backup-cron
