@@ -35,8 +35,6 @@ services:
     ports:
       - "3000:80"
     restart: always
-    environment:
-      - VITE_BASE_URL=http://192.168.100.11:8000/
 
   pgadmin:
     image: dpage/pgadmin4

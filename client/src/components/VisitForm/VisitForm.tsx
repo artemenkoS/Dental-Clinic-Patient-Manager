@@ -1,6 +1,6 @@
 import { DevTool } from '@hookform/devtools';
 import { Button, CircularProgress, Grid, MenuItem, Modal } from '@mui/material';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import * as React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
