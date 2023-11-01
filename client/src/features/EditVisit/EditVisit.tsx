@@ -22,8 +22,6 @@ export const EditVisit = () => {
   });
   const date = parseDate(visit?.visitDate ?? '');
 
-  console.log(patient);
-
   const [updateVisit, { isSuccess: createVisitSuccess, reset }] = useUpdateVisitMutation();
 
   React.useEffect(() => {

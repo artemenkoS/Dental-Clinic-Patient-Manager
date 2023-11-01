@@ -43,7 +43,7 @@ export const getHistory = async (req: Request, res: Response) => {
         sortItems.forEach(
           (item: { field: string; sort: string }, index: number) => {
             if (index === 0) {
-              sortQuery += ` ORDER BY ${item.field} ${item.sort}`;
+              sortQuery += ` ORDER BY "${item.field}" ${item.sort}`;
             } else {
               sortQuery += `, ${item.field} ${item.sort}`;
             }

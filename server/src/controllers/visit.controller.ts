@@ -45,11 +45,13 @@ export const getVisits = async (req: Request, res: Response) => {
   const { query, queryParams, totalCountQuery, totalCountQueryParams } =
     prepareSqlQuery(req.query);
 
+  console.log(query);
+
   try {
     const visits = await db.query(query, queryParams);
 
     const page = req.query.page ? +req.query.page : 1;
-    const pageSize = req.query.pageSize ? +req.query.pageSize : 10;
+    const pageSize = req.query.pageSize ? +req.query.pageSize : 50;
 
     const totalCount = await db.query(totalCountQuery, totalCountQueryParams);
 
@@ -63,7 +65,12 @@ export const getVisits = async (req: Request, res: Response) => {
     } else {
       res.status(200).json({
         data: visits.rows,
-        pagination: { currentPage: page, totalPages, pageSize },
+        pagination: {
+          currentPage: page,
+          pageSize: pageSize,
+          totalPages,
+          totalCount: +totalCount.rows[0].count,
+        },
       });
     }
   } catch (error) {

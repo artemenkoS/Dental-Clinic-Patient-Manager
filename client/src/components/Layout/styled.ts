@@ -9,8 +9,9 @@ export const ContentWrapper = styled.main`
   padding: ${theme.spacing(3)};
   max-width: 1500px;
   min-width: 800px;
-
+  background-color: ${theme.palette.background.default};
   gap: ${theme.spacing(2)};
+  position: relative;
 `;
 
 export const Header = styled.header`

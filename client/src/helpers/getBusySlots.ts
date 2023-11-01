@@ -8,7 +8,6 @@ export const getBusySlots = (visits: Visit[] | undefined) => {
   visits.forEach((visit) => {
     const visitDate = new Date(visit.visitDate);
     const formattedTime = dayjs(visitDate).format('HH:mm');
-    console.log(formattedTime);
     timeSet.add(formattedTime);
   });
 

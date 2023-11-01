@@ -7,6 +7,7 @@ export const prepareSqlQuery = (reqQuery: ParsedQs) => {
     name,
     surname,
     startDate,
+    sort,
     endDate,
     page = 1,
     pageSize = 10,
@@ -14,6 +15,23 @@ export const prepareSqlQuery = (reqQuery: ParsedQs) => {
   const queryParams = [];
   const totalCountQueryParams = [];
   const whereClauses = [];
+
+  let sortQuery = ``;
+
+  if (sort) {
+    const sortItems = JSON.parse(sort as string);
+    if (Array.isArray(sortItems) && sortItems.length > 0) {
+      sortItems.forEach(
+        (item: { field: string; sort: string }, index: number) => {
+          if (index === 0) {
+            sortQuery += ` ORDER BY "${item.field}" ${item.sort}`;
+          } else {
+            sortQuery += `, ${item.field} ${item.sort}`;
+          }
+        }
+      );
+    }
+  }
 
   if (patientId) {
     whereClauses.push(`"patientId" = $${queryParams.length + 1}`);
@@ -63,13 +81,10 @@ export const prepareSqlQuery = (reqQuery: ParsedQs) => {
     totalCountQuery += ` WHERE ${whereClauses.join(" AND ")}`;
   }
 
-  query += ` ORDER BY "visitDate" ASC`;
+  query += ` ${sortQuery ? sortQuery : 'ORDER BY "visitDate" DESC'} LIMIT $${
+    queryParams.length + 1
+  } OFFSET $${queryParams.length + 2}`;
 
-  query += ` LIMIT $${queryParams.length + 1} OFFSET $${
-    queryParams.length + 2
-  }`;
-
-  console.log(query);
   queryParams.push(pageSize, offset);
 
   return { query, queryParams, totalCountQuery, totalCountQueryParams };

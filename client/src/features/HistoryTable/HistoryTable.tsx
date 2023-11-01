@@ -23,7 +23,7 @@ export const HistoryTable = () => {
   const { data: history, isLoading } = useGetHistoryQuery({
     page: pagination.page + 1 ?? 1,
     pageSize: pagination.pageSize,
-    sort: JSON.stringify(sort, null, 4),
+    sort: JSON.stringify(sort),
   });
 
   const { data: users } = useGetAllUsersQuery();
@@ -51,8 +51,8 @@ export const HistoryTable = () => {
 
   const columns: GridColDef[] = [
     { field: 'status', headerName: 'Статус', width: 130 },
-    { field: 'author', headerName: 'Автор', width: 150 },
-    { field: 'doctor', headerName: 'Доктор', width: 150 },
+    { field: 'authorId', headerName: 'Автор', width: 150 },
+    { field: 'doctorId', headerName: 'Доктор', width: 150 },
     { field: 'visitDate', headerName: 'Время записи', width: 150 },
     { field: 'changes', headerName: 'Изменения', width: 500 },
   ];

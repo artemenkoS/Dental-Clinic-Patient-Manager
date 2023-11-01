@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { Paper } from '@mui/material';
 
 import { theme } from '../../styles/theme';
 
@@ -29,8 +30,7 @@ export const List = styled.ul`
   flex: 1 0 500px;
 `;
 
-export const Slot = styled.div`
-  border: 1px solid black;
+export const Slot = styled(Paper)`
   display: flex;
   align-items: center;
   gap: ${theme.spacing(1)};
@@ -41,6 +41,5 @@ export const Slot = styled.div`
 
 export const ControlsContainer = styled.div`
   display: flex;
-  align-self: flex-end;
   margin-left: auto;
 `;

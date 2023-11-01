@@ -65,8 +65,6 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
   const date = useAppSelector(visitDateSelector);
   const selectedTimeSlot = useAppSelector(selectedSlotSelector);
 
-  console.log(new Date(date));
-
   const defaultFormValues: FormValues = {
     doctorId: doctor ? doctor.id.toString() : '',
     patient: null,
@@ -74,8 +72,6 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
     visitDate: new Date(date),
     authorId: '',
   };
-
-  console.log(defaultFormValues);
 
   const {
     handleSubmit,
@@ -199,7 +195,6 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
               name="visitDate"
               control={control}
               render={({ field }) => {
-                console.log(field);
                 return <DatePicker onChange={field.onChange} value={field.value} />;
               }}
             />

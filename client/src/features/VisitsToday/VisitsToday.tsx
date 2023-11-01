@@ -1,6 +1,6 @@
-import { CircularProgress, Pagination, Typography } from '@mui/material';
+import { CircularProgress, Typography } from '@mui/material';
 import dayjs from 'dayjs';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import toast from 'react-hot-toast';
 
 import { useGetDoctorsQuery } from '../../api/doctor/doctorApi';
@@ -8,6 +8,7 @@ import { useGetPatientsQuery } from '../../api/patient/patientApi';
 import { useGetRolesQuery } from '../../api/role/rolesApi';
 import { useGetVisitsQuery } from '../../api/visit/visitApi';
 import { DaySelect } from '../../components/DaySelector/DaySelect';
+import { createPatientsList } from '../../helpers/createPatientsList';
 import { useAppSelector } from '../../store/hooks';
 import { userSelector } from '../../store/slices/authSlice';
 import { visitDateSelector } from '../../store/slices/visitSlice';
@@ -18,7 +19,6 @@ import { ControlsContainer, Slot, VisitsContainer, VisitTime, Wrapper } from './
 export const VisitsToday = () => {
   const date = useAppSelector(visitDateSelector);
 
-  const [page, setPage] = useState<number>(1);
   const user = useAppSelector(userSelector);
   const { data: roles } = useGetRolesQuery();
 
@@ -26,34 +26,18 @@ export const VisitsToday = () => {
     return roles?.data.find((role) => role.role === 'doctor');
   }, [roles]);
 
-  const { data: visits, isLoading, isError } = useGetVisitsQuery({ startDate: date, page });
+  const { data: visits, isFetching: isVisitsLoading, isError } = useGetVisitsQuery({ startDate: date });
   const { data: doctors } = useGetDoctorsQuery();
 
-  const handlePaginationChange = (_: React.ChangeEvent<unknown>, value: number) => {
-    setPage(value);
-  };
+  const patientIdsArray = createPatientsList(visits?.data);
 
-  const patientIdsSet: Set<number> = new Set();
+  const { data: patients, isFetching: isPatientsLoading } = useGetPatientsQuery({ ids: patientIdsArray });
 
-  if (visits?.data) {
-    visits.data.forEach((visit) => {
-      patientIdsSet.add(visit.patientId);
-    });
-  }
-
-  const patientIdsArray: Array<number> = Array.from(patientIdsSet);
-
-  const { data: patients } = useGetPatientsQuery({ ids: patientIdsArray });
-
-  useEffect(() => {
-    if (!visits?.data && page > 1) {
-      setPage((prev) => prev - 1);
-    }
-  }, [visits, page]);
-
-  if (isLoading) {
+  if (isVisitsLoading || isPatientsLoading) {
     return <CircularProgress />;
   }
+
+  console.log('isVisitsLoading', isVisitsLoading, 'isPatientsLoading', isPatientsLoading);
 
   if (isError) {
     toast.error('Не удалось загрузить список записей.');
@@ -63,7 +47,12 @@ export const VisitsToday = () => {
     return (
       <>
         <DaySelect />
-        <Typography>{visits?.message}</Typography>
+        <Typography
+          variant="h4"
+          sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}
+        >
+          {visits?.message}
+        </Typography>
       </>
     );
   }
@@ -85,21 +74,22 @@ export const VisitsToday = () => {
                   const formattedDate = dayjs(visitDate).format('HH:mm');
                   const patient = patients?.data.find((el) => el.id === visit.patientId);
                   return (
-                    <Slot key={visit.id}>
-                      <Typography>
-                        <VisitTime> {formattedDate}</VisitTime> {patient?.surname}
-                      </Typography>
-                      <ControlsContainer>
-                        <DeleteVisitButton
-                          visit={visit}
-                          disabled={user?.role === doctorRole?.id && visit.doctorId !== user?.id}
-                        />
-                        <EditVisitButton
-                          visit={visit}
-                          disabled={user?.role === doctorRole?.id && visit.doctorId !== user?.id}
-                        />
-                      </ControlsContainer>
-                    </Slot>
+                    patient && (
+                      <Slot key={visit.id} elevation={4}>
+                        <VisitTime> {formattedDate}</VisitTime>
+                        <Typography>{patient?.surname}</Typography>
+                        <ControlsContainer>
+                          <DeleteVisitButton
+                            visit={visit}
+                            disabled={user?.role === doctorRole?.id && visit.doctorId !== user?.id}
+                          />
+                          <EditVisitButton
+                            visit={visit}
+                            disabled={user?.role === doctorRole?.id && visit.doctorId !== user?.id}
+                          />
+                        </ControlsContainer>
+                      </Slot>
+                    )
                   );
                 })}
               </div>
@@ -108,12 +98,6 @@ export const VisitsToday = () => {
           return null;
         })}
       </VisitsContainer>
-      <Pagination
-        count={visits?.pagination.totalPages}
-        page={page}
-        variant="outlined"
-        onChange={handlePaginationChange}
-      />
     </Wrapper>
   );
 };
