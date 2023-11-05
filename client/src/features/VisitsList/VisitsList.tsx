@@ -1,4 +1,4 @@
-import { CircularProgress, Typography } from '@mui/material';
+import { List, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import React from 'react';
 import toast from 'react-hot-toast';
@@ -8,15 +8,16 @@ import { useGetPatientsQuery } from '../../api/patient/patientApi';
 import { useGetRolesQuery } from '../../api/role/rolesApi';
 import { useGetVisitsQuery } from '../../api/visit/visitApi';
 import { DaySelect } from '../../components/DaySelector/DaySelect';
+import { Loader } from '../../components/Loader/Loader';
 import { createPatientsList } from '../../helpers/createPatientsList';
 import { useAppSelector } from '../../store/hooks';
 import { userSelector } from '../../store/slices/authSlice';
 import { visitDateSelector } from '../../store/slices/visitSlice';
 import { DeleteVisitButton } from '../DeleteVisitModal/DeleteVisitButton';
 import { EditVisitButton } from '../EditVisit/EditVisitButton';
-import { ControlsContainer, Slot, VisitsContainer, VisitTime, Wrapper } from './styled';
+import { ControlsContainer, Slot, VisitsContainer, VisitsWrapper, VisitTime, Wrapper } from './styled';
 
-export const VisitsToday = () => {
+export const VisitsList = () => {
   const date = useAppSelector(visitDateSelector);
 
   const user = useAppSelector(userSelector);
@@ -26,7 +27,14 @@ export const VisitsToday = () => {
     return roles?.data.find((role) => role.role === 'doctor');
   }, [roles]);
 
-  const { data: visits, isFetching: isVisitsLoading, isError } = useGetVisitsQuery({ startDate: date });
+  const {
+    data: visits,
+    isFetching: isVisitsLoading,
+    isError,
+  } = useGetVisitsQuery({
+    startDate: dayjs(date).format('YYYY-MM-DD'),
+    sort: JSON.stringify([{ field: 'visitDate', sort: 'asc' }]),
+  });
   const { data: doctors } = useGetDoctorsQuery();
 
   const patientIdsArray = createPatientsList(visits?.data);
@@ -34,7 +42,7 @@ export const VisitsToday = () => {
   const { data: patients, isFetching: isPatientsLoading } = useGetPatientsQuery({ ids: patientIdsArray });
 
   if (isVisitsLoading || isPatientsLoading) {
-    return <CircularProgress />;
+    return <Loader />;
   }
 
   console.log('isVisitsLoading', isVisitsLoading, 'isPatientsLoading', isPatientsLoading);
@@ -69,29 +77,31 @@ export const VisitsToday = () => {
                 <Typography variant="h6">
                   {doctor.name} {doctor.surname}
                 </Typography>
-                {filteredVisits.map((visit) => {
-                  const visitDate = new Date(visit.visitDate);
-                  const formattedDate = dayjs(visitDate).format('HH:mm');
-                  const patient = patients?.data.find((el) => el.id === visit.patientId);
-                  return (
-                    patient && (
-                      <Slot key={visit.id} elevation={4}>
-                        <VisitTime> {formattedDate}</VisitTime>
-                        <Typography>{patient?.surname}</Typography>
-                        <ControlsContainer>
-                          <DeleteVisitButton
-                            visit={visit}
-                            disabled={user?.role === doctorRole?.id && visit.doctorId !== user?.id}
-                          />
-                          <EditVisitButton
-                            visit={visit}
-                            disabled={user?.role === doctorRole?.id && visit.doctorId !== user?.id}
-                          />
-                        </ControlsContainer>
-                      </Slot>
-                    )
-                  );
-                })}
+                <VisitsWrapper>
+                  {filteredVisits.map((visit) => {
+                    const visitDate = new Date(visit.visitDate);
+                    const formattedDate = dayjs(visitDate).format('HH:mm');
+                    const patient = patients?.data.find((el) => el.id === visit.patientId);
+                    return (
+                      patient && (
+                        <Slot key={visit.id} elevation={4}>
+                          <VisitTime> {formattedDate}</VisitTime>
+                          <Typography>{patient?.surname}</Typography>
+                          <ControlsContainer>
+                            <DeleteVisitButton
+                              visit={visit}
+                              disabled={user?.role === doctorRole?.id && visit.doctorId !== user?.id}
+                            />
+                            <EditVisitButton
+                              visit={visit}
+                              disabled={user?.role === doctorRole?.id && visit.doctorId !== user?.id}
+                            />
+                          </ControlsContainer>
+                        </Slot>
+                      )
+                    );
+                  })}
+                </VisitsWrapper>
               </div>
             );
           }

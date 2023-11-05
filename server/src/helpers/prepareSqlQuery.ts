@@ -10,7 +10,7 @@ export const prepareSqlQuery = (reqQuery: ParsedQs) => {
     sort,
     endDate,
     page = 1,
-    pageSize = 10,
+    pageSize = 50,
   } = reqQuery;
   const queryParams = [];
   const totalCountQueryParams = [];

@@ -1,4 +1,3 @@
-import { CircularProgress } from '@mui/material';
 import { GridColDef, GridPaginationModel, GridSortModel } from '@mui/x-data-grid';
 import React from 'react';
 
@@ -6,6 +5,7 @@ import { useGetPatientsQuery } from '../../api/patient/patientApi';
 import { useGetProceduresQuery } from '../../api/procedure/procedureApi';
 import { useGetAllUsersQuery } from '../../api/user/userApi';
 import { useGetVisitsQuery } from '../../api/visit/visitApi';
+import { Loader } from '../../components/Loader/Loader';
 import { PaginatedTable } from '../../components/PaginatedTable/PaginatedTable';
 import { createPatientsList } from '../../helpers/createPatientsList';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -23,7 +23,7 @@ export const AllVisitsTable = () => {
 
   const sort = useAppSelector(patientsTableCurrentSortModelSelector);
 
-  const { data: visits, isLoading } = useGetVisitsQuery({
+  const { data: visits, isFetching: isVisitsLoading } = useGetVisitsQuery({
     page: pagination.page + 1 ?? 1,
     pageSize: pagination.pageSize,
     sort: JSON.stringify(sort),
@@ -31,7 +31,7 @@ export const AllVisitsTable = () => {
 
   const patientIdsArray = createPatientsList(visits?.data);
 
-  const { data: patients } = useGetPatientsQuery({ ids: patientIdsArray });
+  const { data: patients, isFetching: isPatientsLoading } = useGetPatientsQuery({ ids: patientIdsArray });
 
   const { data: procedures } = useGetProceduresQuery();
 
@@ -59,15 +59,17 @@ export const AllVisitsTable = () => {
   };
 
   const columns: GridColDef[] = [
-    { field: 'visitDate', headerName: 'Время', width: 150 },
+    { field: 'visitDate', headerName: 'Время', width: 200 },
     { field: 'patientId', headerName: 'Пациент', width: 150 },
     { field: 'doctorId', headerName: 'Доктор', width: 150 },
     { field: 'authorId', headerName: 'Автор записи', width: 150 },
     { field: 'procedureId', headerName: 'Процедура', width: 150 },
   ];
 
-  if (isLoading) {
-    return <CircularProgress />;
+  console.log(rows);
+
+  if (isVisitsLoading || isPatientsLoading || rows?.some((patient) => !patient.patientId)) {
+    return <Loader />;
   }
 
   return (
@@ -80,6 +82,7 @@ export const AllVisitsTable = () => {
         rows={rows}
         onPaginationChange={onPaginationModelChange}
         onSortModelChange={onSortModelChange}
+        loading={isVisitsLoading || isPatientsLoading || rows?.some((patient) => !patient.patientId)}
       />
     )
   );

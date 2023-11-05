@@ -13,7 +13,7 @@ export const formatVisitsData = (visits: Visit[], users: User[], procedures: Pro
     const patient = patients.find((patient) => patient.id === item.patientId);
     return {
       id: item.id,
-      visitDate: dayjs(item.visitDate).format('DD MMMM HH:mm'),
+      visitDate: dayjs(item.visitDate).format('DD MMMM YYYY HH:mm'),
       doctorId: `${users.find((user) => user.id === item.doctorId)?.name} ${users.find(
         (user) => user.id === item.doctorId
       )?.surname}`,

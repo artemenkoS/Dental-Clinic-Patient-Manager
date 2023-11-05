@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
-import { Paper } from '@mui/material';
+import { Box, Paper } from '@mui/material';
 
 import { theme } from '../../styles/theme';
 
 export const Wrapper = styled.div`
-  max-height: 800px;
+  height: 100%;
   margin: 0;
   padding: 0;
   display: flex;
@@ -24,9 +24,10 @@ export const VisitTime = styled.span`
   padding: ${theme.spacing(0.3)};
 `;
 
-export const List = styled.ul`
+export const List = styled(Box)`
   margin: 0 0 ${theme.spacing(5)};
-  overflow: auto;
+  overflow-y: auto;
+  box-sizing: content-box;
   flex: 1 0 500px;
 `;
 
@@ -42,4 +43,10 @@ export const Slot = styled(Paper)`
 export const ControlsContainer = styled.div`
   display: flex;
   margin-left: auto;
+`;
+
+export const VisitsWrapper = styled.div`
+  height: 80%;
+  overflow: auto;
+  padding: ${theme.spacing(0.4)};
 `;

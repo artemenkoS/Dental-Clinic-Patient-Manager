@@ -9,6 +9,7 @@ interface Props {
   rowCount: number;
   onPaginationChange: (e: GridPaginationModel) => void;
   onSortModelChange?: (e: GridSortModel) => void;
+  loading?: boolean;
 }
 
 export const PaginatedTable: React.FC<Props> = ({
@@ -18,6 +19,7 @@ export const PaginatedTable: React.FC<Props> = ({
   rowCount,
   onPaginationChange,
   onSortModelChange,
+  loading,
 }) => {
   return (
     <Wrapper>
@@ -36,6 +38,7 @@ export const PaginatedTable: React.FC<Props> = ({
         onPaginationModelChange={onPaginationChange}
         onSortModelChange={onSortModelChange}
         pageSizeOptions={[5, 10, 25]}
+        loading={loading}
       />
     </Wrapper>
   );

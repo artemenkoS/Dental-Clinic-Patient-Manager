@@ -1,9 +1,9 @@
-import { CircularProgress } from '@mui/material';
 import { GridColDef, GridPaginationModel, GridSortModel } from '@mui/x-data-grid';
 import React from 'react';
 
 import { useGetHistoryQuery } from '../../api/history/historyApi';
 import { useGetAllUsersQuery } from '../../api/user/userApi';
+import { Loader } from '../../components/Loader/Loader';
 import { PaginatedTable } from '../../components/PaginatedTable/PaginatedTable';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
@@ -20,13 +20,13 @@ export const HistoryTable = () => {
 
   const sort = useAppSelector(historyTableCurrentSortModelSelector);
 
-  const { data: history, isLoading } = useGetHistoryQuery({
+  const { data: history, isLoading: isHistoryLoading } = useGetHistoryQuery({
     page: pagination.page + 1 ?? 1,
     pageSize: pagination.pageSize,
     sort: JSON.stringify(sort),
   });
 
-  const { data: users } = useGetAllUsersQuery();
+  const { data: users, isLoading: isUsersLoading } = useGetAllUsersQuery();
 
   const rows = React.useMemo(() => {
     if (history && users) {
@@ -57,8 +57,8 @@ export const HistoryTable = () => {
     { field: 'changes', headerName: 'Изменения', width: 500 },
   ];
 
-  if (isLoading) {
-    return <CircularProgress />;
+  if (isHistoryLoading || isUsersLoading) {
+    return <Loader />;
   }
 
   return (

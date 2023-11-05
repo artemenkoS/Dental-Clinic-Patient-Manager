@@ -10,7 +10,7 @@ docker exec -it containerID bash
 
 psql -U postgres -d postgres -c "CREATE DATABASE aktis_patients" 2> /dev/null || true
 
-psql -U postgres -d aktis_patients -f /backups/backup-20231027201706.sql
+psql -U postgres -d aktis_patients -f /backups/backup-20231105114921.sql
 
 Для запуска в production режиме:
 docker-compose up --build

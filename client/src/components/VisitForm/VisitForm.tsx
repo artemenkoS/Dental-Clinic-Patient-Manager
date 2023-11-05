@@ -1,5 +1,5 @@
-// import { DevTool } from '@hookform/devtools';
-import { Button, CircularProgress, Grid, MenuItem, Modal } from '@mui/material';
+import { DevTool } from '@hookform/devtools';
+import { Button, Grid, MenuItem, Modal } from '@mui/material';
 import dayjs from 'dayjs';
 import * as React from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -19,6 +19,7 @@ import { userSelector } from '../../store/slices/authSlice';
 import { editVisitModalSelector, setEditableVisit, setEditVisitModalOpened } from '../../store/slices/modalsSlice';
 import { resetSlots, selectedSlotSelector, visitDateSelector } from '../../store/slices/visitSlice';
 import { AutocompleteOption } from '../../types';
+import { Loader } from '../Loader/Loader';
 import { Container } from './styled';
 
 interface FormValues {
@@ -37,7 +38,6 @@ interface Props {
 
 export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
   const user = useAppSelector(userSelector);
-
   const { data: doctors, isLoading: isDoctorsloading } = useGetDoctorsQuery();
 
   const { data: roles } = useGetRolesQuery();
@@ -81,7 +81,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
     formState: { isValid },
   } = useForm<FormValues>({ defaultValues: values ?? defaultFormValues });
 
-  React.useEffect(() => resetForm(defaultFormValues), [date]);
+  React.useEffect(() => resetForm(values ?? defaultFormValues), [date]);
 
   const { data: procedures, isLoading: isProceduresLoading } = useGetProceduresQuery();
   const { submitText } = useAppSelector(editVisitModalSelector);
@@ -103,6 +103,8 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
       const time = selectedTimeSlot ? selectedTimeSlot.split(':') : ['0', '0'];
       data.visitDate.setHours(+time[0]);
       data.visitDate.setMinutes(+time[1]);
+      data.visitDate.setSeconds(0);
+      console.log(data.visitDate);
 
       onSubmit(
         {
@@ -134,12 +136,12 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
   };
 
   if (isDoctorsloading || isProceduresLoading) {
-    return <CircularProgress />;
+    return <Loader />;
   }
 
   return (
     <div>
-      <Modal open={isOpen} onClose={handleClose}>
+      <Modal open={isOpen} onClose={handleClose} keepMounted={false}>
         <Container>
           <form onSubmit={handleSubmit(formSubmit)}>
             <Grid container direction="column" spacing={2}>
@@ -204,7 +206,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
           </form>
         </Container>
       </Modal>
-      {/* {import.meta.env.DEV && <DevTool control={control} />} */}
+      {import.meta.env.DEV && <DevTool control={control} />}
     </div>
   );
 };

@@ -1,7 +1,7 @@
-import { CircularProgress } from '@mui/material';
 import { GridColDef, GridPaginationModel, GridSortModel } from '@mui/x-data-grid';
 
 import { useGetPatientsQuery } from '../../api/patient/patientApi';
+import { Loader } from '../../components/Loader/Loader';
 import { PaginatedTable } from '../../components/PaginatedTable/PaginatedTable';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
@@ -46,7 +46,7 @@ export const AllPatientsTable = () => {
   ];
 
   if (isLoading) {
-    return <CircularProgress />;
+    return <Loader />;
   }
 
   return (

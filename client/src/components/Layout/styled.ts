@@ -6,8 +6,9 @@ export const ContentWrapper = styled.main`
   display: flex;
   flex: 1 1 auto;
   width: 100%;
+  height: 100%;
   padding: ${theme.spacing(3)};
-  max-width: 1500px;
+  max-width: 2100px;
   min-width: 800px;
   background-color: ${theme.palette.background.default};
   gap: ${theme.spacing(2)};
@@ -37,12 +38,13 @@ export const Sidebar = styled.div`
   padding: ${theme.spacing(2)};
   font-size: ${theme.spacing(3)};
   color: ${theme.palette.primary.light};
-  overflow: scroll;
+  overflow: auto;
 `;
 
 export const ContentLayout = styled.div`
   display: flex;
   height: 100%;
+  overflow: hidden;
 `;
 
 export const Wrapper = styled.div`

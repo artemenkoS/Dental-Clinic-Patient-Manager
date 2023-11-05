@@ -4,7 +4,9 @@ export const NavBar = () => {
   return (
     <Container>
       {LINK_LIST.map((link) => (
-        <Link to={link.to}>{link.title}</Link>
+        <Link key={link.to} to={link.to}>
+          {link.title}
+        </Link>
       ))}
     </Container>
   );

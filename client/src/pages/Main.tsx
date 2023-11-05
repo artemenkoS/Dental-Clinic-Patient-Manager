@@ -2,12 +2,12 @@ import { DeleteVisitModal } from '../features/DeleteVisitModal/DeleteVisitModal'
 import { EditVisit } from '../features/EditVisit/EditVisit';
 import { NewVisit } from '../features/NewVisit/NewVisit';
 import { NewVisitButton } from '../features/NewVisit/NewVisitButton';
-import { VisitsToday } from '../features/VisitsToday/VisitsToday';
+import { VisitsList } from '../features/VisitsList/VisitsList';
 
 export const MainScreen = () => {
   return (
     <>
-      <VisitsToday />
+      <VisitsList />
       <NewVisitButton />
       <NewVisit />
       <EditVisit />
