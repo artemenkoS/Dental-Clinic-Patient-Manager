@@ -1,4 +1,4 @@
-import { List, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import React from 'react';
 import toast from 'react-hot-toast';
