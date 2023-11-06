@@ -39,6 +39,7 @@ const visitSlice = createSlice({
         state.selectedSlot = null;
       }
     });
+
     builder.addMatcher(visitApi.endpoints.getVisits.matchRejected, (state, { meta }) => {
       if (meta.arg.originalArgs.doctorId) {
         state.busySlots = null;

@@ -43,7 +43,7 @@ export const AllVisitsTable = () => {
     }
   }, [visits, users, procedures, patients]);
 
-  const totalCount = visits?.pagination.totalCount;
+  const totalCount = visits?.pagination?.totalCount;
 
   const paginationModel = {
     page: pagination.page,

@@ -40,9 +40,9 @@ export const AllPatientsTable = () => {
   };
 
   const columns: GridColDef[] = [
-    { field: 'name', headerName: 'Имя', width: 150 },
-    { field: 'surname', headerName: 'Фамилия', width: 150 },
-    { field: 'phone', headerName: 'Телефон', width: 150 },
+    { field: 'name', headerName: 'Имя', width: 250 },
+    { field: 'surname', headerName: 'Фамилия', width: 250 },
+    { field: 'phone', headerName: 'Телефон', width: 250 },
   ];
 
   if (isLoading) {

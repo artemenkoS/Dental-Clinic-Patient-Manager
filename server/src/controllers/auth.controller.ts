@@ -6,7 +6,7 @@ import { config } from "../config";
 
 const generateAccessToken = (id: string, role: string) => {
   const payload = { id: id, role: role };
-  return jwt.sign(payload, config.secretKey, { expiresIn: "7d" });
+  return jwt.sign(payload, config.secretKey, { expiresIn: "10h" });
 };
 
 export const registerUser = async (

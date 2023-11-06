@@ -21,7 +21,12 @@ create TABLE visit (
     "doctorId" INTEGER,
     FOREIGN KEY ("doctorId") REFERENCES users(id),
     "patientId" INTEGER,
-    FOREIGN KEY ("patientId") REFERENCES patient(id)
+    FOREIGN KEY ("patientId") REFERENCES patient(id),
+    "procedureId" INTEGER,
+    FOREIGN KEY ("procedureId") REFERENCES procedure(id),
+    "authorId" INTEGER,
+    FOREIGN KEY ("authorId") REFERENCES users(id),
+    
 )
 
 create TABLE role (

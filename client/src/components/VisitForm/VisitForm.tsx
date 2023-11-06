@@ -17,7 +17,7 @@ import { PatientAutocomplete } from '../../components/PatientAutocomplete/Patien
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { userSelector } from '../../store/slices/authSlice';
 import { editVisitModalSelector, setEditableVisit, setEditVisitModalOpened } from '../../store/slices/modalsSlice';
-import { resetSlots, selectedSlotSelector, visitDateSelector } from '../../store/slices/visitSlice';
+import { selectedSlotSelector, visitDateSelector } from '../../store/slices/visitSlice';
 import { AutocompleteOption } from '../../types';
 import { Loader } from '../Loader/Loader';
 import { Container } from './styled';
@@ -58,8 +58,6 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
   const handleClose = () => {
     dispatch(setEditVisitModalOpened(false));
     dispatch(setEditableVisit(null));
-    dispatch(resetSlots());
-
     resetForm();
   };
   const date = useAppSelector(visitDateSelector);
