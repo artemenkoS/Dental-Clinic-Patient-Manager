@@ -50,11 +50,11 @@ export const HistoryTable = () => {
   };
 
   const columns: GridColDef[] = [
-    { field: 'status', headerName: 'Статус', width: 130 },
-    { field: 'authorId', headerName: 'Автор', width: 150 },
-    { field: 'doctorId', headerName: 'Доктор', width: 150 },
-    { field: 'visitDate', headerName: 'Время записи', width: 150 },
-    { field: 'changes', headerName: 'Изменения', width: 500 },
+    { field: 'status', headerName: 'Статус', flex: 1 },
+    { field: 'authorId', headerName: 'Автор', flex: 1 },
+    { field: 'doctorId', headerName: 'Доктор', flex: 1 },
+    { field: 'visitDate', headerName: 'Время записи', flex: 1 },
+    { field: 'changes', headerName: 'Изменения', flex: 3 },
   ];
 
   if (isHistoryLoading || isUsersLoading) {

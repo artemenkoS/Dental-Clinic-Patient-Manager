@@ -1,12 +1,11 @@
 import { DevTool } from '@hookform/devtools';
-import { Button, Grid, MenuItem, Modal } from '@mui/material';
+import { Button, Grid, MenuItem, Modal, TextField } from '@mui/material';
 import dayjs from 'dayjs';
 import * as React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
 import { useGetDoctorsQuery } from '../../api/doctor/doctorApi';
 import { useCreateLogRecordMutation } from '../../api/history/historyApi';
-import { useGetProceduresQuery } from '../../api/procedure/procedureApi';
 import { useGetRolesQuery } from '../../api/role/rolesApi';
 import { VisitMutationBody } from '../../api/visit/types';
 import { useGetVisitsQuery } from '../../api/visit/visitApi';
@@ -26,7 +25,7 @@ interface FormValues {
   visitDate: Date;
   patient: AutocompleteOption | null;
   doctorId: string;
-  procedureId: string;
+  procedure: string;
   authorId: string;
   id?: number | undefined;
 }
@@ -66,7 +65,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
   const defaultFormValues: FormValues = {
     doctorId: doctor ? doctor.id.toString() : '',
     patient: null,
-    procedureId: '',
+    procedure: '',
     visitDate: new Date(date),
     authorId: '',
   };
@@ -77,11 +76,11 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
     watch,
     reset: resetForm,
     formState: { isValid },
+    register,
   } = useForm<FormValues>({ defaultValues: values ?? defaultFormValues });
 
   React.useEffect(() => resetForm(values ?? defaultFormValues), [date]);
 
-  const { data: procedures, isLoading: isProceduresLoading } = useGetProceduresQuery();
   const { submitText } = useAppSelector(editVisitModalSelector);
 
   const [createLogRecordMutate] = useCreateLogRecordMutation();
@@ -102,7 +101,6 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
       data.visitDate.setHours(+time[0]);
       data.visitDate.setMinutes(+time[1]);
       data.visitDate.setSeconds(0);
-      console.log(data.visitDate);
 
       onSubmit(
         {
@@ -110,7 +108,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
           authorId: user.id,
           visitDate: `${data.visitDate.toISOString()}`,
           patientId: +data.patient.id,
-          procedureId: +data.procedureId,
+          procedure: data.procedure,
         },
         values?.id
       );
@@ -123,7 +121,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
           authorId: user.id,
           visitDate: `${data.visitDate.toISOString()}`,
           patientId: +data.patient.id,
-          procedureId: +data.procedureId,
+          procedure: +data.procedure,
         },
         status: values?.id ? 'edit' : 'create',
         createdAt: new Date().toISOString(),
@@ -133,7 +131,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
     }
   };
 
-  if (isDoctorsloading || isProceduresLoading) {
+  if (isDoctorsloading) {
     return <Loader />;
   }
 
@@ -166,18 +164,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
                 />
               </Grid>
               <Grid item>
-                <Controller
-                  name="procedureId"
-                  control={control}
-                  rules={{ required: 'Процедура не выбрана' }}
-                  render={({ field }) => (
-                    <FormSelect label="Выберите процедуру" onChange={field.onChange} value={field.value}>
-                      {procedures?.data.map((procedure) => (
-                        <MenuItem value={procedure.id.toString()}>{procedure.procedure}</MenuItem>
-                      ))}
-                    </FormSelect>
-                  )}
-                />
+                <TextField {...register('procedure')} disabled={!doctor} fullWidth placeholder="Описание процедуры" />
               </Grid>
               <Grid item xs={2}>
                 <Controller

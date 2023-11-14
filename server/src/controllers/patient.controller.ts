@@ -44,7 +44,7 @@ export const getPatients = async (req: Request, res: Response) => {
     }
 
     if (req.query.search) {
-      query += ` WHERE (REPLACE(name, ' ', '') || REPLACE(surname, ' ', '')) ILIKE $1`;
+      query += ` WHERE REPLACE(surname, ' ', '') ILIKE $1`;
       queryParams.push(`%${req.query.search.toString().replace(/\s/g, "")}%`);
     }
 

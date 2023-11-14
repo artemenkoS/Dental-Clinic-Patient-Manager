@@ -45,8 +45,6 @@ export const VisitsList = () => {
     return <Loader />;
   }
 
-  console.log('isVisitsLoading', isVisitsLoading, 'isPatientsLoading', isPatientsLoading);
-
   if (isError) {
     toast.error('Не удалось загрузить список записей.');
   }

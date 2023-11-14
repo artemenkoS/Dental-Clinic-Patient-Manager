@@ -27,6 +27,7 @@ export const NewPatient: React.FC = () => {
     handleSubmit,
     register,
     reset: resetForm,
+    formState,
   } = useForm<FormValues>({
     defaultValues: {
       name: '',
@@ -72,9 +73,14 @@ export const NewPatient: React.FC = () => {
                   <TextField {...register('surname')} required placeholder="Введите фамилию " fullWidth />
                 </Grid>
                 <Grid item>
-                  <TextField {...register('phone')} required placeholder="Введите номер телефона " fullWidth />
+                  <TextField
+                    {...register('phone', { required: true, pattern: /^(\+7|8)7\d{9}$/ })}
+                    required
+                    placeholder="Введите номер телефона"
+                    fullWidth
+                  />
                 </Grid>
-                <Button type="submit" variant="outlined" fullWidth>
+                <Button type="submit" variant="outlined" fullWidth disabled={!formState.isValid}>
                   Добавить пациента
                 </Button>
               </Grid>

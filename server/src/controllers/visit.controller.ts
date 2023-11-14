@@ -4,9 +4,9 @@ import { prepareSqlQuery } from "../helpers/prepareSqlQuery";
 import db from "../db";
 
 export const createVisit = async (req: Request, res: Response) => {
-  const { visitDate, doctorId, patientId, procedureId, authorId } = req.body;
+  const { visitDate, doctorId, patientId, procedure, authorId } = req.body;
 
-  if (!visitDate || !doctorId || !patientId || !procedureId) {
+  if (!visitDate || !doctorId || !patientId || !procedure) {
     res.status(400).json({ message: "Не все обязательные поля заполнены" });
     return;
   }
@@ -27,8 +27,8 @@ export const createVisit = async (req: Request, res: Response) => {
     }
 
     const newVisit = await db.query(
-      `INSERT INTO visit ("visitDate", "doctorId", "patientId", "procedureId", "authorId") values ($1, $2, $3, $4, $5) RETURNING *`,
-      [visitDate, doctorId, patientId, procedureId, authorId]
+      `INSERT INTO visit ("visitDate", "doctorId", "patientId", "procedure", "authorId") values ($1, $2, $3, $4, $5) RETURNING *`,
+      [visitDate, doctorId, patientId, procedure, authorId]
     );
 
     res.status(201).json({
@@ -44,8 +44,6 @@ export const createVisit = async (req: Request, res: Response) => {
 export const getVisits = async (req: Request, res: Response) => {
   const { query, queryParams, totalCountQuery, totalCountQueryParams } =
     prepareSqlQuery(req.query);
-
-  console.log(query);
 
   try {
     const visits = await db.query(query, queryParams);
@@ -97,10 +95,10 @@ export const getOneVisit = async (req: Request, res: Response) => {
 };
 
 export const updateVisit = async (req: Request, res: Response) => {
-  const { visitDate, doctorId, patientId, procedureId, authorId } = req.body;
+  const { visitDate, doctorId, patientId, procedure, authorId } = req.body;
   const id = req.params.id;
 
-  if (!visitDate || !doctorId || !patientId || !procedureId || !authorId) {
+  if (!visitDate || !doctorId || !patientId || !procedure || !authorId) {
     return res
       .status(400)
       .json({ message: "Не все обязательные поля заполнены" });
@@ -123,10 +121,10 @@ export const updateVisit = async (req: Request, res: Response) => {
 
     const updatedVisit = await db.query(
       `UPDATE visit 
-       SET "visitDate" = $1, "doctorId" = $2, "patientId" = $3, "procedureId" = $4, "authorId" = $5
+       SET "visitDate" = $1, "doctorId" = $2, "patientId" = $3, "procedure" = $4, "authorId" = $5
        WHERE id = $6
        RETURNING *`,
-      [visitDate, doctorId, patientId, procedureId, authorId, id]
+      [visitDate, doctorId, patientId, procedure, authorId, id]
     );
 
     if (updatedVisit.rows[0]) {

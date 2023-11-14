@@ -35,8 +35,6 @@ export const EditVisit = () => {
     id && updateVisit({ body, id });
   };
 
-  console.log(visit, patient, date);
-
   return (
     visit &&
     patient &&
@@ -47,7 +45,7 @@ export const EditVisit = () => {
           ...visit,
           patient: patient,
           doctorId: visit.doctorId.toString(),
-          procedureId: visit.procedureId.toString(),
+          procedure: visit.procedure.toString(),
           authorId: visit.authorId.toString(),
           visitDate: new Date(date?.date),
         }}

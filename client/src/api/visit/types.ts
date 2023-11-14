@@ -5,7 +5,7 @@ export interface Visit {
   visitDate: string;
   doctorId: number;
   patientId: number;
-  procedureId: number;
+  procedure: number;
   authorId: number;
 }
 
@@ -22,7 +22,7 @@ export interface VisitParams {
   pageSize?: number;
   doctorId?: string;
   patientId?: string;
-  procedureId?: string;
+  procedure?: string;
   sort?: string;
 }
 
@@ -30,6 +30,6 @@ export interface VisitMutationBody {
   visitDate: string;
   patientId: number;
   doctorId: number;
-  procedureId: number;
+  procedure: string;
   authorId: number;
 }

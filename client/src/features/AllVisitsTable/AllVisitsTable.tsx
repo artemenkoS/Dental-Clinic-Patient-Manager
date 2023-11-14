@@ -10,18 +10,18 @@ import { PaginatedTable } from '../../components/PaginatedTable/PaginatedTable';
 import { createPatientsList } from '../../helpers/createPatientsList';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
-  patientsTableCurrentSortModelSelector,
-  patientsTablePaginationSelector,
-  setPatientsTablePagination,
-  setPatientsTableSortModel,
+  setVisitsTablePagination,
+  setVisitsTableSortModel,
+  visitsTableCurrentSortModelSelector,
+  visitsTablePaginationSelector,
 } from '../../store/slices/tablesSlice';
 import { formatVisitsData } from './helpers';
 
 export const AllVisitsTable = () => {
-  const pagination = useAppSelector(patientsTablePaginationSelector);
   const dispatch = useAppDispatch();
 
-  const sort = useAppSelector(patientsTableCurrentSortModelSelector);
+  const pagination = useAppSelector(visitsTablePaginationSelector);
+  const sort = useAppSelector(visitsTableCurrentSortModelSelector);
 
   const { data: visits, isFetching: isVisitsLoading } = useGetVisitsQuery({
     page: pagination.page + 1 ?? 1,
@@ -31,7 +31,10 @@ export const AllVisitsTable = () => {
 
   const patientIdsArray = createPatientsList(visits?.data);
 
-  const { data: patients, isFetching: isPatientsLoading } = useGetPatientsQuery({ ids: patientIdsArray });
+  const { data: patients, isFetching: isPatientsLoading } = useGetPatientsQuery(
+    { ids: patientIdsArray },
+    { skip: !patientIdsArray.length }
+  );
 
   const { data: procedures } = useGetProceduresQuery();
 
@@ -39,7 +42,7 @@ export const AllVisitsTable = () => {
 
   const rows = React.useMemo(() => {
     if (visits && users && procedures && patients) {
-      return formatVisitsData(visits?.data, users?.data, procedures?.data, patients.data);
+      return formatVisitsData(visits?.data, users?.data, patients.data);
     }
   }, [visits, users, procedures, patients]);
 
@@ -51,22 +54,20 @@ export const AllVisitsTable = () => {
   };
 
   const onPaginationModelChange = (e: GridPaginationModel) => {
-    dispatch(setPatientsTablePagination(e));
+    dispatch(setVisitsTablePagination(e));
   };
 
   const onSortModelChange = (e: GridSortModel) => {
-    dispatch(setPatientsTableSortModel(e));
+    dispatch(setVisitsTableSortModel(e));
   };
 
   const columns: GridColDef[] = [
-    { field: 'visitDate', headerName: 'Время', width: 200 },
-    { field: 'patientId', headerName: 'Пациент', width: 150 },
-    { field: 'doctorId', headerName: 'Доктор', width: 150 },
-    { field: 'authorId', headerName: 'Автор записи', width: 150 },
-    { field: 'procedureId', headerName: 'Процедура', width: 150 },
+    { field: 'visitDate', headerName: 'Время', flex: 1 },
+    { field: 'patientId', headerName: 'Пациент', flex: 1 },
+    { field: 'doctorId', headerName: 'Доктор', flex: 1 },
+    { field: 'authorId', headerName: 'Автор записи', flex: 1 },
+    { field: 'procedure', headerName: 'Процедура', flex: 1 },
   ];
-
-  console.log(rows);
 
   if (isVisitsLoading || isPatientsLoading || rows?.some((patient) => !patient.patientId)) {
     return <Loader />;
