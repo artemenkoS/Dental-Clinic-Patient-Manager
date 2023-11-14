@@ -13,6 +13,8 @@ interface FormValues {
   name: string;
   surname: string;
   phone: string;
+  address: string;
+  birthdate: string;
 }
 
 export const NewPatient: React.FC = () => {
@@ -33,6 +35,8 @@ export const NewPatient: React.FC = () => {
       name: '',
       surname: '',
       phone: '',
+      birthdate: '',
+      address: '',
     },
   });
 
@@ -52,6 +56,8 @@ export const NewPatient: React.FC = () => {
       name: data.name,
       surname: data.surname,
       phone: data.phone,
+      birthdate: data.birthdate,
+      address: data.address,
     });
     resetForm();
   };
@@ -67,11 +73,18 @@ export const NewPatient: React.FC = () => {
             <form onSubmit={handleSubmit(onSubmit)}>
               <Grid container direction="column" gap={2}>
                 <Grid item>
-                  <TextField {...register('name')} required placeholder="Введите имя " fullWidth />
-                </Grid>
-                <Grid item>
                   <TextField {...register('surname')} required placeholder="Введите фамилию " fullWidth />
                 </Grid>
+                <Grid item>
+                  <TextField {...register('name')} required placeholder="Введите имя и отчество" fullWidth />
+                </Grid>
+                <Grid item>
+                  <TextField {...register('birthdate')} required placeholder="Введите дату рождения " fullWidth />
+                </Grid>
+                <Grid item>
+                  <TextField {...register('address')} required placeholder="Введите адрес " fullWidth />
+                </Grid>
+
                 <Grid item>
                   <TextField
                     {...register('phone', { required: true, pattern: /^(\+7|8)7\d{9}$/ })}

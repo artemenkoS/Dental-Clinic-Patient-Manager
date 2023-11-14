@@ -6,7 +6,7 @@ import db from "../db";
 export const createVisit = async (req: Request, res: Response) => {
   const { visitDate, doctorId, patientId, procedure, authorId } = req.body;
 
-  if (!visitDate || !doctorId || !patientId || !procedure) {
+  if (!visitDate || !doctorId || !patientId) {
     res.status(400).json({ message: "Не все обязательные поля заполнены" });
     return;
   }
@@ -98,7 +98,7 @@ export const updateVisit = async (req: Request, res: Response) => {
   const { visitDate, doctorId, patientId, procedure, authorId } = req.body;
   const id = req.params.id;
 
-  if (!visitDate || !doctorId || !patientId || !procedure || !authorId) {
+  if (!visitDate || !doctorId || !patientId || !authorId) {
     return res
       .status(400)
       .json({ message: "Не все обязательные поля заполнены" });

@@ -1,4 +1,12 @@
-import { DataGrid, GridColDef, GridPaginationModel, GridSortModel, GridValidRowModel } from '@mui/x-data-grid';
+import {
+  DataGrid,
+  GridColDef,
+  GridPaginationModel,
+  GridSlotsComponent,
+  GridSortModel,
+  GridValidRowModel,
+} from '@mui/x-data-grid';
+import { UncapitalizeObjectKeys } from '@mui/x-data-grid/internals';
 
 import { Wrapper } from './styled';
 
@@ -10,6 +18,7 @@ interface Props {
   onPaginationChange: (e: GridPaginationModel) => void;
   onSortModelChange?: (e: GridSortModel) => void;
   loading?: boolean;
+  slots?: UncapitalizeObjectKeys<Partial<GridSlotsComponent>>;
 }
 
 export const PaginatedTable: React.FC<Props> = ({
@@ -19,6 +28,7 @@ export const PaginatedTable: React.FC<Props> = ({
   rowCount,
   onPaginationChange,
   onSortModelChange,
+  slots,
   loading,
 }) => {
   return (
@@ -39,6 +49,7 @@ export const PaginatedTable: React.FC<Props> = ({
         onSortModelChange={onSortModelChange}
         pageSizeOptions={[10, 25, 50, 100]}
         loading={loading}
+        slots={slots}
       />
     </Wrapper>
   );

@@ -5,6 +5,8 @@ export interface Patient {
   name: string;
   surname: string;
   phone: string;
+  birthdate: string;
+  address: string;
 }
 
 export interface PatientsDto {

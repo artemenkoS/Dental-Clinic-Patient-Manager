@@ -3,17 +3,17 @@ import { Request, Response } from "express";
 import db from "../db";
 
 export const createPatient = async (req: Request, res: Response) => {
-  const { name, surname, phone } = req.body;
+  const { name, surname, phone, birthdate, address } = req.body;
 
-  if (!name || !surname || !phone) {
+  if (!name || !surname || !phone || !birthdate || !address) {
     res.status(400).json("Не все обязательные поля заполнены");
     return;
   }
 
   try {
     const newPatient = await db.query(
-      `INSERT INTO patient (name, surname, phone) values ($1, $2, $3) RETURNING *`,
-      [name, surname, phone]
+      `INSERT INTO patient (name, surname, phone, birthdate, address) values ($1, $2, $3, $4, $5) RETURNING *`,
+      [name, surname, phone, birthdate, address]
     );
 
     res.status(201).json({
@@ -111,12 +111,12 @@ export const getOnePatient = async (req: Request, res: Response) => {
 };
 
 export const updatePatient = async (req: Request, res: Response) => {
-  const { name, surname, phone, id } = req.body;
+  const { name, surname, phone, id, birthdate, address } = req.body;
 
   try {
     const newPatient = await db.query(
-      `UPDATE patient set name =  $1, surname = $2, phone= $3 where id = $4 RETURNING *`,
-      [name, surname, phone, id]
+      `UPDATE patient set name =  $1, surname = $2, phone= $3 , birthdate= $4, address= $5 where id = $6 RETURNING *`,
+      [name, surname, phone, birthdate, address, id]
     );
 
     res.status(201).json({

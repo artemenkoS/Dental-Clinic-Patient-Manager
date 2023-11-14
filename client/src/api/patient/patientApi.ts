@@ -44,7 +44,7 @@ export const userApi = apiSlice.injectEndpoints({
       transformResponse: (rawResult: { data: Patient }) => {
         return {
           id: rawResult.data.id,
-          label: `${rawResult.data.name} ${rawResult.data.surname}`,
+          label: `${rawResult.data.surname} ${rawResult.data.name}`,
         };
       },
       keepUnusedDataFor: 0,
