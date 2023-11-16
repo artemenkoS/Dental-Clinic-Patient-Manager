@@ -1,18 +1,23 @@
 import { GridColDef, GridPaginationModel, GridSortModel } from '@mui/x-data-grid';
+import React from 'react';
 
 import { useGetPatientsQuery } from '../../api/patient/patientApi';
 import { Loader } from '../../components/Loader/Loader';
 import { PaginatedTable } from '../../components/PaginatedTable/PaginatedTable';
+import { SearchTextfield } from '../../components/SearchTextField/SearchTextField';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
   patientsTableCurrentSortModelSelector,
   patientsTablePaginationSelector,
+  patientsTableSearchSelector,
   setPatientsTablePagination,
   setPatientsTableSortModel,
 } from '../../store/slices/tablesSlice';
+import { PatientSearch } from '../PatientSearch/PatientSearch';
 
 export const AllPatientsTable = () => {
   const pagination = useAppSelector(patientsTablePaginationSelector);
+  const search = useAppSelector(patientsTableSearchSelector);
   const dispatch = useAppDispatch();
 
   const sort = useAppSelector(patientsTableCurrentSortModelSelector);
@@ -21,6 +26,7 @@ export const AllPatientsTable = () => {
     page: pagination.page + 1 ?? 1,
     pageSize: pagination.pageSize,
     sort: JSON.stringify(sort),
+    search: search ?? undefined,
   });
 
   const rows = patients?.data;
@@ -59,6 +65,7 @@ export const AllPatientsTable = () => {
         rows={rows}
         onPaginationChange={onPaginationModelChange}
         onSortModelChange={onSortModelChange}
+        slots={{ toolbar: PatientSearch }}
       />
     )
   );

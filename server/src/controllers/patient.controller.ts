@@ -37,12 +37,6 @@ export const getPatients = async (req: Request, res: Response) => {
 
     const queryParams = [];
 
-    if (sort?.length) {
-      JSON.parse(sort).forEach((item: { field: string; sort: string }) => {
-        query += ` ORDER by ${item.field} ${item.sort}`;
-      });
-    }
-
     if (req.query.search) {
       query += ` WHERE REPLACE(surname, ' ', '') ILIKE $1`;
       queryParams.push(`%${req.query.search.toString().replace(/\s/g, "")}%`);
@@ -51,15 +45,41 @@ export const getPatients = async (req: Request, res: Response) => {
     if (req.query.ids) {
       const ids: string[] = req.query.ids.toString().split(",");
 
+      // Use placeholders for each ID in the IN clause
+      const placeholders = ids.map((_, index) => `$${index + 1}`).join(",");
+
       query = `
         SELECT * FROM patient
-        WHERE id IN (${ids.map((id, index) => `$${index + 1}`).join(",")})
+        WHERE id IN (${placeholders})
+        LIMIT $${ids.length + 1}
+        OFFSET $${ids.length + 2}
       `;
 
-      const result = await db.query(query, ids);
+      const result = await db.query(query, [...ids, pageSize, offset]);
 
-      res.status(200).json({ data: result.rows });
+      const totalCountQuery = await db.query(
+        `SELECT COUNT(*) FROM patient WHERE id IN (${placeholders})`,
+        ids
+      );
+      const totalCount = +totalCountQuery.rows[0].count;
+      const totalPages = Math.ceil(totalCount / pageSize);
+
+      res.status(200).json({
+        data: result.rows,
+        pagination: {
+          currentPage: page,
+          pageSize: pageSize,
+          totalPages,
+          totalCount,
+        },
+      });
     } else {
+      if (sort?.length) {
+        JSON.parse(sort).forEach((item: { field: string; sort: string }) => {
+          query += ` ORDER BY ${item.field} ${item.sort}`;
+        });
+      }
+
       query += ` LIMIT $${queryParams.length + 1} OFFSET $${
         queryParams.length + 2
       }`;
@@ -69,7 +89,7 @@ export const getPatients = async (req: Request, res: Response) => {
       const totalCountQuery = await db.query(
         `SELECT COUNT(*) FROM patient${
           queryParams.length > 0
-            ? " WHERE name ILIKE $1 OR surname ILIKE $1"
+            ? " WHERE REPLACE(surname, ' ', '') ILIKE $1"
             : ""
         }`,
         queryParams

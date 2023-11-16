@@ -22,7 +22,7 @@ export interface PatientParams {
   page?: number;
   pageSize?: number;
   name?: string;
-  surname?: string;
+  search?: string;
   sort?: string;
   ids?: number[];
 }
