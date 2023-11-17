@@ -1,10 +1,8 @@
 import { GridColDef, GridPaginationModel, GridSortModel } from '@mui/x-data-grid';
-import React from 'react';
 
 import { useGetPatientsQuery } from '../../api/patient/patientApi';
 import { Loader } from '../../components/Loader/Loader';
 import { PaginatedTable } from '../../components/PaginatedTable/PaginatedTable';
-import { SearchTextfield } from '../../components/SearchTextField/SearchTextField';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
   patientsTableCurrentSortModelSelector,
