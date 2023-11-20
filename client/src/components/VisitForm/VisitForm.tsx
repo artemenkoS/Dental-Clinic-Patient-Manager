@@ -1,5 +1,5 @@
 import { DevTool } from '@hookform/devtools';
-import { Button, Grid, MenuItem, Modal, TextField } from '@mui/material';
+import { Button, Checkbox, FormControlLabel, Grid, MenuItem, Modal, TextField } from '@mui/material';
 import dayjs from 'dayjs';
 import * as React from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -28,6 +28,7 @@ interface FormValues {
   procedure: string;
   authorId: string;
   id?: number | undefined;
+  isRemindRequired: boolean;
 }
 
 interface Props {
@@ -68,6 +69,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
     procedure: '',
     visitDate: new Date(date),
     authorId: '',
+    isRemindRequired: false,
   };
 
   const {
@@ -109,6 +111,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
           visitDate: `${data.visitDate.toISOString()}`,
           patientId: +data.patient.id,
           procedure: data.procedure,
+          isRemindRequired: data.isRemindRequired,
         },
         values?.id
       );
@@ -174,6 +177,18 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
                   render={({ field }) => (
                     <PatientAutocomplete label="Выберите пациента" value={field.value} onChange={field.onChange} />
                   )}
+                />
+                <FormControlLabel
+                  control={
+                    <Controller
+                      name="isRemindRequired"
+                      control={control}
+                      render={({ field }) => (
+                        <Checkbox checked={field.value} onChange={(e) => field.onChange(e.target.checked)} />
+                      )}
+                    />
+                  }
+                  label="Требуется напоминание"
                 />
               </Grid>
             </Grid>

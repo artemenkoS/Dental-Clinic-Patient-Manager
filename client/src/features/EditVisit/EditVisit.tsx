@@ -47,6 +47,7 @@ export const EditVisit = () => {
           doctorId: visit.doctorId.toString(),
           procedure: visit.procedure.toString(),
           authorId: visit.authorId.toString(),
+          isRemindRequired: visit.isRemindRequired,
           visitDate: new Date(date?.date),
         }}
       />

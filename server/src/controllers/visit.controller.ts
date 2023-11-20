@@ -4,7 +4,14 @@ import { prepareSqlQuery } from "../helpers/prepareSqlQuery";
 import db from "../db";
 
 export const createVisit = async (req: Request, res: Response) => {
-  const { visitDate, doctorId, patientId, procedure, authorId } = req.body;
+  const {
+    visitDate,
+    doctorId,
+    patientId,
+    procedure,
+    authorId,
+    isRemindRequired,
+  } = req.body;
 
   if (!visitDate || !doctorId || !patientId) {
     res.status(400).json({ message: "Не все обязательные поля заполнены" });
@@ -27,8 +34,8 @@ export const createVisit = async (req: Request, res: Response) => {
     }
 
     const newVisit = await db.query(
-      `INSERT INTO visit ("visitDate", "doctorId", "patientId", "procedure", "authorId") values ($1, $2, $3, $4, $5) RETURNING *`,
-      [visitDate, doctorId, patientId, procedure, authorId]
+      `INSERT INTO visit ("visitDate", "doctorId", "patientId", "procedure", "authorId", "isRemindRequired") values ($1, $2, $3, $4, $5, $6) RETURNING *`,
+      [visitDate, doctorId, patientId, procedure, authorId, isRemindRequired]
     );
 
     res.status(201).json({
@@ -95,7 +102,14 @@ export const getOneVisit = async (req: Request, res: Response) => {
 };
 
 export const updateVisit = async (req: Request, res: Response) => {
-  const { visitDate, doctorId, patientId, procedure, authorId } = req.body;
+  const {
+    visitDate,
+    doctorId,
+    patientId,
+    procedure,
+    authorId,
+    isRemindRequired,
+  } = req.body;
   const id = req.params.id;
 
   if (!visitDate || !doctorId || !patientId || !authorId) {
@@ -121,10 +135,18 @@ export const updateVisit = async (req: Request, res: Response) => {
 
     const updatedVisit = await db.query(
       `UPDATE visit 
-       SET "visitDate" = $1, "doctorId" = $2, "patientId" = $3, "procedure" = $4, "authorId" = $5
-       WHERE id = $6
+       SET "visitDate" = $1, "doctorId" = $2, "patientId" = $3, "procedure" = $4, "authorId" = $5, "isRemindRequired" = $6
+       WHERE id = $7
        RETURNING *`,
-      [visitDate, doctorId, patientId, procedure, authorId, id]
+      [
+        visitDate,
+        doctorId,
+        patientId,
+        procedure,
+        authorId,
+        isRemindRequired,
+        id,
+      ]
     );
 
     if (updatedVisit.rows[0]) {

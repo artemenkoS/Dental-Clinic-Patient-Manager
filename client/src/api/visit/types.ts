@@ -7,6 +7,7 @@ export interface Visit {
   patientId: number;
   procedure: number;
   authorId: number;
+  isRemindRequired: boolean;
 }
 
 export interface VisitDto {
@@ -32,4 +33,5 @@ export interface VisitMutationBody {
   doctorId: number;
   procedure: string;
   authorId: number;
+  isRemindRequired: boolean;
 }

@@ -1,3 +1,4 @@
+import CallIcon from '@mui/icons-material/Call';
 import { Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import React from 'react';
@@ -85,6 +86,7 @@ export const VisitsList = () => {
                         <Slot key={visit.id} elevation={4}>
                           <VisitTime> {formattedDate}</VisitTime>
                           <Typography>{patient?.surname}</Typography>
+                          {visit.isRemindRequired && <CallIcon color="error" />}
                           <ControlsContainer>
                             <DeleteVisitButton
                               visit={visit}
