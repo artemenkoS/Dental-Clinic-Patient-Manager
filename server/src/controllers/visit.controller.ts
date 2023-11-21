@@ -1,7 +1,15 @@
 import { Request, Response } from "express";
 import { prepareSqlQuery } from "../helpers/prepareSqlQuery";
+import { CustomWebSocket, wss } from "../../src";
 
 import db from "../db";
+const sendDoctorMessage = (doctorId: string, message: string) => {
+  wss.clients.forEach((client: CustomWebSocket) => {
+    if (+client.userId === +doctorId) {
+      client.send(message);
+    }
+  });
+};
 
 export const createVisit = async (req: Request, res: Response) => {
   const {
@@ -37,7 +45,11 @@ export const createVisit = async (req: Request, res: Response) => {
       `INSERT INTO visit ("visitDate", "doctorId", "patientId", "procedure", "authorId", "isRemindRequired") values ($1, $2, $3, $4, $5, $6) RETURNING *`,
       [visitDate, doctorId, patientId, procedure, authorId, isRemindRequired]
     );
-
+    authorId !== doctorId &&
+      sendDoctorMessage(
+        doctorId,
+        JSON.stringify({ type: "newVisit", visitDate })
+      );
     res.status(201).json({
       patient: newVisit.rows[0],
       message: "Запись успешно создана.",
@@ -166,10 +178,25 @@ export const updateVisit = async (req: Request, res: Response) => {
 export const deleteVisit = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
+    console.log(req.body);
+    const visitInfo = await db.query(
+      `SELECT "doctorId", "visitDate", "authorId" FROM visit WHERE id = $1`,
+      [id]
+    );
+
+    const doctorId = visitInfo.rows[0].doctorId;
+    const visitDate = visitInfo.rows[0].visitDate;
+    const authorId = visitInfo.rows[0].authorId;
+
     const visit = await db.query(`DELETE FROM visit where id = $1`, [id]);
     if (visit.rowCount === 0) {
       res.status(404).json({ message: "Запись не найдена." });
     } else {
+      console.log(id, doctorId) + doctorId !== +id &&
+        sendDoctorMessage(
+          doctorId,
+          JSON.stringify({ type: "cancelledVisit", visitDate })
+        );
       res.status(200).json({ message: "Запись успешно удалена" });
     }
   } catch (error) {
