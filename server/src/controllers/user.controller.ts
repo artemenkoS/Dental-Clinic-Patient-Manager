@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import db from "../db";
+import { Request, Response } from 'express';
+import db from '../db';
 
 export const getUserFromToken = (req: Request, res: Response) => {
   const user = res.locals.user;
@@ -13,10 +13,7 @@ export const getUsers = async (req: Request, res: Response) => {
     const pageSize = req.query.pageSize ? +req.query.pageSize : 10;
     const offset = (page - 1) * pageSize;
 
-    const result = await db.query(
-      `SELECT name,surname,id,role FROM users LIMIT $1 OFFSET $2`,
-      [pageSize, offset]
-    );
+    const result = await db.query(`SELECT name,surname,id,role FROM users LIMIT $1 OFFSET $2`, [pageSize, offset]);
 
     const totalCountQuery = await db.query(`SELECT COUNT(*) FROM procedure`);
     const totalCount = +totalCountQuery.rows[0].count;
@@ -31,12 +28,7 @@ export const getUsers = async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    console.error(
-      "Произошла ошибка при получении списка пользователей:",
-      error
-    );
-    res
-      .status(500)
-      .json({ message: "Произошла ошибка при получении списка пользователей" });
+    console.error('Произошла ошибка при получении списка пользователей:', error);
+    res.status(500).json({ message: 'Произошла ошибка при получении списка пользователей' });
   }
 };

@@ -1,11 +1,11 @@
-import { Router } from "express";
-import { createLogRecord, getHistory } from "../controllers/history.controller";
+import { Router } from 'express';
+import { createLogRecord, getHistory } from '../controllers/history.controller';
 
-import { isAuthed } from "../middlware/authMiddleware";
+import { isAuthed } from '../middlware/authMiddleware';
 
 const router = Router();
 
-router.post("/history", isAuthed, createLogRecord);
-router.get("/history", isAuthed, getHistory);
+router.post('/history', isAuthed, createLogRecord);
+router.get('/history', isAuthed, getHistory);
 
 export default router;

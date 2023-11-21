@@ -1,5 +1,5 @@
-import { Pool } from "pg";
-require("dotenv").config();
+import { Pool } from 'pg';
+require('dotenv').config();
 
 const pool = new Pool({
   user: process.env.PG_USER,

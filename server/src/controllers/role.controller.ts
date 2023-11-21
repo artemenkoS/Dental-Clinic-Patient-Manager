@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
 
-import db from "../db";
+import db from '../db';
 
 export const getRoles = async (req: Request, res: Response) => {
   try {
@@ -10,7 +10,7 @@ export const getRoles = async (req: Request, res: Response) => {
       data: result.rows,
     });
   } catch (error) {
-    console.error("Произошла ошибка при получении ролей", error);
-    res.status(500).json({ message: "Произошла ошибка при получении ролей" });
+    console.error('Произошла ошибка при получении ролей', error);
+    res.status(500).json({ message: 'Произошла ошибка при получении ролей' });
   }
 };

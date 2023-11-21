@@ -1,13 +1,12 @@
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
 
-import db from "../db";
+import db from '../db';
 
 export const createLogRecord = async (req: Request, res: Response) => {
-  const { authorId, doctorId, changes, visitDate, status, createdAt } =
-    req.body;
+  const { authorId, doctorId, changes, visitDate, status, createdAt } = req.body;
 
   if (!authorId || !doctorId || !visitDate || !status) {
-    res.status(400).json("Не все обязательные поля заполнены");
+    res.status(400).json('Не все обязательные поля заполнены');
     return;
   }
 
@@ -21,8 +20,8 @@ export const createLogRecord = async (req: Request, res: Response) => {
       log: newLogRecord.rows[0],
     });
   } catch (error) {
-    console.error("Ошибка при записи в историю:", error);
-    res.status(500).json("Произошла ошибка при записи в историю");
+    console.error('Ошибка при записи в историю:', error);
+    res.status(500).json('Произошла ошибка при записи в историю');
   }
 };
 
@@ -39,16 +38,14 @@ export const getHistory = async (req: Request, res: Response) => {
     if (sort) {
       const sortItems = JSON.parse(sort);
       if (Array.isArray(sortItems) && sortItems.length > 0) {
-        sortQuery = "";
-        sortItems.forEach(
-          (item: { field: string; sort: string }, index: number) => {
-            if (index === 0) {
-              sortQuery += ` ORDER BY "${item.field}" ${item.sort}`;
-            } else {
-              sortQuery += `, ${item.field} ${item.sort}`;
-            }
+        sortQuery = '';
+        sortItems.forEach((item: { field: string; sort: string }, index: number) => {
+          if (index === 0) {
+            sortQuery += ` ORDER BY "${item.field}" ${item.sort}`;
+          } else {
+            sortQuery += `, ${item.field} ${item.sort}`;
           }
-        );
+        });
       }
     }
 
@@ -70,9 +67,7 @@ export const getHistory = async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    console.error("Произошла ошибка при получении истории изменений", error);
-    res
-      .status(500)
-      .json({ message: "Произошла ошибка при получении истории изменений" });
+    console.error('Произошла ошибка при получении истории изменений', error);
+    res.status(500).json({ message: 'Произошла ошибка при получении истории изменений' });
   }
 };
