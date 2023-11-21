@@ -11,6 +11,7 @@ import { useGetVisitsQuery } from '../../api/visit/visitApi';
 import { DaySelect } from '../../components/DaySelector/DaySelect';
 import { Loader } from '../../components/Loader/Loader';
 import { createPatientsList } from '../../helpers/createPatientsList';
+import { getDoctorRole } from '../../helpers/getDoctorRole';
 import { useAppSelector } from '../../store/hooks';
 import { userSelector } from '../../store/slices/authSlice';
 import { visitDateSelector } from '../../store/slices/visitSlice';
@@ -24,9 +25,7 @@ export const VisitsList = () => {
   const user = useAppSelector(userSelector);
   const { data: roles } = useGetRolesQuery();
 
-  const doctorRole = React.useMemo(() => {
-    return roles?.data.find((role) => role.role === 'doctor');
-  }, [roles]);
+  const doctorRole = React.useMemo(() => getDoctorRole(roles?.data), [roles]);
 
   const {
     data: visits,

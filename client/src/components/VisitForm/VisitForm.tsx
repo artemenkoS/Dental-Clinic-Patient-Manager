@@ -13,6 +13,7 @@ import { DatePicker } from '../../components/DatePicker/DatePicker';
 import { FormSelect } from '../../components/FormSelect/FormSelect';
 import { NewPatient } from '../../components/NewPatientForm/NewPatientForm';
 import { PatientAutocomplete } from '../../components/PatientAutocomplete/PatientAutocomplete';
+import { getDoctorRole } from '../../helpers/getDoctorRole';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { userSelector } from '../../store/slices/authSlice';
 import { editVisitModalSelector, setEditableVisit, setEditVisitModalOpened } from '../../store/slices/modalsSlice';
@@ -42,9 +43,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
 
   const { data: roles } = useGetRolesQuery();
 
-  const doctorRole = React.useMemo(() => {
-    return roles?.data.find((role) => role.role === 'doctor');
-  }, [roles]);
+  const doctorRole = React.useMemo(() => getDoctorRole(roles?.data), [roles]);
 
   const doctor = React.useMemo(() => {
     if (doctorRole) {

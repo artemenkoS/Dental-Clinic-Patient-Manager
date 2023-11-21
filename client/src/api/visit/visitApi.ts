@@ -76,4 +76,5 @@ export const {
   useLazyGetVisitsQuery,
   useDeleteVisitMutation,
   useUpdateVisitMutation,
+  usePrefetch,
 } = visitApi;
