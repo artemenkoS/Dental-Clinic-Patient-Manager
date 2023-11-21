@@ -1,6 +1,13 @@
 import { Request, Response } from 'express';
 
 import db from '../db';
+import { wss, CustomWebSocket } from '../../src';
+
+const sendMessage = (message: string) => {
+  wss.clients.forEach((client: CustomWebSocket) => {
+    client.send(message);
+  });
+};
 
 export const createLogRecord = async (req: Request, res: Response) => {
   const { authorId, doctorId, changes, visitDate, status, createdAt } = req.body;
@@ -15,6 +22,8 @@ export const createLogRecord = async (req: Request, res: Response) => {
       `INSERT INTO history ("authorId", "doctorId", "visitDate", "changes", "status", "createdAt") values ($1, $2, $3, $4, $5, $6) RETURNING *`,
       [authorId, doctorId, visitDate, changes, status, createdAt]
     );
+
+    status === 'delete' && sendMessage(JSON.stringify({ type: 'cancelledVisit', visitDate, authorId, doctorId }));
 
     res.status(201).json({
       log: newLogRecord.rows[0],
