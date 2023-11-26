@@ -4,7 +4,7 @@ import { AutocompleteOption } from '../../types';
 import { apiSlice } from '../apiSlice';
 import { Patient, PatientDto, PatientParams, PatientPayload, PatientsDto } from './types';
 
-export const userApi = apiSlice.injectEndpoints({
+export const patientApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getPatients: builder.query<PatientsDto, PatientParams>({
       query: (params: PatientParams) => ({
@@ -67,6 +67,22 @@ export const userApi = apiSlice.injectEndpoints({
         }
       },
     }),
+    updatePatient: builder.mutation<PatientDto, Patient>({
+      query: (body: Patient) => ({
+        body,
+        url: 'api/patient',
+        method: 'PATCH',
+      }),
+      invalidatesTags: ['Patient'],
+      async onQueryStarted(_, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          toast.success('Пациент успешно изменён');
+        } catch (error) {
+          toast.error('Не удалось изменить данные  пациента.');
+        }
+      },
+    }),
   }),
 });
 
@@ -77,4 +93,5 @@ export const {
   useGetOnePatientQuery,
   useGetFormatedPatientQuery,
   useCreatePatientMutation,
-} = userApi;
+  useUpdatePatientMutation,
+} = patientApi;

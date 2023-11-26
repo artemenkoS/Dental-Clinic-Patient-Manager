@@ -1,15 +1,13 @@
-// eslint-disable-next-line simple-import-sort/imports
-import { NotificationImportant, NotificationsRounded } from '@mui/icons-material';
-import { IconButton, Popover } from '@mui/material';
+import { AnnouncementRounded, NotificationImportant, NotificationsRounded } from '@mui/icons-material';
+import { Avatar, IconButton, List, ListItem, ListItemAvatar, ListItemText, Popover } from '@mui/material';
+import dayjs from 'dayjs';
 import React from 'react';
 
 import { useGetNotificationsQuery, useMarkAsReadMutation } from '../../api/notification/notificationApi';
+import { prepareNotificationText } from '../../components/Layout/helpers';
 import { useAppSelector } from '../../store/hooks';
 import { userSelector } from '../../store/slices/authSlice';
 import { theme } from '../../styles/theme';
-import { List } from './styled';
-import { prepareNotificationText } from '../../components/Layout/helpers';
-import dayjs from 'dayjs';
 
 export const NotificationList = () => {
   const user = useAppSelector(userSelector);
@@ -21,7 +19,6 @@ export const NotificationList = () => {
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
     const ids = notifications?.data.map((item) => item.id);
-    console.log(ids);
     ids?.length && markAsRead({ body: { ids: ids } });
   };
 
@@ -31,7 +28,6 @@ export const NotificationList = () => {
 
   const open = Boolean(anchorEl);
   const id = open ? 'notificationList' : undefined;
-  console.log(notifications);
 
   const unviewedNotifications = React.useMemo(
     () => notifications?.data.filter((item) => item.isViewed === false),
@@ -59,14 +55,25 @@ export const NotificationList = () => {
         }}
       >
         <List>
-          {notifications?.data.length
-            ? notifications.data.map((item) => (
-                <ul>
-                  <span>{dayjs(item.createdAt).format(' DD MMM  HH:mm')}</span>
-                  {prepareNotificationText(JSON.stringify(item))}
-                </ul>
-              ))
-            : 'Нет уведомлений'}
+          {notifications?.data.length ? (
+            notifications.data.map((item) => (
+              <ListItem key={item.id}>
+                <ListItemAvatar>
+                  <Avatar>
+                    <AnnouncementRounded />
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                  primary={prepareNotificationText(JSON.stringify(item))}
+                  secondary={dayjs(item.createdAt).format(' DD MMM  HH:mm')}
+                />
+              </ListItem>
+            ))
+          ) : (
+            <ListItem>
+              <ListItemText primary="Нет уведомлений" />
+            </ListItem>
+          )}
         </List>
       </Popover>
     </>

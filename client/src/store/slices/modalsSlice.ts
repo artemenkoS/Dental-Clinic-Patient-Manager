@@ -1,6 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
+import { patientApi } from '../../api/patient/patientApi';
 import { Visit } from '../../api/visit/types';
 import { RootState } from '../store';
 
@@ -46,6 +47,11 @@ const modalsSlice = createSlice({
     setPatientProfile(state, action: PayloadAction<number | null>) {
       state.patientProfileModal.patientId = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addMatcher(patientApi.endpoints.updatePatient.matchFulfilled, (state) => {
+      state.newPatientModal.isOpen = false;
+    });
   },
 });
 

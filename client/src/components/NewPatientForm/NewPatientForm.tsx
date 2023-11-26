@@ -2,7 +2,8 @@ import { Button, Grid, Modal, TextField, Typography } from '@mui/material';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 
-import { useCreatePatientMutation } from '../../api/patient/patientApi';
+import { useCreatePatientMutation, useUpdatePatientMutation } from '../../api/patient/patientApi';
+import { Patient } from '../../api/patient/types';
 import { useAppDispatch } from '../../store/hooks';
 import { useAppSelector } from '../../store/hooks';
 import { newPatientModalSelector } from '../../store/slices/modalsSlice';
@@ -17,7 +18,19 @@ interface FormValues {
   birthdate: string;
 }
 
-export const NewPatient: React.FC = () => {
+const defaultValues = {
+  name: '',
+  surname: '',
+  phone: '',
+  birthdate: '',
+  address: '',
+};
+
+interface Props {
+  values?: Patient;
+}
+
+export const NewPatient: React.FC<Props> = ({ values }) => {
   const dispatch = useAppDispatch();
 
   const handleClose = () => {
@@ -31,33 +44,45 @@ export const NewPatient: React.FC = () => {
     reset: resetForm,
     formState,
   } = useForm<FormValues>({
-    defaultValues: {
-      name: '',
-      surname: '',
-      phone: '',
-      birthdate: '',
-      address: '',
-    },
+    defaultValues: values ?? defaultValues,
   });
 
-  const [mutate, { isSuccess: createPatientSuccess, reset }] = useCreatePatientMutation();
+  const [createPatient, { isSuccess: createPatientSuccess, reset: resetCreatePatient }] = useCreatePatientMutation();
+
+  const [updatePatient, { isSuccess: updatePatientSuccess, reset: resetUpdatePatient }] = useUpdatePatientMutation();
 
   const isOpen = useAppSelector(newPatientModalSelector).isOpen;
 
   React.useEffect(() => {
     if (createPatientSuccess) {
-      reset();
       handleClose();
+      resetCreatePatient();
     }
-  }, [createPatientSuccess]);
+    if (updatePatientSuccess) {
+      handleClose();
+      resetUpdatePatient();
+    }
+  }, [createPatientSuccess, updatePatientSuccess]);
 
-  const onSubmit = (data: FormValues) => {
-    mutate({
+  const onCreateSubmit = (data: FormValues) => {
+    createPatient({
       name: data.name,
       surname: data.surname,
       phone: data.phone,
       birthdate: data.birthdate,
       address: data.address,
+    });
+    resetForm();
+  };
+
+  const onUpdateSubmit = (data: FormValues) => {
+    updatePatient({
+      name: data.name,
+      surname: data.surname,
+      phone: data.phone,
+      birthdate: data.birthdate,
+      address: data.address,
+      id: values?.id ?? 0,
     });
     resetForm();
   };
@@ -68,9 +93,9 @@ export const NewPatient: React.FC = () => {
         <StyledBox>
           <Grid container direction="column" gap={2}>
             <Grid item>
-              <Typography variant="h6">Добавление пациента</Typography>
+              <Typography variant="h6">{values ? 'Обновление пациента' : 'Добавление пациента'}</Typography>
             </Grid>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit(values ? onUpdateSubmit : onCreateSubmit)}>
               <Grid container direction="column" gap={2}>
                 <Grid item>
                   <TextField {...register('surname')} required placeholder="Введите фамилию " fullWidth />
@@ -94,7 +119,7 @@ export const NewPatient: React.FC = () => {
                   />
                 </Grid>
                 <Button type="submit" variant="outlined" fullWidth disabled={!formState.isValid}>
-                  Добавить пациента
+                  {values ? 'Обновить данные' : 'Добавить пациента'}
                 </Button>
               </Grid>
             </form>

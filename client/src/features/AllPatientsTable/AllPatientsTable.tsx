@@ -1,4 +1,5 @@
 import { GridColDef, GridEventListener, GridPaginationModel, GridSortModel } from '@mui/x-data-grid';
+import * as React from 'react';
 
 import { useGetPatientsQuery } from '../../api/patient/patientApi';
 import { Loader } from '../../components/Loader/Loader';
@@ -48,6 +49,12 @@ export const AllPatientsTable = () => {
     dispatch(setPatientProfile(params.row.id));
     dispatch(setPatientProfileModalOpened(true));
   };
+
+  React.useEffect(() => {
+    return () => {
+      dispatch(setPatientsTableSortModel([]));
+    };
+  }, [dispatch]);
 
   const columns: GridColDef[] = [
     { field: 'surname', headerName: 'Фамилия', flex: 1 },

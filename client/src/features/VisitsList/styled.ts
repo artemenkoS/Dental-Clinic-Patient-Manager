@@ -50,3 +50,7 @@ export const VisitsWrapper = styled.div`
   overflow: auto;
   padding: ${theme.spacing(0.4)};
 `;
+
+export const PatientSurname = styled.span`
+  cursor: pointer;
+`;

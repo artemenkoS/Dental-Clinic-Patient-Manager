@@ -18,7 +18,7 @@ import { setPatientProfile, setPatientProfileModalOpened } from '../../store/sli
 import { visitDateSelector } from '../../store/slices/visitSlice';
 import { DeleteVisitButton } from '../DeleteVisitModal/DeleteVisitButton';
 import { EditVisitButton } from '../EditVisit/EditVisitButton';
-import { ControlsContainer, Slot, VisitsContainer, VisitsWrapper, VisitTime, Wrapper } from './styled';
+import { ControlsContainer, PatientSurname, Slot, VisitsContainer, VisitsWrapper, VisitTime, Wrapper } from './styled';
 
 export const VisitsList = () => {
   const dispatch = useAppDispatch();
@@ -86,14 +86,14 @@ export const VisitsList = () => {
                       patient && (
                         <Slot key={visit.id} elevation={4}>
                           <VisitTime> {formattedDate}</VisitTime>
-                          <span
+                          <PatientSurname
                             onClick={() => {
                               dispatch(setPatientProfile(patient.id));
                               dispatch(setPatientProfileModalOpened(true));
                             }}
                           >
                             {patient?.surname}
-                          </span>
+                          </PatientSurname>
                           {visit.isRemindRequired && <CallIcon color="error" />}
                           <ControlsContainer>
                             <DeleteVisitButton

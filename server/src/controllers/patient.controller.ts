@@ -45,7 +45,6 @@ export const getPatients = async (req: Request, res: Response) => {
     if (req.query.ids) {
       const ids: string[] = req.query.ids.toString().split(',');
 
-      // Use placeholders for each ID in the IN clause
       const placeholders = ids.map((_, index) => `$${index + 1}`).join(',');
 
       query = `
