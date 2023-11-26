@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getNotifications, markNotificationsAsRead } from '../../src/controllers/notification.controller';
+import { getNotifications, markNotificationsAsRead } from '../controllers/notification.controller';
 
 import { isAuthed } from '../middlware/authMiddleware';
 

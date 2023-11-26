@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { prepareSqlQuery } from '../helpers/prepareSqlQuery';
-import { CustomWebSocket, wss } from '../../src';
+import { CustomWebSocket, wss } from '../index';
 
 import db from '../db';
 const sendMessage = (message: string) => {

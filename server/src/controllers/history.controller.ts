@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
 import db from '../db';
-import { wss, CustomWebSocket } from '../../src';
+import { wss, CustomWebSocket } from '../index';
 
 const sendMessage = (message: string) => {
   wss.clients.forEach((client: CustomWebSocket) => {
