@@ -38,11 +38,6 @@ const userSlice = createSlice({
     builder.addMatcher(userApi.endpoints.getUser.matchFulfilled, (store, { payload }: { payload: UserDto }) => {
       store.user = { id: payload.user.id, role: payload.user.role };
     });
-    builder.addMatcher(authApi.endpoints.auth.matchRejected, () => {
-      localStorage.setItem('token', '');
-
-      toast.error('Ошибка авторизации.');
-    });
   },
 });
 

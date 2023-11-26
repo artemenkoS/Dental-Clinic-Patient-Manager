@@ -17,6 +17,8 @@ export const AuthForm = () => {
 
   const [mutate] = useAuthMutation();
 
+  console.log(import.meta.env.DEV);
+
   const { register, handleSubmit } = useForm<FormValues>();
 
   const handleAuthSubmit: SubmitHandler<FormValues> = (data) => {
