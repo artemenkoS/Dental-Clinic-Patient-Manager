@@ -12,14 +12,16 @@ import { DaySelect } from '../../components/DaySelector/DaySelect';
 import { Loader } from '../../components/Loader/Loader';
 import { createPatientsList } from '../../helpers/createPatientsList';
 import { getDoctorRole } from '../../helpers/getDoctorRole';
-import { useAppSelector } from '../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { userSelector } from '../../store/slices/authSlice';
+import { setPatientProfile, setPatientProfileModalOpened } from '../../store/slices/modalsSlice';
 import { visitDateSelector } from '../../store/slices/visitSlice';
 import { DeleteVisitButton } from '../DeleteVisitModal/DeleteVisitButton';
 import { EditVisitButton } from '../EditVisit/EditVisitButton';
 import { ControlsContainer, Slot, VisitsContainer, VisitsWrapper, VisitTime, Wrapper } from './styled';
 
 export const VisitsList = () => {
+  const dispatch = useAppDispatch();
   const date = useAppSelector(visitDateSelector);
 
   const user = useAppSelector(userSelector);
@@ -84,7 +86,14 @@ export const VisitsList = () => {
                       patient && (
                         <Slot key={visit.id} elevation={4}>
                           <VisitTime> {formattedDate}</VisitTime>
-                          <Typography>{patient?.surname}</Typography>
+                          <span
+                            onClick={() => {
+                              dispatch(setPatientProfile(patient.id));
+                              dispatch(setPatientProfileModalOpened(true));
+                            }}
+                          >
+                            {patient?.surname}
+                          </span>
                           {visit.isRemindRequired && <CallIcon color="error" />}
                           <ControlsContainer>
                             <DeleteVisitButton

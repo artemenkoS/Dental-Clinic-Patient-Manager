@@ -23,7 +23,14 @@ export const createLogRecord = async (req: Request, res: Response) => {
       [authorId, doctorId, visitDate, changes, status, createdAt]
     );
 
-    status === 'delete' && sendMessage(JSON.stringify({ type: 'cancelledVisit', visitDate, authorId, doctorId }));
+    if (status === 'delete') {
+      sendMessage(JSON.stringify({ type: 'cancelledVisit', visitDate, authorId, doctorId }));
+      doctorId !== authorId &&
+        (await db.query(
+          `INSERT INTO notification ("isViewed","recipentId","createdAt","type", "visitDate") values ($1, $2, $3, $4, $5) RETURNING *`,
+          [false, doctorId, new Date(), 'cancelledVisit', visitDate]
+        ));
+    }
 
     res.status(201).json({
       log: newLogRecord.rows[0],

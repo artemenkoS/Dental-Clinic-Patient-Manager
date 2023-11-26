@@ -74,6 +74,7 @@ export const {
   useGetPatientsQuery,
   useGetFormatedPatientsQuery,
   useLazyGetOnePatientQuery,
+  useGetOnePatientQuery,
   useGetFormatedPatientQuery,
   useCreatePatientMutation,
 } = userApi;

@@ -31,6 +31,11 @@ export const createVisit = async (req: Request, res: Response) => {
       [visitDate, doctorId, patientId, procedure, authorId, isRemindRequired]
     );
     sendMessage(JSON.stringify({ type: 'newVisit', visitDate, authorId, doctorId }));
+    authorId !== doctorId &&
+      (await db.query(
+        `INSERT INTO notification ("isViewed","recipentId","createdAt","type", "visitDate") values ($1, $2, $3, $4, $5) RETURNING *`,
+        [false, doctorId, new Date(), 'newVisit', visitDate]
+      ));
     res.status(201).json({
       patient: newVisit.rows[0],
       message: 'Запись успешно создана.',

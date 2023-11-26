@@ -5,23 +5,25 @@ import { Visit } from '../../api/visit/types';
 import { RootState } from '../store';
 
 interface ModalState {
-  patientModal: { isOpen: boolean };
+  newPatientModal: { isOpen: boolean };
   deleteVisitModal: { isOpen: boolean; visit: Visit | null };
   editVisitModal: { isOpen: boolean; editableVisit: Visit | null; submitText: string };
+  patientProfileModal: { isOpen: boolean; patientId: number | null };
 }
 
 const initialState: ModalState = {
-  patientModal: { isOpen: false },
+  newPatientModal: { isOpen: false },
   deleteVisitModal: { isOpen: false, visit: null },
   editVisitModal: { isOpen: false, editableVisit: null, submitText: 'Создать запись' },
+  patientProfileModal: { isOpen: false, patientId: null },
 };
 
 const modalsSlice = createSlice({
   name: 'modals',
   initialState,
   reducers: {
-    setPatientModalOpened(state, action: PayloadAction<boolean>) {
-      state.patientModal.isOpen = action.payload;
+    setNewPatientModalOpened(state, action: PayloadAction<boolean>) {
+      state.newPatientModal.isOpen = action.payload;
     },
     setEditVisitModalOpened(state, action: PayloadAction<boolean>) {
       state.editVisitModal.isOpen = action.payload;
@@ -38,19 +40,28 @@ const modalsSlice = createSlice({
     setDeleteVisitId(state, action: PayloadAction<Visit | null>) {
       state.deleteVisitModal.visit = action.payload;
     },
+    setPatientProfileModalOpened(state, action: PayloadAction<boolean>) {
+      state.patientProfileModal.isOpen = action.payload;
+    },
+    setPatientProfile(state, action: PayloadAction<number | null>) {
+      state.patientProfileModal.patientId = action.payload;
+    },
   },
 });
 
 export const {
-  setPatientModalOpened,
+  setNewPatientModalOpened,
   setDeleteVisitModalOpened,
   setDeleteVisitId,
   setEditVisitModalOpened,
   setEditableVisit,
   setEditVisitModalSubmitText,
+  setPatientProfileModalOpened,
+  setPatientProfile,
 } = modalsSlice.actions;
 
-export const patientModalSelector = (state: RootState) => state.modalsReducer.patientModal;
+export const newPatientModalSelector = (state: RootState) => state.modalsReducer.newPatientModal;
+export const patientProfileModalSelector = (state: RootState) => state.modalsReducer.patientProfileModal;
 export const editVisitModalSelector = (state: RootState) => state.modalsReducer.editVisitModal;
 export const deleteVisitModalSelector = (state: RootState) => state.modalsReducer.deleteVisitModal;
 export default modalsSlice.reducer;

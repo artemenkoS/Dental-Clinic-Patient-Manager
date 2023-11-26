@@ -1,9 +1,10 @@
-import { GridColDef, GridPaginationModel, GridSortModel } from '@mui/x-data-grid';
+import { GridColDef, GridEventListener, GridPaginationModel, GridSortModel } from '@mui/x-data-grid';
 
 import { useGetPatientsQuery } from '../../api/patient/patientApi';
 import { Loader } from '../../components/Loader/Loader';
 import { PaginatedTable } from '../../components/PaginatedTable/PaginatedTable';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { setPatientProfile, setPatientProfileModalOpened } from '../../store/slices/modalsSlice';
 import {
   patientsTableCurrentSortModelSelector,
   patientsTablePaginationSelector,
@@ -43,6 +44,11 @@ export const AllPatientsTable = () => {
     dispatch(setPatientsTableSortModel(e));
   };
 
+  const handleRowClick: GridEventListener<'rowClick'> = (params) => {
+    dispatch(setPatientProfile(params.row.id));
+    dispatch(setPatientProfileModalOpened(true));
+  };
+
   const columns: GridColDef[] = [
     { field: 'surname', headerName: 'Фамилия', flex: 1 },
     { field: 'name', headerName: 'Имя', flex: 1 },
@@ -61,6 +67,7 @@ export const AllPatientsTable = () => {
         paginationModel={paginationModel}
         rowCount={totalCount ?? 10}
         rows={rows}
+        onRowClick={handleRowClick}
         onPaginationChange={onPaginationModelChange}
         onSortModelChange={onSortModelChange}
         slots={{ toolbar: PatientSearch }}

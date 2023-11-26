@@ -5,8 +5,8 @@ import { useForm } from 'react-hook-form';
 import { useCreatePatientMutation } from '../../api/patient/patientApi';
 import { useAppDispatch } from '../../store/hooks';
 import { useAppSelector } from '../../store/hooks';
-import { patientModalSelector } from '../../store/slices/modalsSlice';
-import { setPatientModalOpened } from '../../store/slices/modalsSlice';
+import { newPatientModalSelector } from '../../store/slices/modalsSlice';
+import { setNewPatientModalOpened } from '../../store/slices/modalsSlice';
 import { StyledBox } from './styled';
 
 interface FormValues {
@@ -21,7 +21,7 @@ export const NewPatient: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const handleClose = () => {
-    dispatch(setPatientModalOpened(false));
+    dispatch(setNewPatientModalOpened(false));
     resetForm();
   };
 
@@ -42,7 +42,7 @@ export const NewPatient: React.FC = () => {
 
   const [mutate, { isSuccess: createPatientSuccess, reset }] = useCreatePatientMutation();
 
-  const isOpen = useAppSelector(patientModalSelector).isOpen;
+  const isOpen = useAppSelector(newPatientModalSelector).isOpen;
 
   React.useEffect(() => {
     if (createPatientSuccess) {

@@ -1,6 +1,8 @@
+import { LinearProgress } from '@mui/material';
 import {
   DataGrid,
   GridColDef,
+  GridEventListener,
   GridPaginationModel,
   GridSlotsComponent,
   GridSortModel,
@@ -19,6 +21,7 @@ interface Props {
   onSortModelChange?: (e: GridSortModel) => void;
   loading?: boolean;
   slots?: UncapitalizeObjectKeys<Partial<GridSlotsComponent>>;
+  onRowClick?: GridEventListener<'rowClick'>;
 }
 
 export const PaginatedTable: React.FC<Props> = ({
@@ -27,6 +30,7 @@ export const PaginatedTable: React.FC<Props> = ({
   paginationModel,
   rowCount,
   onPaginationChange,
+  onRowClick,
   onSortModelChange,
   slots,
   loading,
@@ -44,12 +48,13 @@ export const PaginatedTable: React.FC<Props> = ({
         rowCount={rowCount}
         paginationMode="server"
         sortingMode="server"
+        onRowClick={onRowClick}
         disableRowSelectionOnClick
         onPaginationModelChange={onPaginationChange}
         onSortModelChange={onSortModelChange}
         pageSizeOptions={[10, 25, 50, 100]}
         loading={loading}
-        slots={slots}
+        slots={{ ...slots, loadingOverlay: LinearProgress }}
       />
     </Wrapper>
   );
