@@ -4,3 +4,4 @@ postgres-data
 
 /client/dist
 /server/dist
+/.history

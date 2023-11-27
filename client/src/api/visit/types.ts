@@ -5,7 +5,7 @@ export interface Visit {
   visitDate: string;
   doctorId: number;
   patientId: number;
-  procedure: number;
+  procedure: string;
   authorId: number;
   isRemindRequired: boolean;
 }

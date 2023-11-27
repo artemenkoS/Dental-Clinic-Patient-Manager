@@ -36,8 +36,6 @@ wss.on('connection', (ws: CustomWebSocket) => {
       switch (parsedData.action) {
         case 'connect':
           ws.userId = parsedData.id;
-          console.log('hi', parsedData.id, ws.userId, wss.clients.size);
-
           break;
         default:
           console.log(`Received message: ${parsedMessage}`);

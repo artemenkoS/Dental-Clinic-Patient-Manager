@@ -18,26 +18,18 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { userSelector } from '../../store/slices/authSlice';
 import { editVisitModalSelector, setEditableVisit, setEditVisitModalOpened } from '../../store/slices/modalsSlice';
 import { selectedSlotSelector, visitDateSelector } from '../../store/slices/visitSlice';
-import { AutocompleteOption } from '../../types';
+import { LogStatus } from '../../types';
 import { Loader } from '../Loader/Loader';
 import { Container } from './styled';
-
-interface FormValues {
-  visitDate: Date;
-  patient: AutocompleteOption | null;
-  doctorId: string;
-  procedure: string;
-  authorId: string;
-  id?: number | undefined;
-  isRemindRequired: boolean;
-}
+import { VisitFormValues } from './types';
 
 interface Props {
   onSubmit: (body: VisitMutationBody, id?: number) => void;
-  values?: FormValues;
+  values?: Partial<VisitFormValues> | null;
+  status: LogStatus;
 }
 
-export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
+export const VisitForm: React.FC<Props> = ({ onSubmit, values, status }) => {
   const user = useAppSelector(userSelector);
   const { data: doctors, isLoading: isDoctorsloading } = useGetDoctorsQuery();
 
@@ -62,7 +54,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
   const date = useAppSelector(visitDateSelector);
   const selectedTimeSlot = useAppSelector(selectedSlotSelector);
 
-  const defaultFormValues: FormValues = {
+  const defaultFormValues: VisitFormValues = {
     doctorId: doctor ? doctor.id.toString() : '',
     patient: null,
     procedure: '',
@@ -78,7 +70,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
     reset: resetForm,
     formState: { isValid },
     register,
-  } = useForm<FormValues>({ defaultValues: values ?? defaultFormValues });
+  } = useForm<VisitFormValues>({ defaultValues: values ?? defaultFormValues });
 
   React.useEffect(() => resetForm(values ?? defaultFormValues), [date]);
 
@@ -96,7 +88,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
     { skip: !formValues.doctorId }
   );
 
-  const formSubmit = (data: FormValues) => {
+  const formSubmit = (data: VisitFormValues) => {
     if (user && data.patient) {
       const time = selectedTimeSlot ? selectedTimeSlot.split(':') : ['0', '0'];
       data.visitDate.setHours(+time[0]);
@@ -123,9 +115,9 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
           authorId: user.id,
           visitDate: `${data.visitDate.toISOString()}`,
           patientId: +data.patient.id,
-          procedure: +data.procedure,
+          procedure: data.procedure,
         },
-        status: values?.id ? 'edit' : 'create',
+        status: status,
         createdAt: new Date().toISOString(),
       });
       resetForm(defaultFormValues);
@@ -151,7 +143,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values }) => {
                   render={({ field }) => (
                     <FormSelect label="Выберите доктора" onChange={field.onChange} value={field.value}>
                       {doctor ? (
-                        <MenuItem value={doctor.id.toString()}>
+                        <MenuItem value={doctor?.id.toString()}>
                           {doctor.name} {doctor.surname}
                         </MenuItem>
                       ) : (

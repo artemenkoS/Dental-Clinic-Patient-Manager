@@ -17,7 +17,7 @@ export const FormSelect: React.FC<Props> = (props) => {
       <FormControl fullWidth error={!!error}>
         <InputLabel>{label}</InputLabel>
         <Select
-          value={value.toString()}
+          value={value?.toString()}
           label={label}
           onChange={(event: SelectChangeEvent) => onChange(event.target.value)}
         >

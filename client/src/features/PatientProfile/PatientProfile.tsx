@@ -23,6 +23,8 @@ import {
   setPatientProfile,
   setPatientProfileModalOpened,
 } from '../../store/slices/modalsSlice';
+import { NewVisit } from '../NewVisit/NewVisit';
+import { NewVisitButton } from '../NewVisit/NewVisitButton';
 import { formatVisitsData } from './helpers';
 import { Container } from './styled';
 
@@ -63,12 +65,18 @@ export const PatientProfile = () => {
           {isPatientLoading || isPatientFetching || isVisitsLoading || isVisitsFetching ? (
             <Loader />
           ) : (
-            <Grid container gap={2} direction={'column'}>
+            <Grid container gap={2} direction="column">
               <Grid item>
-                <Typography variant="h5">
-                  {patient?.data.name} {patient?.data.surname}
-                </Typography>
-                <EditButton onClick={handleEditPatient} />
+                <Grid container direction="row" alignItems="center" gap={1}>
+                  <Grid item>
+                    <Typography variant="h5">
+                      {patient?.data.name} {patient?.data.surname}
+                    </Typography>
+                  </Grid>
+                  <Grid item>
+                    <EditButton onClick={handleEditPatient} />
+                  </Grid>
+                </Grid>
               </Grid>
               <Grid item>
                 <Typography>Номер телефона: {patient?.data.phone}</Typography>
@@ -92,9 +100,19 @@ export const PatientProfile = () => {
                   </TableBody>
                 </Table>
               </TableContainer>
+              <NewVisitButton />
             </Grid>
           )}
           {!isPatientLoading && !isPatientFetching && patient?.data && <NewPatient values={patient.data} />}
+
+          {!isPatientLoading && !isPatientFetching && patient?.data && (
+            <NewVisit
+              values={{
+                patient: { id: patient.data.id, label: `${patient.data.name} ${patient.data.surname}` },
+                visitDate: new Date(),
+              }}
+            />
+          )}
         </Container>
       </Modal>
     </>
