@@ -8,7 +8,7 @@ import { parseDate } from '../../helpers/parseDate';
 import { useAppDispatch } from '../../store/hooks';
 import { useAppSelector } from '../../store/hooks';
 import { editVisitModalSelector } from '../../store/slices/modalsSlice';
-import { resetSlots } from '../../store/slices/visitSlice';
+import { resetSlots, setSelectedSlot } from '../../store/slices/visitSlice';
 
 export const EditVisit = () => {
   const dispatch = useAppDispatch();
@@ -22,6 +22,12 @@ export const EditVisit = () => {
   });
   const date = parseDate(visit?.visitDate ?? '');
 
+  React.useEffect(() => {
+    date && dispatch(setSelectedSlot(date?.time));
+  }, [date]);
+
+  const isOpen = useAppSelector(editVisitModalSelector).isOpen;
+
   const [updateVisit, { isSuccess: createVisitSuccess, reset }] = useUpdateVisitMutation();
 
   React.useEffect(() => {
@@ -34,7 +40,6 @@ export const EditVisit = () => {
   const handleSubmit = (body: VisitMutationBody, id?: number) => {
     id && updateVisit({ body, id });
   };
-
   return (
     visit &&
     patient &&
@@ -49,8 +54,10 @@ export const EditVisit = () => {
           authorId: visit.authorId.toString(),
           isRemindRequired: visit.isRemindRequired,
           visitDate: new Date(date?.date),
+          extraProcedures: visit.extraProcedures,
         }}
         status="edit"
+        isOpen={isOpen}
       />
     )
   );

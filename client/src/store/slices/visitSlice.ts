@@ -36,8 +36,11 @@ const visitSlice = createSlice({
     builder.addMatcher(visitApi.endpoints.getVisits.matchFulfilled, (state, { payload, meta }) => {
       if (meta.arg.originalArgs.doctorId) {
         state.busySlots = getBusySlots(payload.data);
-        state.selectedSlot = null;
       }
+    });
+    builder.addMatcher(visitApi.endpoints.createVisit.matchFulfilled, (state) => {
+      state.busySlots = null;
+      state.selectedSlot = null;
     });
 
     builder.addMatcher(visitApi.endpoints.getVisits.matchRejected, (state, { meta }) => {

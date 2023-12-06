@@ -1,5 +1,5 @@
 import { DevTool } from '@hookform/devtools';
-import { Button, Checkbox, FormControlLabel, Grid, MenuItem, Modal, TextField } from '@mui/material';
+import { Button, Checkbox, FormControlLabel, Grid, MenuItem, Modal } from '@mui/material';
 import dayjs from 'dayjs';
 import * as React from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -7,17 +7,23 @@ import { Controller, useForm } from 'react-hook-form';
 import { useGetDoctorsQuery } from '../../api/doctor/doctorApi';
 import { useCreateLogRecordMutation } from '../../api/history/historyApi';
 import { useGetRolesQuery } from '../../api/role/rolesApi';
-import { VisitMutationBody } from '../../api/visit/types';
+import { Procedure, VisitMutationBody } from '../../api/visit/types';
 import { useGetVisitsQuery } from '../../api/visit/visitApi';
 import { DatePicker } from '../../components/DatePicker/DatePicker';
 import { FormSelect } from '../../components/FormSelect/FormSelect';
-import { NewPatient } from '../../components/NewPatientForm/NewPatientForm';
 import { PatientAutocomplete } from '../../components/PatientAutocomplete/PatientAutocomplete';
+import { ExtraProcedureForm } from '../../features/ExtraProcedureForm/ExtraProcedureForm';
+import ProceduresTable from '../../features/ProceduresTable/ProceduresTable';
 import { getDoctorRole } from '../../helpers/getDoctorRole';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { userSelector } from '../../store/slices/authSlice';
-import { editVisitModalSelector, setEditableVisit, setEditVisitModalOpened } from '../../store/slices/modalsSlice';
-import { selectedSlotSelector, visitDateSelector } from '../../store/slices/visitSlice';
+import {
+  editVisitModalSelector,
+  setEditableVisit,
+  setEditVisitModalOpened,
+  setNewVisitModalOpened,
+} from '../../store/slices/modalsSlice';
+import { selectedSlotSelector, setSelectedSlot, visitDateSelector } from '../../store/slices/visitSlice';
 import { LogStatus } from '../../types';
 import { Loader } from '../Loader/Loader';
 import { Container } from './styled';
@@ -27,13 +33,16 @@ interface Props {
   onSubmit: (body: VisitMutationBody, id?: number) => void;
   values?: Partial<VisitFormValues> | null;
   status: LogStatus;
+  isOpen: boolean;
 }
 
-export const VisitForm: React.FC<Props> = ({ onSubmit, values, status }) => {
+export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen }) => {
   const user = useAppSelector(userSelector);
   const { data: doctors, isLoading: isDoctorsloading } = useGetDoctorsQuery();
 
   const { data: roles } = useGetRolesQuery();
+
+  const [extraProcedures, setExtraProcedures] = React.useState<Procedure[] | null>(values?.extraProcedures ?? null);
 
   const doctorRole = React.useMemo(() => getDoctorRole(roles?.data), [roles]);
 
@@ -43,12 +52,13 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status }) => {
     }
   }, [doctors, user]);
 
-  const isOpen = useAppSelector(editVisitModalSelector).isOpen;
   const dispatch = useAppDispatch();
 
   const handleClose = () => {
-    dispatch(setEditVisitModalOpened(false));
+    dispatch(status === 'edit' ? setEditVisitModalOpened(false) : setNewVisitModalOpened(false));
     dispatch(setEditableVisit(null));
+    dispatch(setSelectedSlot(null));
+    setExtraProcedures(null);
     resetForm();
   };
   const date = useAppSelector(visitDateSelector);
@@ -61,6 +71,11 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status }) => {
     visitDate: new Date(date),
     authorId: '',
     isRemindRequired: false,
+    extraProcedures: null,
+  };
+
+  const handleExtraProceduresFormSubmit = (data: Procedure) => {
+    setExtraProcedures((prev) => (prev ? [...prev, data] : [data]));
   };
 
   const {
@@ -69,10 +84,13 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status }) => {
     watch,
     reset: resetForm,
     formState: { isValid },
-    register,
   } = useForm<VisitFormValues>({ defaultValues: values ?? defaultFormValues });
 
   React.useEffect(() => resetForm(values ?? defaultFormValues), [date]);
+  React.useEffect(() => {
+    console.log(values?.extraProcedures);
+    values?.extraProcedures && setExtraProcedures(values?.extraProcedures);
+  }, [values]);
 
   const { submitText } = useAppSelector(editVisitModalSelector);
 
@@ -103,6 +121,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status }) => {
           patientId: +data.patient.id,
           procedure: data.procedure,
           isRemindRequired: data.isRemindRequired,
+          extraProcedures: extraProcedures,
         },
         values?.id
       );
@@ -131,9 +150,9 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status }) => {
 
   return (
     <div>
-      <Modal open={isOpen} onClose={handleClose} keepMounted={false}>
+      <Modal open={isOpen} onClose={handleClose}>
         <Container>
-          <form onSubmit={handleSubmit(formSubmit)}>
+          <form onSubmit={handleSubmit(formSubmit)} id="visit">
             <Grid container direction="column" spacing={2}>
               <Grid item>
                 <Controller
@@ -157,9 +176,6 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status }) => {
                   )}
                 />
               </Grid>
-              <Grid item>
-                <TextField {...register('procedure')} disabled={!doctor} fullWidth placeholder="Описание процедуры" />
-              </Grid>
               <Grid item xs={2}>
                 <Controller
                   name="patient"
@@ -169,32 +185,55 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status }) => {
                     <PatientAutocomplete label="Выберите пациента" value={field.value} onChange={field.onChange} />
                   )}
                 />
-                <FormControlLabel
-                  control={
-                    <Controller
-                      name="isRemindRequired"
-                      control={control}
-                      render={({ field }) => (
-                        <Checkbox checked={field.value} onChange={(e) => field.onChange(e.target.checked)} />
-                      )}
-                    />
-                  }
-                  label="Требуется напоминание"
-                />
               </Grid>
             </Grid>
-            <NewPatient />
-            <Controller
-              name="visitDate"
-              control={control}
-              render={({ field }) => {
-                return <DatePicker onChange={field.onChange} value={field.value} />;
-              }}
-            />
-            <Button type="submit" variant="outlined" fullWidth disabled={!isValid || !selectedTimeSlot}>
-              {submitText}
-            </Button>
           </form>
+          <Grid container direction="column" spacing={2}>
+            <Grid item>
+              <ExtraProcedureForm formSubmit={handleExtraProceduresFormSubmit} disabled={!doctor} />
+            </Grid>
+            <Grid item>
+              {extraProcedures && extraProcedures.length > 0 && (
+                <ProceduresTable
+                  disabled={!doctor}
+                  procedures={extraProcedures}
+                  onDelete={(index) => {
+                    const updatedProcedures = extraProcedures.filter((_, i) => i !== index);
+                    setExtraProcedures(updatedProcedures);
+                  }}
+                />
+              )}
+            </Grid>
+            <Grid item>
+              <FormControlLabel
+                control={
+                  <Controller
+                    name="isRemindRequired"
+                    control={control}
+                    render={({ field }) => (
+                      <Checkbox checked={field.value} onChange={(e) => field.onChange(e.target.checked)} />
+                    )}
+                  />
+                }
+                label="Требуется напоминание"
+              />
+            </Grid>
+            <Grid item>
+              <Controller
+                name="visitDate"
+                control={control}
+                render={({ field }) => {
+                  return <DatePicker onChange={field.onChange} value={field.value} />;
+                }}
+              />
+            </Grid>
+
+            <Grid item>
+              <Button type="submit" variant="outlined" fullWidth disabled={!isValid || !selectedTimeSlot} form="visit">
+                {submitText}
+              </Button>
+            </Grid>
+          </Grid>
         </Container>
       </Modal>
       {import.meta.env.DEV && <DevTool control={control} />}

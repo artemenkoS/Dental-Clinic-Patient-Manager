@@ -10,7 +10,7 @@ const sendMessage = (message: string) => {
 };
 
 export const createVisit = async (req: Request, res: Response) => {
-  const { visitDate, doctorId, patientId, procedure, authorId, isRemindRequired } = req.body;
+  const { visitDate, doctorId, patientId, procedure, authorId, isRemindRequired, extraProcedures } = req.body;
 
   if (!visitDate || !doctorId || !patientId) {
     res.status(400).json({ message: 'Не все обязательные поля заполнены' });
@@ -27,8 +27,8 @@ export const createVisit = async (req: Request, res: Response) => {
     }
 
     const newVisit = await db.query(
-      `INSERT INTO visit ("visitDate", "doctorId", "patientId", "procedure", "authorId", "isRemindRequired") values ($1, $2, $3, $4, $5, $6) RETURNING *`,
-      [visitDate, doctorId, patientId, procedure, authorId, isRemindRequired]
+      `INSERT INTO visit ("visitDate", "doctorId", "patientId", "procedure", "authorId", "isRemindRequired", "extraProcedures") values ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+      [visitDate, doctorId, patientId, procedure, authorId, isRemindRequired, extraProcedures]
     );
     sendMessage(JSON.stringify({ type: 'newVisit', visitDate, authorId, doctorId }));
     authorId !== doctorId &&
@@ -97,7 +97,7 @@ export const getOneVisit = async (req: Request, res: Response) => {
 };
 
 export const updateVisit = async (req: Request, res: Response) => {
-  const { visitDate, doctorId, patientId, procedure, authorId, isRemindRequired } = req.body;
+  const { visitDate, doctorId, patientId, procedure, authorId, isRemindRequired, extraProcedures } = req.body;
   const id = req.params.id;
 
   if (!visitDate || !doctorId || !patientId || !authorId) {
@@ -115,10 +115,10 @@ export const updateVisit = async (req: Request, res: Response) => {
 
     const updatedVisit = await db.query(
       `UPDATE visit 
-       SET "visitDate" = $1, "doctorId" = $2, "patientId" = $3, "procedure" = $4, "authorId" = $5, "isRemindRequired" = $6
-       WHERE id = $7
+       SET "visitDate" = $1, "doctorId" = $2, "patientId" = $3, "procedure" = $4, "authorId" = $5, "isRemindRequired" = $6, "extraProcedures" = $7
+       WHERE id = $8
        RETURNING *`,
-      [visitDate, doctorId, patientId, procedure, authorId, isRemindRequired, id]
+      [visitDate, doctorId, patientId, procedure, authorId, isRemindRequired, extraProcedures, id]
     );
 
     if (updatedVisit.rows[0]) {

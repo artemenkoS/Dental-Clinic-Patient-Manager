@@ -10,6 +10,6 @@ export const Container = styled(Box)`
   transform: translate(-50%, -50%);
   width: 800px;
   background-color: ${theme.palette.background.paper};
-  padding: ${theme.spacing(3)};
+  padding: ${theme.spacing(4)};
   border-radius: ${theme.spacing(1)};
 `;

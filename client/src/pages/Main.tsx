@@ -10,7 +10,7 @@ export const MainScreen = () => {
     <>
       <VisitsList />
       <NewVisitButton />
-      <NewVisit />
+      <NewVisit values={null} />
       <EditVisit />
       <DeleteVisitModal />
       <PatientProfile />

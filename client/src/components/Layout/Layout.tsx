@@ -31,7 +31,9 @@ export const Layout = () => {
     ws.current = new WebSocket('ws://localhost:8000');
 
     return () => {
-      ws.current?.close();
+      if (ws?.current?.readyState === 1) {
+        ws.current.close();
+      }
     };
   }, []);
 

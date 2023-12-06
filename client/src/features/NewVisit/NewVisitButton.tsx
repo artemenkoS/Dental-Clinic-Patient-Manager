@@ -1,13 +1,13 @@
 import { Button } from '@mui/material';
 
 import { useAppDispatch } from '../../store/hooks';
-import { setEditVisitModalOpened, setEditVisitModalSubmitText } from '../../store/slices/modalsSlice';
+import { setEditVisitModalSubmitText, setNewVisitModalOpened } from '../../store/slices/modalsSlice';
 import { theme } from '../../styles/theme';
 
 export const NewVisitButton: React.FC = () => {
   const dispatch = useAppDispatch();
   const onClick = () => {
-    dispatch(setEditVisitModalOpened(true));
+    dispatch(setNewVisitModalOpened(true));
     dispatch(setEditVisitModalSubmitText('Создать запись'));
   };
   return (

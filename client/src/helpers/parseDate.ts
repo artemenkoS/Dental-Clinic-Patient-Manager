@@ -1,14 +1,14 @@
-export const parseDate = (dateTimeString: string) => {
-  const timestamp = Date.parse(dateTimeString);
+import dayjs from 'dayjs';
 
-  if (isNaN(timestamp)) {
+export const parseDate = (dateTimeString: string) => {
+  const dateTime = dayjs(dateTimeString);
+
+  if (!dateTime.isValid()) {
     return;
   }
 
-  const dateTime = new Date(timestamp);
-
-  const date = dateTime.toISOString().split('T')[0];
-  const time = dateTime.toISOString().split('T')[1].slice(0, 5);
+  const date = dateTime.format('YYYY-MM-DD');
+  const time = dateTime.format('HH:mm');
 
   const result = {
     date: date,

@@ -1,3 +1,4 @@
+import { Procedure } from '../../api/visit/types';
 import { AutocompleteOption } from '../../types';
 
 export interface VisitFormValues {
@@ -8,4 +9,5 @@ export interface VisitFormValues {
   authorId: string;
   id?: number | undefined;
   isRemindRequired: boolean;
+  extraProcedures: Procedure[] | null;
 }

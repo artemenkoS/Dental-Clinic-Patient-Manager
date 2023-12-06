@@ -1,5 +1,10 @@
 import { Pagination } from '../../types';
 
+export interface Procedure {
+  label: string;
+  sum: number;
+}
+
 export interface Visit {
   id: number;
   visitDate: string;
@@ -8,6 +13,7 @@ export interface Visit {
   procedure: string;
   authorId: number;
   isRemindRequired: boolean;
+  extraProcedures: Procedure[] | null;
 }
 
 export interface VisitDto {
@@ -34,4 +40,5 @@ export interface VisitMutationBody {
   procedure: string;
   authorId: number;
   isRemindRequired: boolean;
+  extraProcedures: Procedure[] | null;
 }

@@ -2,7 +2,6 @@ import { GridColDef, GridPaginationModel, GridSortModel } from '@mui/x-data-grid
 import React from 'react';
 
 import { useGetPatientsQuery } from '../../api/patient/patientApi';
-import { useGetProceduresQuery } from '../../api/procedure/procedureApi';
 import { useGetAllUsersQuery } from '../../api/user/userApi';
 import { useGetVisitsQuery } from '../../api/visit/visitApi';
 import { Loader } from '../../components/Loader/Loader';
@@ -36,15 +35,13 @@ export const AllVisitsTable = () => {
     { skip: !patientIdsArray.length }
   );
 
-  const { data: procedures } = useGetProceduresQuery();
-
   const { data: users } = useGetAllUsersQuery();
 
   const rows = React.useMemo(() => {
-    if (visits && users && procedures && patients) {
+    if (visits && users && patients) {
       return formatVisitsData(visits?.data, users?.data, patients.data);
     }
-  }, [visits, users, procedures, patients]);
+  }, [visits, users, patients]);
 
   const totalCount = visits?.pagination?.totalCount;
 

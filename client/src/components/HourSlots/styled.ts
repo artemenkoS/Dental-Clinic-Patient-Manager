@@ -3,24 +3,10 @@ import { Box, Paper } from '@mui/material';
 
 import { theme } from '../../styles/theme';
 
-export const Wrapper = styled.div`
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-`;
-
-export const VisitsContainer = styled.div`
-  display: flex;
-  height: 100%;
-  gap: ${theme.spacing(1)};
-`;
-
 export const VisitTime = styled.span`
-  font-weight: 700;
-  border: 2px solid black;
-  border-radius: ${theme.spacing(1)};
+  font-weight: 00;
+  //   border: 2px solid black;
+  //   border-radius: ${theme.spacing(1)};
   padding: ${theme.spacing(0.3)};
 `;
 
@@ -35,20 +21,14 @@ export const Slot = styled(Paper)`
   display: flex;
   align-items: center;
   gap: ${theme.spacing(1)};
-  margin-bottom: ${theme.spacing(1)};
-  padding: ${theme.spacing(1)};
-  height: 70px;
+  margin-bottom: ${theme.spacing(0.6)};
+  padding: ${theme.spacing(1.3)};
+  height: 30px;
 `;
 
 export const ControlsContainer = styled.div`
   display: flex;
   margin-left: auto;
-`;
-
-export const VisitsWrapper = styled.div`
-  height: 80%;
-  overflow: auto;
-  padding: ${theme.spacing(0.4)};
 `;
 
 export const PatientSurname = styled.span`

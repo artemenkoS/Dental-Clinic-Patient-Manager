@@ -1,11 +1,10 @@
 import styled from '@emotion/styled';
-import { Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 
 import { theme } from '../../styles/theme';
 
 export const Wrapper = styled.div`
   max-height: 400px;
-  overflow: auto;
 `;
 
 export const Slot = styled(Button)`
@@ -19,4 +18,10 @@ export const Slot = styled(Button)`
     background-color: ${theme.palette.success.light};
     color: ${theme.palette.secondary.contrastText};
   }
+`;
+
+export const StyledBox = styled(Box)`
+  width: 400px;
+  background-color: ${theme.palette.background.paper};
+  padding: ${theme.spacing(3)};
 `;

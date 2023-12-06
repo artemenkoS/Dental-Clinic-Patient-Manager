@@ -9,6 +9,7 @@ interface ModalState {
   newPatientModal: { isOpen: boolean };
   deleteVisitModal: { isOpen: boolean; visit: Visit | null };
   editVisitModal: { isOpen: boolean; editableVisit: Visit | null; submitText: string };
+  newVisitModal: { isOpen: boolean };
   patientProfileModal: { isOpen: boolean; patientId: number | null };
 }
 
@@ -16,6 +17,7 @@ const initialState: ModalState = {
   newPatientModal: { isOpen: false },
   deleteVisitModal: { isOpen: false, visit: null },
   editVisitModal: { isOpen: false, editableVisit: null, submitText: 'Создать запись' },
+  newVisitModal: { isOpen: false },
   patientProfileModal: { isOpen: false, patientId: null },
 };
 
@@ -25,6 +27,9 @@ const modalsSlice = createSlice({
   reducers: {
     setNewPatientModalOpened(state, action: PayloadAction<boolean>) {
       state.newPatientModal.isOpen = action.payload;
+    },
+    setNewVisitModalOpened(state, action: PayloadAction<boolean>) {
+      state.newVisitModal.isOpen = action.payload;
     },
     setEditVisitModalOpened(state, action: PayloadAction<boolean>) {
       state.editVisitModal.isOpen = action.payload;
@@ -59,6 +64,7 @@ export const {
   setNewPatientModalOpened,
   setDeleteVisitModalOpened,
   setDeleteVisitId,
+  setNewVisitModalOpened,
   setEditVisitModalOpened,
   setEditableVisit,
   setEditVisitModalSubmitText,
@@ -69,5 +75,6 @@ export const {
 export const newPatientModalSelector = (state: RootState) => state.modalsReducer.newPatientModal;
 export const patientProfileModalSelector = (state: RootState) => state.modalsReducer.patientProfileModal;
 export const editVisitModalSelector = (state: RootState) => state.modalsReducer.editVisitModal;
+export const newVisitModalSelector = (state: RootState) => state.modalsReducer.newVisitModal;
 export const deleteVisitModalSelector = (state: RootState) => state.modalsReducer.deleteVisitModal;
 export default modalsSlice.reducer;
