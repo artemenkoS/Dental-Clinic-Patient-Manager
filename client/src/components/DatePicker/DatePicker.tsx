@@ -1,5 +1,3 @@
-import 'react-day-picker/dist/style.css';
-
 import { DatePickerProps } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
 import React from 'react';
