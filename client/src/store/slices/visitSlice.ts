@@ -8,7 +8,7 @@ import { RootState } from '../store';
 interface VisitState {
   busySlots: Array<unknown> | null;
   selectedSlot: string | null;
-  visitDate: string;
+  visitDate: string | null;
 }
 
 const initialState: VisitState = { busySlots: null, selectedSlot: null, visitDate: new Date().toISOString() };
@@ -20,7 +20,7 @@ const visitSlice = createSlice({
     setBusySlots(state, action: PayloadAction<Array<unknown> | null>) {
       state.busySlots = action.payload;
     },
-    setVisitDate(state, action: PayloadAction<string>) {
+    setVisitDate(state, action: PayloadAction<string | null>) {
       state.visitDate = action.payload;
     },
 

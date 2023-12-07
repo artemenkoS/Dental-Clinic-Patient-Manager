@@ -1,13 +1,12 @@
 import 'react-day-picker/dist/style.css';
 
-import ru from 'date-fns/locale/ru';
-import { DayPicker } from 'react-day-picker';
+import { DatePicker, DatePickerProps } from '@mui/x-date-pickers';
+import { Dayjs } from 'dayjs';
 
-interface Props {
-  selected: Date | undefined;
-  onDayClick: (e: Date) => void;
-}
-
-export const Calendar: React.FC<Props> = ({ selected, onDayClick }) => {
-  return <DayPicker mode="single" locale={ru} selected={selected} onDayClick={onDayClick} />;
+export const Calendar: React.FC<DatePickerProps<Dayjs>> = ({ value, onChange }) => {
+  return (
+    <>
+      <DatePicker value={value} onChange={onChange} views={['day', 'month']} />
+    </>
+  );
 };

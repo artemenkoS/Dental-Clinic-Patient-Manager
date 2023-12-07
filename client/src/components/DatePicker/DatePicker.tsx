@@ -1,22 +1,22 @@
 import 'react-day-picker/dist/style.css';
 
-// import { DateCalendar } from '@mui/x-date-pickers';
-import ru from 'date-fns/locale/ru';
+import { DatePickerProps } from '@mui/x-date-pickers';
+import dayjs, { Dayjs } from 'dayjs';
 import React from 'react';
-import { DayClickEventHandler, DayPicker } from 'react-day-picker';
 
+import { Calendar } from '../Calendar/Calendar';
 import { TimeSlots } from '../TimeSlots/TimeSlots';
 import { Wrapper } from './styled';
 
 interface Props {
   value?: Date;
-  onChange: DayClickEventHandler;
+  onChange: DatePickerProps<Dayjs>['onChange'];
 }
 
 export const DatePicker: React.FC<Props> = ({ value, onChange }) => {
   return (
     <Wrapper>
-      <DayPicker mode="single" locale={ru} selected={value} onDayClick={onChange} />
+      <Calendar value={dayjs(value)} onChange={onChange} />
       <TimeSlots />
     </Wrapper>
   );

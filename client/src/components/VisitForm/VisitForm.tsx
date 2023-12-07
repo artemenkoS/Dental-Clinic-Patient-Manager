@@ -68,7 +68,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
     doctorId: doctor ? doctor.id.toString() : '',
     patient: null,
     procedure: '',
-    visitDate: new Date(date),
+    visitDate: new Date(date ?? ''),
     authorId: '',
     isRemindRequired: false,
     extraProcedures: null,
