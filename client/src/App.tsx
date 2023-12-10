@@ -11,11 +11,12 @@ import { userSelector } from './store/slices/authSlice';
 
 const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
+dayjs.extend(utc);
+dayjs.extend(tz);
+dayjs.locale(ru);
+dayjs.tz.setDefault(userTimeZone);
+
 function App() {
-  dayjs.extend(utc);
-  dayjs.extend(tz);
-  dayjs.locale(ru);
-  dayjs.tz.setDefault(userTimeZone);
   useGetUserQuery();
   const user = useAppSelector(userSelector);
   if (!user) {

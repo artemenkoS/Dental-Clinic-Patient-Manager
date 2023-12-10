@@ -5,3 +5,7 @@ postgres-data
 /client/dist
 /server/dist
 /.history
+
+.DS_Store
+.idea/
+*.local

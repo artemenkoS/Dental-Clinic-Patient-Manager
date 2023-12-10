@@ -9,11 +9,13 @@ docker exec -it containerID bash
 
 Для восстановления БД из бекапа:
 ```
-docker exec -it containerID bash
+docker exec -it aktis-postgres-1 bash
+```
 
+```
 psql -U postgres -d postgres -c "CREATE DATABASE aktis_patients" 2> /dev/null || true
 
-psql -U postgres -d aktis_patients -f /backups/backup-20231105114921.sql
+psql -U postgres -d aktis_patients -f /backups/backup-20231210214247.sql
 ```
 
 Для запуска в production режиме:

@@ -3,15 +3,15 @@ import { Button, Checkbox, FormControlLabel, Grid, MenuItem, Modal } from '@mui/
 import dayjs from 'dayjs';
 import * as React from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import { useGetDoctorsQuery } from '../../api/doctor/doctorApi';
 import { useCreateLogRecordMutation } from '../../api/history/historyApi';
 import { useGetRolesQuery } from '../../api/role/rolesApi';
 import { Procedure, VisitMutationBody } from '../../api/visit/types';
 import { useGetVisitsQuery } from '../../api/visit/visitApi';
-import { DatePicker } from '../../components/DatePicker/DatePicker';
-import { FormSelect } from '../../components/FormSelect/FormSelect';
-import { PatientAutocomplete } from '../../components/PatientAutocomplete/PatientAutocomplete';
+import { FormSelect } from '../FormSelect/FormSelect';
+import { PatientAutocomplete } from '../PatientAutocomplete/PatientAutocomplete';
 import { ExtraProcedureForm } from '../../features/ExtraProcedureForm/ExtraProcedureForm';
 import ProceduresTable from '../../features/ProceduresTable/ProceduresTable';
 import { getDoctorRole } from '../../helpers/getDoctorRole';
@@ -23,7 +23,7 @@ import {
   setEditVisitModalOpened,
   setNewVisitModalOpened,
 } from '../../store/slices/modalsSlice';
-import { selectedSlotSelector, setSelectedSlot, setVisitDate, visitDateSelector } from '../../store/slices/visitSlice';
+import { selectedSlotSelector, setSelectedSlot, visitDateSelector } from '../../store/slices/visitSlice';
 import { LogStatus } from '../../types';
 import { Loader } from '../Loader/Loader';
 import { Container } from './styled';
@@ -221,10 +221,11 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
                 name="visitDate"
                 control={control}
                 render={({ field }) => {
-                  return <DatePicker onChange={field.onChange} value={field.value} />;
+                  return <DatePicker onChange={field.onChange} value={dayjs(field.value) } />;
                 }}
               />
             </Grid>
+            
 
             <Grid item>
               <Button type="submit" variant="outlined" fullWidth disabled={!isValid || !selectedTimeSlot} form="visit">

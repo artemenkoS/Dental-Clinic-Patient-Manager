@@ -16,7 +16,7 @@ import { theme } from './styles/theme.ts';
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <LocalizationProvider dateAdapter={AdapterDayjs} locale="ru">
         <Provider store={store}>
           <RouterProvider router={router} />
           <Toaster
