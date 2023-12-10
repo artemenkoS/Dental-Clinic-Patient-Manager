@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Box, Paper } from '@mui/material';
+import { Paper } from '@mui/material';
 
 import { theme } from '../../styles/theme';
 
@@ -8,13 +8,6 @@ export const VisitTime = styled.span`
   //   border: 2px solid black;
   //   border-radius: ${theme.spacing(1)};
   padding: ${theme.spacing(0.3)};
-`;
-
-export const List = styled(Box)`
-  margin: 0 0 ${theme.spacing(5)};
-  overflow-y: auto;
-  box-sizing: content-box;
-  flex: 1 0 500px;
 `;
 
 export const Slot = styled(Paper)`

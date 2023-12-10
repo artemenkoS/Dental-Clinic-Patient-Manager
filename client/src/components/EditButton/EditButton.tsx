@@ -9,7 +9,7 @@ interface Props {
 export const EditButton: React.FC<Props> = ({ disabled, onClick }) => {
   return (
     <IconButton onClick={onClick} disabled={disabled}>
-      <EditIcon />
+      <EditIcon fontSize="small" />
     </IconButton>
   );
 };

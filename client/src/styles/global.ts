@@ -22,6 +22,7 @@ export const globalStyle = () => css`
   }
   ::-webkit-scrollbar {
     width: 3px;
+    height: 3px;
     border: 1px solid #d5d5d5;
   }
 

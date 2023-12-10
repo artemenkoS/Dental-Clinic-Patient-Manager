@@ -3,7 +3,7 @@ import { prepareSqlQuery } from '../helpers/prepareSqlQuery';
 import { CustomWebSocket, wss } from '../index';
 
 import db from '../db';
-const sendMessage = (message: string) => {
+const sendWsMessage = (message: string) => {
   wss.clients.forEach((client: CustomWebSocket) => {
     client.send(message);
   });
@@ -30,7 +30,7 @@ export const createVisit = async (req: Request, res: Response) => {
       `INSERT INTO visit ("visitDate", "doctorId", "patientId", "procedure", "authorId", "isRemindRequired", "extraProcedures") values ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
       [visitDate, doctorId, patientId, procedure, authorId, isRemindRequired, extraProcedures]
     );
-    sendMessage(JSON.stringify({ type: 'newVisit', visitDate, authorId, doctorId }));
+    sendWsMessage(JSON.stringify({ type: 'newVisit', visitDate, authorId, doctorId }));
     authorId !== doctorId &&
       (await db.query(
         `INSERT INTO notification ("isViewed","recipentId","createdAt","type", "visitDate") values ($1, $2, $3, $4, $5) RETURNING *`,
@@ -120,6 +120,8 @@ export const updateVisit = async (req: Request, res: Response) => {
        RETURNING *`,
       [visitDate, doctorId, patientId, procedure, authorId, isRemindRequired, extraProcedures, id]
     );
+
+    sendWsMessage(JSON.stringify({ type: 'editVisit', visitDate, authorId, doctorId }));
 
     if (updatedVisit.rows[0]) {
       res.status(200).json({

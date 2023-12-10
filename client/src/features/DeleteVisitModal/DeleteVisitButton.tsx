@@ -18,7 +18,7 @@ export const DeleteVisitButton: React.FC<Props> = ({ visit, disabled }) => {
   };
   return (
     <IconButton onClick={onClick} disabled={disabled}>
-      <DeleteIcon />
+      <DeleteIcon fontSize="small" />
     </IconButton>
   );
 };

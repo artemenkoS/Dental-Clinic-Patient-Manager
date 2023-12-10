@@ -52,10 +52,9 @@ export const VisitsList = () => {
       <VisitsContainer>
         {doctors?.data.map((doctor) => {
           const filteredVisits = visits.data.filter((el) => el.doctorId === doctor.id);
-          console.log(filteredVisits);
           if (filteredVisits.length > 0) {
             return (
-              <div key={doctor.id} style={{ flex: 1 }}>
+              <div key={doctor.id} style={{ maxWidth: 380 }}>
                 <Typography variant="h6">
                   {doctor.name} {doctor.surname}
                 </Typography>

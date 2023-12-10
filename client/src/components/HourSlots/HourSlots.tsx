@@ -46,7 +46,7 @@ export const HourSlots: React.FC<HourSlotsProps> = ({ visits }) => {
     <Grid container spacing={1}>
       {HOUR_SLOTS.map((hour) => (
         <Grid item xs={12} key={hour}>
-          <Paper elevation={3} style={{ padding: '10px', height: '120px' }}>
+          <Paper elevation={4} style={{ padding: '10px', height: '125px', width: '360px' }}>
             <Grid container alignItems="center">
               <Grid item xs={2}>
                 <Typography variant="h5">{hour}</Typography>

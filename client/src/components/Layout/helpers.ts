@@ -5,6 +5,8 @@ export const prepareNotificationText = (data: string) => {
   switch (parsedData.type) {
     case 'newVisit':
       return `Новая запись на ${dayjs(parsedData.visitDate).format('HH:mm')}`;
+    case 'editVisit':
+      return `Изменение в записи на ${dayjs(parsedData.visitDate).format('HH:mm')}`;
     case 'cancelledVisit':
       return `Запись на ${dayjs(parsedData.visitDate).format('HH:mm')} отменена`;
     default:

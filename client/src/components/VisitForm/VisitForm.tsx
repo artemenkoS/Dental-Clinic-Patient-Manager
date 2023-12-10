@@ -23,7 +23,7 @@ import {
   setEditVisitModalOpened,
   setNewVisitModalOpened,
 } from '../../store/slices/modalsSlice';
-import { selectedSlotSelector, setSelectedSlot, visitDateSelector } from '../../store/slices/visitSlice';
+import { selectedSlotSelector, setSelectedSlot, setVisitDate, visitDateSelector } from '../../store/slices/visitSlice';
 import { LogStatus } from '../../types';
 import { Loader } from '../Loader/Loader';
 import { Container } from './styled';
@@ -86,7 +86,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
     formState: { isValid },
   } = useForm<VisitFormValues>({ defaultValues: values ?? defaultFormValues });
 
-  React.useEffect(() => resetForm(values ?? defaultFormValues), [date]);
+  React.useEffect(() => resetForm(values ?? defaultFormValues), [date, values]);
   React.useEffect(() => {
     console.log(values?.extraProcedures);
     values?.extraProcedures && setExtraProcedures(values?.extraProcedures);
@@ -109,15 +109,13 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
   const formSubmit = (data: VisitFormValues) => {
     if (user && data.patient) {
       const time = selectedTimeSlot ? selectedTimeSlot.split(':') : ['0', '0'];
-      data.visitDate.setHours(+time[0]);
-      data.visitDate.setMinutes(+time[1]);
-      data.visitDate.setSeconds(0);
+      const visitDate = dayjs(data.visitDate).hour(+time[0]).minute(+time[1]).second(0);
 
       onSubmit(
         {
           doctorId: +data.doctorId,
           authorId: user.id,
-          visitDate: `${data.visitDate.toISOString()}`,
+          visitDate: visitDate.toISOString(),
           patientId: +data.patient.id,
           procedure: data.procedure,
           isRemindRequired: data.isRemindRequired,
@@ -132,7 +130,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
         changes: {
           doctorId: +data.doctorId,
           authorId: user.id,
-          visitDate: `${data.visitDate.toISOString()}`,
+          visitDate: visitDate.toISOString(),
           patientId: +data.patient.id,
           procedure: data.procedure,
         },

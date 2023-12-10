@@ -32,8 +32,7 @@ export const HeaderTitle = styled.h1`
 
 export const Sidebar = styled.div`
   height: 100%;
-  flex: 0 1 200px;
-  min-width: 150px;
+  flex: 0 1 150px;
   background-color: ${theme.palette.primary.dark};
   padding: ${theme.spacing(2)};
   font-size: ${theme.spacing(3)};

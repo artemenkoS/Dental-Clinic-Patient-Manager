@@ -5,10 +5,13 @@ import { theme } from '../../styles/theme';
 
 export const Wrapper = styled.div`
   height: 100%;
-  margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
+  max-width: 1400px;
+  overflow-y: hidden;
+  gap: ${theme.spacing(1)};
+  box-sizing: border-box;
 `;
 
 export const VisitsContainer = styled.div`
@@ -26,9 +29,9 @@ export const VisitTime = styled.span`
 
 export const List = styled(Box)`
   margin: 0 0 ${theme.spacing(5)};
-  overflow-y: auto;
   box-sizing: content-box;
-  flex: 1 0 500px;
+  flex: 1 1 500px;
+  width: 100px;
 `;
 
 export const Slot = styled(Paper)`
@@ -47,7 +50,8 @@ export const ControlsContainer = styled.div`
 
 export const VisitsWrapper = styled.div`
   height: 80%;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   padding: ${theme.spacing(0.4)};
 `;
 
