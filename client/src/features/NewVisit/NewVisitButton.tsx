@@ -16,7 +16,7 @@ export const NewVisitButton: React.FC = () => {
       variant="outlined"
       color="success"
       size="large"
-      sx={{ height: theme.spacing(4), alignSelf: 'flex-end', position: 'absolute', right: theme.spacing(3) }}
+      sx={{ height: theme.spacing(4), alignSelf: 'flex-start', position: 'absolute', right: theme.spacing(3) }}
     >
       Создать запись
     </Button>

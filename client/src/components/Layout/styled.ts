@@ -32,12 +32,13 @@ export const HeaderTitle = styled.h1`
 
 export const Sidebar = styled.div`
   height: 100%;
-  flex: 0 1 150px;
+  flex: 0 1 180px;
   background-color: ${theme.palette.primary.dark};
   padding: ${theme.spacing(2)};
   font-size: ${theme.spacing(3)};
   color: ${theme.palette.primary.light};
   overflow: auto;
+  min-width: 150px;
 `;
 
 export const ContentLayout = styled.div`

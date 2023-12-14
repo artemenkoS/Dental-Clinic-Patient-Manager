@@ -2,7 +2,10 @@ import { GlobalStyles } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import React from 'react';
+import dayjs from 'dayjs';
+import ru from 'dayjs/locale/ru';
+import tz from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
 import ReactDOM from 'react-dom/client';
 import { Toaster } from 'react-hot-toast';
 import { Provider } from 'react-redux';
@@ -13,10 +16,19 @@ import { store } from './store/store.ts';
 import { globalStyle } from './styles/global.ts';
 import { theme } from './styles/theme.ts';
 
+const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+dayjs.extend(utc);
+dayjs.extend(tz);
+dayjs.locale(ru);
+dayjs.tz.setDefault(userTimeZone);
+
+console.log(dayjs.locale());
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
+  <>
     <ThemeProvider theme={theme}>
-      <LocalizationProvider dateAdapter={AdapterDayjs} locale="ru">
+      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={dayjs.locale()}>
         <Provider store={store}>
           <RouterProvider router={router} />
           <Toaster
@@ -30,5 +42,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       </LocalizationProvider>
     </ThemeProvider>
     <GlobalStyles styles={globalStyle} />
-  </React.StrictMode>
+  </>
 );

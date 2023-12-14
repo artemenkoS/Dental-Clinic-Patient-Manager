@@ -1,12 +1,12 @@
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import { IconButton } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
 
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { visitDateSelector } from '../../store/slices/visitSlice';
 import { setVisitDate } from '../../store/slices/visitSlice';
-import { Calendar } from '../Calendar/Calendar';
 import { NavigationContainer, Wrapper } from './styled';
 
 export const DaySelect = () => {
@@ -40,7 +40,7 @@ export const DaySelect = () => {
         </IconButton>
       </NavigationContainer>
 
-      <Calendar value={isoDate ? dayjs(isoDate) : null} onChange={onDayChange} />
+      <DatePicker value={isoDate ? dayjs(isoDate) : null} onChange={onDayChange} />
     </Wrapper>
   );
 };

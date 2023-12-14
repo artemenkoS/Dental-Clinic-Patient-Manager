@@ -16,6 +16,7 @@ import roleRouter from './routes/role.router';
 require('dotenv').config();
 
 export interface CustomWebSocket extends WebSocket {
+  _socket: any;
   userId?: string;
 }
 
@@ -23,6 +24,7 @@ const PORT = process.env.PORT || 8080;
 
 const server = express();
 const httpServer = http.createServer(server);
+
 export const wss = new WebSocketServer({ server: httpServer });
 
 wss.on('connection', (ws: CustomWebSocket) => {
@@ -36,6 +38,20 @@ wss.on('connection', (ws: CustomWebSocket) => {
       switch (parsedData.action) {
         case 'connect':
           ws.userId = parsedData.id;
+          break;
+        case 'sos':
+          const senderIP = ws._socket.remoteAddress;
+
+          wss.clients.forEach((client) => {
+            if (client !== ws && client.readyState === WebSocket.OPEN) {
+              const messageToSend = JSON.stringify({
+                type: 'sos',
+                message: senderIP,
+                authorId: parsedData.authorId,
+              });
+              client.send(messageToSend);
+            }
+          });
           break;
         default:
           console.log(`Received message: ${parsedMessage}`);

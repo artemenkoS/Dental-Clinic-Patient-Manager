@@ -1,17 +1,15 @@
 import { DevTool } from '@hookform/devtools';
 import { Button, Checkbox, FormControlLabel, Grid, MenuItem, Modal } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import * as React from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import { useGetDoctorsQuery } from '../../api/doctor/doctorApi';
 import { useCreateLogRecordMutation } from '../../api/history/historyApi';
 import { useGetRolesQuery } from '../../api/role/rolesApi';
 import { Procedure, VisitMutationBody } from '../../api/visit/types';
 import { useGetVisitsQuery } from '../../api/visit/visitApi';
-import { FormSelect } from '../FormSelect/FormSelect';
-import { PatientAutocomplete } from '../PatientAutocomplete/PatientAutocomplete';
 import { ExtraProcedureForm } from '../../features/ExtraProcedureForm/ExtraProcedureForm';
 import ProceduresTable from '../../features/ProceduresTable/ProceduresTable';
 import { getDoctorRole } from '../../helpers/getDoctorRole';
@@ -25,7 +23,10 @@ import {
 } from '../../store/slices/modalsSlice';
 import { selectedSlotSelector, setSelectedSlot, visitDateSelector } from '../../store/slices/visitSlice';
 import { LogStatus } from '../../types';
+import { FormSelect } from '../FormSelect/FormSelect';
 import { Loader } from '../Loader/Loader';
+import { PatientAutocomplete } from '../PatientAutocomplete/PatientAutocomplete';
+import TimeSlots from '../TimeSlots/TimeSlots';
 import { Container } from './styled';
 import { VisitFormValues } from './types';
 
@@ -98,6 +99,8 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
 
   const formValues = watch();
 
+  console.log(dayjs.locale());
+
   useGetVisitsQuery(
     {
       doctorId: formValues.doctorId,
@@ -165,7 +168,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
                         </MenuItem>
                       ) : (
                         doctors?.data.map((doctor) => (
-                          <MenuItem value={doctor.id.toString()}>
+                          <MenuItem value={doctor.id.toString()} key={doctor.id}>
                             {doctor.name} {doctor.surname}
                           </MenuItem>
                         ))
@@ -217,15 +220,21 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
               />
             </Grid>
             <Grid item>
-              <Controller
-                name="visitDate"
-                control={control}
-                render={({ field }) => {
-                  return <DatePicker onChange={field.onChange} value={dayjs(field.value) } />;
-                }}
-              />
+              <Grid container gap={2}>
+                <Grid item>
+                  <Controller
+                    name="visitDate"
+                    control={control}
+                    render={({ field }) => {
+                      return <DatePicker onChange={field.onChange} value={dayjs(field.value).locale('ru')} />;
+                    }}
+                  />
+                </Grid>
+                <Grid>
+                  <TimeSlots />
+                </Grid>
+              </Grid>
             </Grid>
-            
 
             <Grid item>
               <Button type="submit" variant="outlined" fullWidth disabled={!isValid || !selectedTimeSlot} form="visit">
