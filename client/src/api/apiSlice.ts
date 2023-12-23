@@ -1,7 +1,9 @@
 import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: import.meta.env.DEV ? import.meta.env.VITE_API_URL_DEV : import.meta.env.VITE_API_URL_PROD,
+  baseUrl: import.meta.env.DEV
+    ? `http://${import.meta.env.VITE_API_URL_DEV}`
+    : `http://${import.meta.env.VITE_API_URL_PROD}`,
 
   prepareHeaders: (headers) => {
     const token = localStorage.getItem('token');

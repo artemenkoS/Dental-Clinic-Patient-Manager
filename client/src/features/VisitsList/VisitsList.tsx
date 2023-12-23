@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
 import dayjs from 'dayjs';
-import toast from 'react-hot-toast';
+import { toast } from 'react-toastify';
 
 import { useGetDoctorsQuery } from '../../api/doctor/doctorApi';
 import { useGetVisitsQuery } from '../../api/visit/visitApi';
@@ -54,7 +54,7 @@ export const VisitsList = () => {
           const filteredVisits = visits.data.filter((el) => el.doctorId === doctor.id);
           if (filteredVisits.length > 0) {
             return (
-              <div key={doctor.id} style={{ maxWidth: 380 }}>
+              <div key={doctor.id} style={{ maxWidth: 520 }}>
                 <Typography variant="h6">
                   {doctor.name} {doctor.surname}
                 </Typography>

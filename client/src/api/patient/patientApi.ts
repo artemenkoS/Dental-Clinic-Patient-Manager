@@ -1,4 +1,4 @@
-import toast from 'react-hot-toast';
+import { toast } from 'react-toastify';
 
 import { AutocompleteOption } from '../../types';
 import { apiSlice } from '../apiSlice';

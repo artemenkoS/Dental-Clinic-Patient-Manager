@@ -16,7 +16,9 @@ export const Slot = styled(Paper)`
   gap: ${theme.spacing(1)};
   margin-bottom: ${theme.spacing(0.6)};
   padding: ${theme.spacing(1.3)};
-  height: 30px;
+
+  font-weight: 700;
+  height: 40px;
 `;
 
 export const ControlsContainer = styled.div`

@@ -1,4 +1,4 @@
-import toast from 'react-hot-toast';
+import { toast } from 'react-toastify';
 
 import { setEditableVisit } from '../../store/slices/modalsSlice';
 import { resetSlots } from '../../store/slices/visitSlice';

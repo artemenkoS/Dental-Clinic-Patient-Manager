@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { toast } from 'react-hot-toast';
+import { toast } from 'react-toastify';
 
 import { authApi } from '../../api/auth/authApi';
 import { AuthResponse } from '../../api/auth/types';

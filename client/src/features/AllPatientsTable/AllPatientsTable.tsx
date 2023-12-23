@@ -23,7 +23,7 @@ export const AllPatientsTable = () => {
   const sort = useAppSelector(patientsTableCurrentSortModelSelector);
 
   const { data: patients, isLoading } = useGetPatientsQuery({
-    page: pagination.page + 1 ?? 1,
+    page: pagination.page + 1,
     pageSize: pagination.pageSize,
     sort: JSON.stringify(sort),
     search: search ?? undefined,

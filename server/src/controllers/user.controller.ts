@@ -15,16 +15,11 @@ export const getUsers = async (req: Request, res: Response) => {
 
     const result = await db.query(`SELECT name,surname,id,role FROM users LIMIT $1 OFFSET $2`, [pageSize, offset]);
 
-    const totalCountQuery = await db.query(`SELECT COUNT(*) FROM procedure`);
-    const totalCount = +totalCountQuery.rows[0].count;
-    const totalPages = Math.ceil(totalCount / pageSize);
-
     res.status(200).json({
       data: result.rows,
       pagination: {
         currentPage: page,
         pageSize: pageSize,
-        totalPages,
       },
     });
   } catch (error) {

@@ -1,16 +1,13 @@
-import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import dayjs from 'dayjs';
 import React from 'react';
-import toast from 'react-hot-toast';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { Outlet } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 import { useLazyGetNotificationsQuery } from '../../api/notification/notificationApi';
-import { useGetRolesQuery } from '../../api/role/rolesApi';
 import { useLazyGetVisitsQuery } from '../../api/visit/visitApi';
 import notification from '../../assets/sounds/notification.mp3';
 import { NotificationList } from '../../features/NotificationList/NotificationList';
-import { getDoctorRole } from '../../helpers/getDoctorRole';
 import { useAppSelector } from '../../store/hooks';
 import { userSelector } from '../../store/slices/authSlice';
 import { visitDateSelector } from '../../store/slices/visitSlice';
@@ -22,8 +19,6 @@ import { ContentLayout, ContentWrapper, Header, HeaderTitle, Sidebar, Wrapper } 
 export const Layout = () => {
   const user = useAppSelector(userSelector);
   const date = useAppSelector(visitDateSelector);
-  const { data: roles } = useGetRolesQuery();
-  const doctorRole = React.useMemo(() => getDoctorRole(roles?.data), [roles]);
   const ws = React.useRef<WebSocket>();
   const audioRef = React.useRef<HTMLAudioElement>(new Audio(notification));
   const [getVisits] = useLazyGetVisitsQuery();
@@ -37,7 +32,9 @@ export const Layout = () => {
     }
   });
   React.useEffect(() => {
-    ws.current = new WebSocket('ws://localhost:8000');
+    ws.current = new WebSocket(
+      import.meta.env.DEV ? `ws://${import.meta.env.VITE_API_URL_DEV}` : `ws://${import.meta.env.VITE_API_URL_PROD}`
+    );
 
     return () => {
       if (ws?.current?.readyState === 1) {
@@ -62,13 +59,8 @@ export const Layout = () => {
         });
         getNotifications({ id: user?.id ?? 0 });
 
-        if (
-          (doctorRole && user?.id !== parsedData.authorId && parsedData.doctorId === user?.id) ||
-          (parsedData.type === 'sos' && parsedData.authorId !== user?.id)
-        ) {
-          parsedData.type === 'sos'
-            ? toast(prepareNotificationText(event.data), { duration: 5000, icon: <PriorityHighIcon /> })
-            : toast(prepareNotificationText(event.data));
+        if (user?.id !== parsedData.authorId) {
+          toast(prepareNotificationText(event.data), { autoClose: false });
 
           if (audioRef.current) {
             audioRef.current.play();
@@ -76,7 +68,7 @@ export const Layout = () => {
         }
       };
     }
-  }, [date, doctorRole, getNotifications, getVisits, user]);
+  }, [date, getNotifications, getVisits, user]);
 
   return (
     <Wrapper>

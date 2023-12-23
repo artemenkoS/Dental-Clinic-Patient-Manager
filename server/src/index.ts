@@ -27,7 +27,7 @@ const httpServer = http.createServer(server);
 
 export const wss = new WebSocketServer({ server: httpServer });
 
-wss.on('connection', (ws: CustomWebSocket) => {
+wss.on('connection', (ws: CustomWebSocket, req) => {
   ws.send('Connection established');
 
   ws.on('message', (message) => {
@@ -40,7 +40,8 @@ wss.on('connection', (ws: CustomWebSocket) => {
           ws.userId = parsedData.id;
           break;
         case 'sos':
-          const senderIP = ws._socket.remoteAddress;
+          const senderIP = req.connection.remoteAddress;
+          console.log(senderIP, 1234466789, req.socket);
 
           wss.clients.forEach((client) => {
             if (client !== ws && client.readyState === WebSocket.OPEN) {

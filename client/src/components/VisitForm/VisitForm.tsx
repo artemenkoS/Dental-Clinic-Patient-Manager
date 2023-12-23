@@ -25,6 +25,7 @@ import { selectedSlotSelector, setSelectedSlot, visitDateSelector } from '../../
 import { LogStatus } from '../../types';
 import { FormSelect } from '../FormSelect/FormSelect';
 import { Loader } from '../Loader/Loader';
+import { NewPatient } from '../NewPatientForm/NewPatientForm';
 import { PatientAutocomplete } from '../PatientAutocomplete/PatientAutocomplete';
 import TimeSlots from '../TimeSlots/TimeSlots';
 import { Container } from './styled';
@@ -242,6 +243,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
               </Button>
             </Grid>
           </Grid>
+          <NewPatient />
         </Container>
       </Modal>
       {import.meta.env.DEV && <DevTool control={control} />}

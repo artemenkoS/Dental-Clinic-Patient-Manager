@@ -6,7 +6,7 @@ export const Wrapper = styled.div`
   display: flex;
   height: 50px;
   align-items: center;
-  width: 300px;
+  width: 370px;
   justify-content: space-between;
   margin-top: ${theme.spacing(1)};
 `;

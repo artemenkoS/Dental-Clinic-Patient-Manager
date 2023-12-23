@@ -2,6 +2,7 @@ import { Button, Table, TableBody, TableCell, TableContainer, TableFooter, Table
 import React from 'react';
 
 import { Procedure } from '../../api/visit/types';
+import { theme } from '../../styles/theme';
 
 interface Props {
   procedures: Procedure[];
@@ -13,7 +14,7 @@ export const ProceduresTable: React.FC<Props> = ({ procedures, onDelete, disable
   const totalSum = procedures.reduce((acc, procedure) => acc + +procedure.sum, 0);
 
   return (
-    <TableContainer>
+    <TableContainer sx={{ fontSize: theme.spacing(3) }}>
       <Table>
         <TableHead>
           <TableRow>
@@ -37,7 +38,7 @@ export const ProceduresTable: React.FC<Props> = ({ procedures, onDelete, disable
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableCell align="right" colSpan={3} sx={{ fontSize: 14 }}>
+            <TableCell align="right" colSpan={3}>
               Итого к оплате: {totalSum} ₸.
             </TableCell>
           </TableRow>
