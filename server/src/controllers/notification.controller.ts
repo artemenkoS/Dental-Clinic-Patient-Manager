@@ -5,7 +5,6 @@ import db from '../db';
 export const getNotifications = async (req: Request, res: Response) => {
   try {
     const id = req.query.id;
-    console.log(req.socket.remoteAddress);
 
     const today = new Date().toISOString().split('T')[0];
 
