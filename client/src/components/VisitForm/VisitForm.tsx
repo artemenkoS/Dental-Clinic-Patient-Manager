@@ -192,7 +192,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
           </form>
           <Grid container direction="column" spacing={2}>
             <Grid item>
-              <ExtraProcedureForm formSubmit={handleExtraProceduresFormSubmit} disabled={!doctor} />
+              <ExtraProcedureForm formSubmit={handleExtraProceduresFormSubmit} />
             </Grid>
             <Grid item>
               {extraProcedures && extraProcedures.length > 0 && (
