@@ -11,11 +11,7 @@ import { visitDateSelector } from '../store/slices/visitSlice';
 export const Reports = () => {
   const date = useAppSelector(visitDateSelector);
 
-  const {
-    data: visits,
-    isFetching: isVisitsLoading,
-    isError,
-  } = useGetVisitsQuery({
+  const { data: visits } = useGetVisitsQuery({
     startDate: dayjs(date).format('YYYY-MM-DD'),
     sort: JSON.stringify([{ field: 'visitDate', sort: 'asc' }]),
   });
