@@ -55,6 +55,7 @@ export const EditVisit = () => {
           isRemindRequired: visit.isRemindRequired,
           visitDate: new Date(date?.date),
           extraProcedures: visit.extraProcedures,
+          paymentMethodId: visit.paymentMethodId?.toString(),
         }}
         status="edit"
         isOpen={isOpen}

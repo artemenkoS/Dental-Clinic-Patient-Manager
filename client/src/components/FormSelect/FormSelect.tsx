@@ -6,11 +6,12 @@ interface Props {
   value: string;
   onChange: (value: string) => void;
   children: React.ReactNode;
+  disabled?: boolean;
   error?: string | undefined;
 }
 
 export const FormSelect: React.FC<Props> = (props) => {
-  const { label, value, onChange, children, error } = props;
+  const { label, value, onChange, children, error, disabled } = props;
 
   return (
     <Box sx={{ minWidth: 120 }}>
@@ -20,6 +21,7 @@ export const FormSelect: React.FC<Props> = (props) => {
           value={value?.toString()}
           label={label}
           onChange={(event: SelectChangeEvent) => onChange(event.target.value)}
+          disabled={disabled}
         >
           {children}
         </Select>

@@ -8,6 +8,8 @@ export const Container = styled(Box)`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  overflow: scroll;
+  max-height: 700px;
   width: 900px;
   background-color: ${theme.palette.background.paper};
   padding: ${theme.spacing(4)};

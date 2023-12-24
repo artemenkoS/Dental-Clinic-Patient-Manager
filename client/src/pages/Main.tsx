@@ -1,4 +1,3 @@
-import { useGetOnePatientQuery } from '../api/patient/patientApi';
 import { DeleteVisitModal } from '../features/DeleteVisitModal/DeleteVisitModal';
 import { EditVisit } from '../features/EditVisit/EditVisit';
 import { NewVisit } from '../features/NewVisit/NewVisit';
@@ -10,13 +9,11 @@ import { patientProfileModalSelector } from '../store/slices/modalsSlice';
 
 export const MainScreen = () => {
   const state = useAppSelector(patientProfileModalSelector);
-  const { data: patient } = useGetOnePatientQuery(state.patientId ?? 0, { skip: !state.patientId });
-  console.log(patient);
   return (
     <>
       <VisitsList />
       <NewVisitButton />
-      {!patient && <NewVisit values={null} />}
+      {!state.patientId && <NewVisit values={null} />}
       <EditVisit />
       <DeleteVisitModal />
       <PatientProfile />

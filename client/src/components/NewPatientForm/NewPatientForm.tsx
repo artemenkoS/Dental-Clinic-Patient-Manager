@@ -89,7 +89,7 @@ export const NewPatient: React.FC<Props> = ({ values }) => {
 
   return (
     <div>
-      <Modal keepMounted open={isOpen} onClose={handleClose}>
+      <Modal open={isOpen} onClose={handleClose}>
         <StyledBox>
           <Grid container direction="column" gap={2}>
             <Grid item>

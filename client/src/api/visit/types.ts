@@ -14,6 +14,8 @@ export interface Visit {
   authorId: number;
   isRemindRequired: boolean;
   extraProcedures: Procedure[] | null;
+  isPaid: boolean;
+  paymentMethodId: number | null;
 }
 
 export interface VisitDto {
@@ -41,4 +43,6 @@ export interface VisitMutationBody {
   authorId: number;
   isRemindRequired: boolean;
   extraProcedures: Procedure[] | null;
+  isPaid: boolean;
+  paymentMethodId: number | null;
 }

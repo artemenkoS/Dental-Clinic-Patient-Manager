@@ -10,7 +10,7 @@ interface Props {
   disabled?: boolean;
 }
 
-export const ProceduresTable: React.FC<Props> = ({ procedures, onDelete, disabled }) => {
+export const ProceduresTable: React.FC<Props> = ({ procedures, onDelete }) => {
   const totalSum = procedures.reduce((acc, procedure) => acc + +procedure.sum, 0);
 
   return (
@@ -29,7 +29,7 @@ export const ProceduresTable: React.FC<Props> = ({ procedures, onDelete, disable
               <TableCell>{item.label}</TableCell>
               <TableCell>{item.sum} ₸.</TableCell>
               <TableCell>
-                <Button variant="outlined" onClick={() => onDelete(index)} disabled={disabled}>
+                <Button variant="outlined" onClick={() => onDelete(index)}>
                   Удалить
                 </Button>
               </TableCell>

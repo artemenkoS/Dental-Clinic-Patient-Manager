@@ -6,6 +6,7 @@ import { AuthForm } from '../features/AuthForm/AuthForm';
 import { History } from '../pages/History';
 import { MainScreen } from '../pages/Main';
 import { Patients } from '../pages/Patients';
+import { Reports } from '../pages/Reports';
 import { VisitsHistory } from '../pages/VisitsHistory';
 
 export const router = createBrowserRouter([
@@ -32,6 +33,10 @@ export const router = createBrowserRouter([
           {
             path: '/visits',
             element: <VisitsHistory />,
+          },
+          {
+            path: '/reports',
+            element: <Reports />,
           },
         ],
       },

@@ -97,7 +97,17 @@ export const getOneVisit = async (req: Request, res: Response) => {
 };
 
 export const updateVisit = async (req: Request, res: Response) => {
-  const { visitDate, doctorId, patientId, procedure, authorId, isRemindRequired, extraProcedures } = req.body;
+  const {
+    visitDate,
+    doctorId,
+    patientId,
+    procedure,
+    authorId,
+    isRemindRequired,
+    extraProcedures,
+    isPaid,
+    paymentMethodId,
+  } = req.body;
   const id = req.params.id;
 
   if (!visitDate || !doctorId || !patientId || !authorId) {
@@ -113,12 +123,25 @@ export const updateVisit = async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'Нельзя записать к этому пользователю' });
     }
 
+    console.log(isPaid, 'ISPAIDISPAID');
+
     const updatedVisit = await db.query(
       `UPDATE visit 
-       SET "visitDate" = $1, "doctorId" = $2, "patientId" = $3, "procedure" = $4, "authorId" = $5, "isRemindRequired" = $6, "extraProcedures" = $7
-       WHERE id = $8
+       SET "visitDate" = $1, "doctorId" = $2, "patientId" = $3, "procedure" = $4, "authorId" = $5, "isRemindRequired" = $6, "extraProcedures" = $7, "isPaid" = $8, "paymentMethodId" = $9
+       WHERE id = $10
        RETURNING *`,
-      [visitDate, doctorId, patientId, procedure, authorId, isRemindRequired, extraProcedures, id]
+      [
+        visitDate,
+        doctorId,
+        patientId,
+        procedure,
+        authorId,
+        isRemindRequired,
+        extraProcedures,
+        isPaid,
+        paymentMethodId,
+        id,
+      ]
     );
 
     sendWsMessage(JSON.stringify({ type: 'editVisit', visitDate, authorId, doctorId }));
