@@ -12,6 +12,7 @@ import procedureRoutes from './routes/procedure.route';
 import historyRoute from './routes/history.route';
 import notificationRouter from './routes/notification.route';
 import roleRouter from './routes/role.router';
+import paymentRouter from './routes/payment.route';
 
 require('dotenv').config();
 
@@ -76,6 +77,7 @@ server.use('/api', authRoutes);
 server.use('/api', historyRoute);
 server.use('/api', roleRouter);
 server.use('/api', notificationRouter);
+server.use('/api', paymentRouter);
 
 httpServer.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);

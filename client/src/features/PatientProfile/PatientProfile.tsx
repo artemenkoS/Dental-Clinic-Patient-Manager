@@ -87,6 +87,7 @@ export const PatientProfile = () => {
                   <TableHead>
                     <TableRow>
                       <TableCell>Дата</TableCell>
+                      <TableCell>Доктор</TableCell>
                       <TableCell>Процедура</TableCell>
                     </TableRow>
                   </TableHead>
@@ -94,6 +95,7 @@ export const PatientProfile = () => {
                     {visitsData.map((visit) => (
                       <TableRow key={visit.id}>
                         <TableCell>{visit.visitDate}</TableCell>
+                        <TableCell>{visit.doctorId}</TableCell>
                         <TableCell>{visit.procedure}</TableCell>
                       </TableRow>
                     ))}

@@ -10,4 +10,6 @@ export interface VisitFormValues {
   id?: number | undefined;
   isRemindRequired: boolean;
   extraProcedures: Procedure[] | null;
+  isPaid: boolean;
+  paymentMethodId: string;
 }

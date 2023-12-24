@@ -18,7 +18,9 @@ const defaultFormValues = {
 };
 
 export const ExtraProcedureForm: React.FC<Props> = ({ formSubmit, disabled }) => {
-  const { register, handleSubmit, reset } = useForm<FormValues>({ defaultValues: defaultFormValues });
+  const { register, handleSubmit, reset, watch } = useForm<FormValues>({ defaultValues: defaultFormValues });
+
+  const values = watch();
 
   const onSubmit = (data: FormValues) => {
     formSubmit(data);
@@ -35,7 +37,7 @@ export const ExtraProcedureForm: React.FC<Props> = ({ formSubmit, disabled }) =>
           <TextField {...register('sum')} placeholder="Стоимость" type="number" disabled={disabled} />
         </Grid>
         <Grid item>
-          <Button type="submit" variant="outlined" disabled={disabled}>
+          <Button type="submit" variant="outlined" disabled={!values.label}>
             Добавить
           </Button>
         </Grid>

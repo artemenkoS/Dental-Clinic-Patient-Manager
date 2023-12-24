@@ -3,4 +3,5 @@ export const LINK_LIST = [
   { to: '/visits', title: 'История посещений' },
   { to: '/patients', title: 'Все пациенты' },
   { to: '/history', title: 'История изменений' },
+  { to: '/reports', title: 'Отчеты' },
 ] as const;

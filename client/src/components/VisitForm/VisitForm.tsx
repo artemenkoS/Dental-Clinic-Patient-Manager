@@ -7,6 +7,7 @@ import { Controller, useForm } from 'react-hook-form';
 
 import { useGetDoctorsQuery } from '../../api/doctor/doctorApi';
 import { useCreateLogRecordMutation } from '../../api/history/historyApi';
+import { useGetPaymentMethodsQuery } from '../../api/payment/paymentApi';
 import { useGetRolesQuery } from '../../api/role/rolesApi';
 import { Procedure, VisitMutationBody } from '../../api/visit/types';
 import { useGetVisitsQuery } from '../../api/visit/visitApi';
@@ -21,7 +22,12 @@ import {
   setEditVisitModalOpened,
   setNewVisitModalOpened,
 } from '../../store/slices/modalsSlice';
-import { selectedSlotSelector, setSelectedSlot, visitDateSelector } from '../../store/slices/visitSlice';
+import {
+  busySlotsSelector,
+  selectedSlotSelector,
+  setSelectedSlot,
+  visitDateSelector,
+} from '../../store/slices/visitSlice';
 import { LogStatus } from '../../types';
 import { FormSelect } from '../FormSelect/FormSelect';
 import { Loader } from '../Loader/Loader';
@@ -43,6 +49,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
   const { data: doctors, isLoading: isDoctorsloading } = useGetDoctorsQuery();
 
   const { data: roles } = useGetRolesQuery();
+  const busySlots = new Set(useAppSelector(busySlotsSelector));
 
   const [extraProcedures, setExtraProcedures] = React.useState<Procedure[] | null>(values?.extraProcedures ?? null);
 
@@ -65,6 +72,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
   };
   const date = useAppSelector(visitDateSelector);
   const selectedTimeSlot = useAppSelector(selectedSlotSelector);
+  const { data: paymentMethods } = useGetPaymentMethodsQuery();
 
   const defaultFormValues: VisitFormValues = {
     doctorId: doctor ? doctor.id.toString() : '',
@@ -74,6 +82,8 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
     authorId: '',
     isRemindRequired: false,
     extraProcedures: null,
+    isPaid: false,
+    paymentMethodId: '',
   };
 
   const handleExtraProceduresFormSubmit = (data: Procedure) => {
@@ -100,8 +110,6 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
 
   const formValues = watch();
 
-  console.log(dayjs.locale());
-
   useGetVisitsQuery(
     {
       doctorId: formValues.doctorId,
@@ -124,6 +132,8 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
           procedure: data.procedure,
           isRemindRequired: data.isRemindRequired,
           extraProcedures: extraProcedures,
+          isPaid: data.isPaid,
+          paymentMethodId: +data.paymentMethodId,
         },
         values?.id
       );
@@ -236,9 +246,59 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
                 </Grid>
               </Grid>
             </Grid>
+            {!doctor && (
+              <Grid item>
+                <Grid container gap={2}>
+                  <Grid item xs>
+                    <Controller
+                      name="paymentMethodId"
+                      control={control}
+                      render={({ field }) => (
+                        <FormSelect
+                          label="Выберите способ оплаты"
+                          onChange={field.onChange}
+                          value={field.value}
+                          disabled={values?.isPaid}
+                        >
+                          {paymentMethods?.data.map((paymentMethod) => (
+                            <MenuItem value={paymentMethod.id.toString()} key={paymentMethod.id}>
+                              {paymentMethod.label}
+                            </MenuItem>
+                          ))}
+                        </FormSelect>
+                      )}
+                    />
+                  </Grid>
+                  <Grid item>
+                    <FormControlLabel
+                      control={
+                        <Controller
+                          name="isPaid"
+                          control={control}
+                          render={({ field }) => (
+                            <Checkbox
+                              checked={field.value}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                              disabled={values?.isPaid}
+                            />
+                          )}
+                        />
+                      }
+                      label="Визит оплачен"
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+            )}
 
             <Grid item>
-              <Button type="submit" variant="outlined" fullWidth disabled={!isValid || !selectedTimeSlot} form="visit">
+              <Button
+                type="submit"
+                variant="outlined"
+                fullWidth
+                disabled={!isValid || !selectedTimeSlot || (status === 'create' && busySlots.has(selectedTimeSlot))}
+                form="visit"
+              >
                 {submitText}
               </Button>
             </Grid>
