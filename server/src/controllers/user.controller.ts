@@ -13,7 +13,10 @@ export const getUsers = async (req: Request, res: Response) => {
     const pageSize = req.query.pageSize ? +req.query.pageSize : 10;
     const offset = (page - 1) * pageSize;
 
-    const result = await db.query(`SELECT name,surname,id,role FROM users LIMIT $1 OFFSET $2`, [pageSize, offset]);
+    const result = await db.query(`SELECT name,surname,id,role, cabinet FROM users LIMIT $1 OFFSET $2`, [
+      pageSize,
+      offset,
+    ]);
 
     res.status(200).json({
       data: result.rows,

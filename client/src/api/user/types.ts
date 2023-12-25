@@ -5,4 +5,5 @@ export interface User {
   surname: string;
   iat: number;
   exp: number;
+  cabinet: number | undefined;
 }

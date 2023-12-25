@@ -3,6 +3,8 @@ import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
 
 import { useGetDoctorsQuery } from '../../api/doctor/doctorApi';
+import { Doctor } from '../../api/doctor/types';
+import { useGetUserQuery } from '../../api/user/userApi';
 import { useGetVisitsQuery } from '../../api/visit/visitApi';
 import { DaySelect } from '../../components/DaySelector/DaySelect';
 import { HourSlots } from '../../components/HourSlots/HourSlots';
@@ -13,6 +15,7 @@ import { VisitsContainer, VisitsWrapper, Wrapper } from './styled';
 
 export const VisitsList = () => {
   const date = useAppSelector(visitDateSelector);
+  const { data: user } = useGetUserQuery();
 
   const {
     data: visits,
@@ -23,6 +26,21 @@ export const VisitsList = () => {
     sort: JSON.stringify([{ field: 'visitDate', sort: 'asc' }]),
   });
   const { data: doctors } = useGetDoctorsQuery();
+
+  const sortedDoctorsByCabinet = (docData: Doctor[]) => {
+    if (user?.user.cabinet === 0) {
+      return docData;
+    }
+
+    return docData.filter((item) => item.cabinet === user?.user.cabinet);
+  };
+
+  console.log(user);
+  if (!user?.user || !doctors?.data) {
+    return <Loader />;
+  }
+  const sortedDoctors = sortedDoctorsByCabinet(doctors.data);
+  console.log(sortedDoctors);
 
   if (isVisitsLoading) {
     return <Loader />;
@@ -50,7 +68,7 @@ export const VisitsList = () => {
     <Wrapper>
       <DaySelect />
       <VisitsContainer>
-        {doctors?.data.map((doctor) => {
+        {sortedDoctors.map((doctor) => {
           const filteredVisits = visits.data.filter((el) => el.doctorId === doctor.id);
           if (filteredVisits.length > 0) {
             return (
