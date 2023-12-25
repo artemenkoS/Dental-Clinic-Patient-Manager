@@ -14,7 +14,7 @@ interface FormValues {
 }
 const defaultFormValues = {
   label: '',
-  sum: 0,
+  sum: undefined,
 };
 
 export const ExtraProcedureForm: React.FC<Props> = ({ formSubmit, disabled }) => {
