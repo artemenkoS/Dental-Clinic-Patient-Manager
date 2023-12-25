@@ -10,7 +10,7 @@ export const getDoctors = async (req: Request, res: Response) => {
 
     const doctorRole = await db.query(`SELECT * FROM role WHERE role = 'doctor'`);
 
-    const result = await db.query(`SELECT id, name, surname FROM users WHERE role = $3 LIMIT $1 OFFSET $2`, [
+    const result = await db.query(`SELECT id, name, surname, cabinet FROM users WHERE role = $3 LIMIT $1 OFFSET $2`, [
       pageSize,
       offset,
       doctorRole.rows[0].id,

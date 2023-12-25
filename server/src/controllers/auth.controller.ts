@@ -4,8 +4,8 @@ import jwt from 'jsonwebtoken';
 import db from '../db';
 import { config } from '../config';
 
-const generateAccessToken = (id: string, role: string) => {
-  const payload = { id: id, role: role };
+const generateAccessToken = (id: string, role: string, cabinet: string) => {
+  const payload = { id: id, role: role, cabinet: cabinet };
   return jwt.sign(payload, config.secretKey, { expiresIn: '7d' });
 };
 
@@ -65,7 +65,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
       return res.status(403).json({ message: 'Не удалось авторизоваться.' });
     }
 
-    const token = generateAccessToken(user.rows[0].id, user.rows[0].role);
+    const token = generateAccessToken(user.rows[0].id, user.rows[0].role, user.rows[0].cabinet);
 
     return res.status(200).json({
       message: 'Успешная авторизация.',
