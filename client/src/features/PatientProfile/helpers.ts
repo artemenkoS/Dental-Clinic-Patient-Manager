@@ -17,7 +17,9 @@ export const formatVisitsData = (visits: Visit[], users: User[]) => {
       authorId: `${users.find((user) => user.id === item.authorId)?.surname} ${users.find(
         (user) => user.id === item.authorId
       )?.name} `,
-      procedure: `${item?.procedure} ${item.extraProcedures?.map((item) => item.label) ?? ''}`,
+      procedure: `${item.procedure !== 'null' && item?.procedure} ${
+        item.extraProcedures?.map((item) => item.label) ?? ''
+      }`,
     };
   });
 };
