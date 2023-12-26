@@ -66,7 +66,7 @@ export const HourSlots: React.FC<HourSlotsProps> = ({ visits }) => {
                             dispatch(setPatientProfileModalOpened(true));
                           }}
                         >
-                          {patient?.surname} {patient.name.split(' ')[0][0]}.{patient.name.split(' ')[1][0]}
+                          {patient?.surname} {patient.name.split(' ')?.[0]?.[0]}.{patient.name.split(' ')?.[1]?.[0]}
                         </PatientSurname>
                         {visit.isRemindRequired && <CallIcon color="error" />}
                         <ControlsContainer>
