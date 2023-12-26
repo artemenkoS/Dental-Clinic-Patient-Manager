@@ -40,7 +40,7 @@ export const DaySelect = () => {
         </IconButton>
       </NavigationContainer>
 
-      <DatePicker value={isoDate ? dayjs(isoDate) : null} onChange={onDayChange} />
+      <DatePicker value={isoDate ? dayjs(isoDate) : null} onChange={onDayChange} format="dd DD MMM YYYY   " />
     </Wrapper>
   );
 };
