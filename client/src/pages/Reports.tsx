@@ -20,7 +20,7 @@ export const Reports = () => {
   const { data: paymentMethods } = useGetPaymentMethodsQuery();
 
   return (
-    <Grid direction="column" rowGap={2} rowSpacing={2}>
+    <Grid container direction="column" spacing={4}>
       <Grid item>
         <DaySelect />
       </Grid>
