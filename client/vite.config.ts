@@ -4,6 +4,6 @@ import { defineConfig } from 'vite';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), legacy({ targets: ['Chrome >= 49'], polyfills: ['AbortController'] })],
+  plugins: [react(), legacy({ targets: ['chrome 49'] })],
   server: { port: 3000 },
 });
