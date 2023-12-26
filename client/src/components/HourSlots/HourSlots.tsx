@@ -13,6 +13,7 @@ import { getDoctorRole } from '../../helpers/getDoctorRole';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { userSelector } from '../../store/slices/authSlice';
 import { setPatientProfile, setPatientProfileModalOpened } from '../../store/slices/modalsSlice';
+import { theme } from '../../styles/theme';
 import { HOUR_SLOTS } from './const';
 import { ControlsContainer, PatientSurname, Slot, VisitTime } from './styled';
 
@@ -58,7 +59,13 @@ export const HourSlots: React.FC<HourSlotsProps> = ({ visits }) => {
                   const patient = patients?.data.find((el) => el.id === visit.patientId);
                   return (
                     patient && (
-                      <Slot key={visit.id} elevation={4}>
+                      <Slot
+                        key={visit.id}
+                        elevation={4}
+                        sx={{
+                          backgroundColor: visit.isPaid ? theme.palette.success.light : theme.palette.background.paper,
+                        }}
+                      >
                         <VisitTime> {formattedDate}</VisitTime>
                         <PatientSurname
                           onClick={() => {

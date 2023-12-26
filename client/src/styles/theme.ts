@@ -11,6 +11,7 @@ export const theme = createTheme(
       },
       success: {
         main: '#177245',
+        light: '#dfefd8',
       },
     },
     components: {
