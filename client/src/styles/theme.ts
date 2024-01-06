@@ -13,6 +13,9 @@ export const theme = createTheme(
         main: '#177245',
         light: '#dfefd8',
       },
+      info: {
+        main: '#c3dfe0',
+      },
     },
     components: {
       MuiCardContent: {

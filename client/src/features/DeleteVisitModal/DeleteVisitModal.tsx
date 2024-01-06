@@ -13,7 +13,7 @@ export const DeleteVisitModal: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const { data: user } = useGetUserQuery();
-  const { visit } = useAppSelector(deleteVisitModalSelector);
+  const { visit, isOpen } = useAppSelector(deleteVisitModalSelector);
 
   const handleClose = () => {
     dispatch(setDeleteVisitModalOpened(false));
@@ -49,6 +49,7 @@ export const DeleteVisitModal: React.FC = () => {
       dialogText="Вы точно хотите удалить данную запись?"
       onClick={handleDeleteVisit}
       handleClose={handleClose}
+      isOpen={isOpen}
     />
   );
 };

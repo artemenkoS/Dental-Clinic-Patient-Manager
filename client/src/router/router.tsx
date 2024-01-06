@@ -7,6 +7,7 @@ import { History } from '../pages/History';
 import { MainScreen } from '../pages/Main';
 import { Patients } from '../pages/Patients';
 import { Reports } from '../pages/Reports';
+import { Vacations } from '../pages/Vacations';
 import { VisitsHistory } from '../pages/VisitsHistory';
 
 export const router = createBrowserRouter([
@@ -37,6 +38,10 @@ export const router = createBrowserRouter([
           {
             path: '/reports',
             element: <Reports />,
+          },
+          {
+            path: '/vacations',
+            element: <Vacations />,
           },
         ],
       },

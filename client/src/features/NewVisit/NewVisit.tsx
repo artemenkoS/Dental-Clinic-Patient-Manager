@@ -2,10 +2,10 @@ import * as React from 'react';
 
 import { VisitMutationBody } from '../../api/visit/types';
 import { useCreateVisitMutation } from '../../api/visit/visitApi';
-import { VisitFormValues } from '../../components/VisitForm/types';
-import { VisitForm } from '../../components/VisitForm/VisitForm';
 import { useAppSelector } from '../../store/hooks';
 import { newVisitModalSelector } from '../../store/slices/modalsSlice';
+import { VisitFormValues } from '../VisitForm/types';
+import { VisitForm } from '../VisitForm/VisitForm';
 
 interface Props {
   values: Partial<VisitFormValues> | null;
