@@ -5,7 +5,6 @@ import { useGetVacationsQuery } from '../api/vacation/vacationApi';
 import { DeleteVacationModal } from '../features/DeleteVacationModal/DeleteVacationModal';
 import { NewVacation } from '../features/NewVacation/NewVacation';
 import { NewVacationButton } from '../features/VacationForm/NewVacationButton';
-import { VacationForm } from '../features/VacationForm/VacationForm';
 import { DoctorVacationListItem } from '../features/VacationListItem/VacationListItem';
 
 export const Vacations = () => {
