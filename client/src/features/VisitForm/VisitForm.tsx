@@ -162,24 +162,24 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
   };
 
   const isDateBlocked = (day: Dayjs) => {
-    const date = day.toDate();
-    console.log(date);
-    console.log(vacations?.data);
+    const date = dayjs(day);
 
     if (!vacations || !vacations.data || vacations.data.length === 0) {
-      return false; // Если нет данных о каникулах, все даты разблокированы
+      return false;
     }
 
     for (const { startDate, endDate } of vacations.data) {
-      const parsedStartDate = new Date(startDate);
-      const parsedEndDate = new Date(endDate);
+      const parsedStartDate = dayjs(startDate);
+      const parsedEndDate = dayjs(endDate);
 
-      if (date >= parsedStartDate && date <= parsedEndDate) {
-        return true; // Если дата входит в интервал от startDate до endDate, она заблокирована
+      if (date.isSame(parsedStartDate, 'day') || date.isAfter(parsedStartDate, 'day')) {
+        if (date.isSame(parsedEndDate, 'day') || date.isBefore(parsedEndDate, 'day')) {
+          return true;
+        }
       }
     }
 
-    return false; // Если дата доступна для выбора
+    return false;
   };
 
   if (isDoctorsloading) {

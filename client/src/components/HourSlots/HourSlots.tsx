@@ -64,7 +64,7 @@ export const HourSlots: React.FC<HourSlotsProps> = ({ visits }) => {
                         elevation={4}
                         sx={{
                           backgroundColor: () => {
-                            if (visit.paymentMethodId === 5) {
+                            if (visit.paymentMethodId === 7) {
                               return theme.palette.info.light;
                             } else if (visit.isPaid) {
                               return theme.palette.success.light;
