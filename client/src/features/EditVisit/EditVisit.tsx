@@ -3,12 +3,12 @@ import * as React from 'react';
 import { useGetFormatedPatientQuery } from '../../api/patient/patientApi';
 import { VisitMutationBody } from '../../api/visit/types';
 import { useUpdateVisitMutation } from '../../api/visit/visitApi';
-import { VisitForm } from '../../components/VisitForm/VisitForm';
 import { parseDate } from '../../helpers/parseDate';
 import { useAppDispatch } from '../../store/hooks';
 import { useAppSelector } from '../../store/hooks';
 import { editVisitModalSelector } from '../../store/slices/modalsSlice';
 import { resetSlots, setSelectedSlot } from '../../store/slices/visitSlice';
+import { VisitForm } from '../VisitForm/VisitForm';
 
 export const EditVisit = () => {
   const dispatch = useAppDispatch();

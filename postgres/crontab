@@ -1,1 +1,2 @@
-0 * * * * /usr/local/bin/backup_script.sh
+0 18 * * * /usr/local/bin/backup_script.sh
+0 * * * *  /usr/local/bin/deleteVacations.sh

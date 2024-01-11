@@ -63,7 +63,15 @@ export const HourSlots: React.FC<HourSlotsProps> = ({ visits }) => {
                         key={visit.id}
                         elevation={4}
                         sx={{
-                          backgroundColor: visit.isPaid ? theme.palette.success.light : theme.palette.background.paper,
+                          backgroundColor: () => {
+                            if (visit.paymentMethodId === 5) {
+                              return theme.palette.info.light;
+                            } else if (visit.isPaid) {
+                              return theme.palette.success.light;
+                            } else {
+                              return theme.palette.background.paper;
+                            }
+                          },
                         }}
                       >
                         <VisitTime> {formattedDate}</VisitTime>

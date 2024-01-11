@@ -75,7 +75,7 @@ export const AllPatientsTable = () => {
         rowCount={totalCount ?? 10}
         rows={rows}
         onRowClick={handleRowClick}
-        onPaginationChange={onPaginationModelChange}
+        onPaginationModelChange={onPaginationModelChange}
         onSortModelChange={onSortModelChange}
         slots={{ toolbar: PatientSearch }}
       />

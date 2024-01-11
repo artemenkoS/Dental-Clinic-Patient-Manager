@@ -78,9 +78,8 @@ export const AllVisitsTable = () => {
         paginationModel={paginationModel}
         rowCount={totalCount ?? 10}
         rows={rows}
-        onPaginationChange={onPaginationModelChange}
+        onPaginationModelChange={onPaginationModelChange}
         onSortModelChange={onSortModelChange}
-        loading={isVisitsLoading || isPatientsLoading || rows?.some((patient) => !patient.patientId)}
       />
     )
   );

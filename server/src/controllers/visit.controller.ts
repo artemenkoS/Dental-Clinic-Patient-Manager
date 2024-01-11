@@ -123,8 +123,6 @@ export const updateVisit = async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'Нельзя записать к этому пользователю' });
     }
 
-    console.log(isPaid, 'ISPAIDISPAID');
-
     const updatedVisit = await db.query(
       `UPDATE visit 
        SET "visitDate" = $1, "doctorId" = $2, "patientId" = $3, "procedure" = $4, "authorId" = $5, "isRemindRequired" = $6, "extraProcedures" = $7, "isPaid" = $8, "paymentMethodId" = $9

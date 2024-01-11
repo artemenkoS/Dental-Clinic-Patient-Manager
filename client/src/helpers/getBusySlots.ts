@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
 
 import { Visit } from '../api/visit/types';
-export const getBusySlots = (visits: Visit[] | undefined) => {
-  const timeSet = new Set();
+export const getBusySlots = (visits: Visit[] | undefined): string[] => {
+  const timeSet: Set<string> = new Set();
   if (!visits) return [];
 
   visits.forEach((visit) => {

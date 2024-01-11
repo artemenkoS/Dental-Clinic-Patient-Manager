@@ -1,7 +1,7 @@
 import { DevTool } from '@hookform/devtools';
 import { Button, Checkbox, FormControlLabel, Grid, MenuItem, Modal } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import * as React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
@@ -9,10 +9,14 @@ import { useGetDoctorsQuery } from '../../api/doctor/doctorApi';
 import { useCreateLogRecordMutation } from '../../api/history/historyApi';
 import { useGetPaymentMethodsQuery } from '../../api/payment/paymentApi';
 import { useGetRolesQuery } from '../../api/role/rolesApi';
+import { useGetDoctorVacationsQuery } from '../../api/vacation/vacationApi';
 import { Procedure, VisitMutationBody } from '../../api/visit/types';
 import { useGetVisitsQuery } from '../../api/visit/visitApi';
-import { ExtraProcedureForm } from '../../features/ExtraProcedureForm/ExtraProcedureForm';
-import ProceduresTable from '../../features/ProceduresTable/ProceduresTable';
+import { FormSelect } from '../../components/FormSelect/FormSelect';
+import { Loader } from '../../components/Loader/Loader';
+import { NewPatient } from '../../components/NewPatientForm/NewPatientForm';
+import { PatientAutocomplete } from '../../components/PatientAutocomplete/PatientAutocomplete';
+import TimeSlots from '../../components/TimeSlots/TimeSlots';
 import { getDoctorRole } from '../../helpers/getDoctorRole';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { userSelector } from '../../store/slices/authSlice';
@@ -29,11 +33,8 @@ import {
   visitDateSelector,
 } from '../../store/slices/visitSlice';
 import { LogStatus } from '../../types';
-import { FormSelect } from '../FormSelect/FormSelect';
-import { Loader } from '../Loader/Loader';
-import { NewPatient } from '../NewPatientForm/NewPatientForm';
-import { PatientAutocomplete } from '../PatientAutocomplete/PatientAutocomplete';
-import TimeSlots from '../TimeSlots/TimeSlots';
+import { ExtraProcedureForm } from '../ExtraProcedureForm/ExtraProcedureForm';
+import ProceduresTable from '../ProceduresTable/ProceduresTable';
 import { Container } from './styled';
 import { VisitFormValues } from './types';
 
@@ -110,6 +111,10 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
 
   const formValues = watch();
 
+  const { data: vacations } = useGetDoctorVacationsQuery(formValues.doctorId, {
+    skip: !values?.doctorId && !formValues.doctorId,
+  });
+
   useGetVisitsQuery(
     {
       doctorId: formValues.doctorId,
@@ -154,6 +159,27 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
       resetForm(defaultFormValues);
       handleClose();
     }
+  };
+
+  const isDateBlocked = (day: Dayjs) => {
+    const date = day.toDate();
+    console.log(date);
+    console.log(vacations?.data);
+
+    if (!vacations || !vacations.data || vacations.data.length === 0) {
+      return false; // Если нет данных о каникулах, все даты разблокированы
+    }
+
+    for (const { startDate, endDate } of vacations.data) {
+      const parsedStartDate = new Date(startDate);
+      const parsedEndDate = new Date(endDate);
+
+      if (date >= parsedStartDate && date <= parsedEndDate) {
+        return true; // Если дата входит в интервал от startDate до endDate, она заблокирована
+      }
+    }
+
+    return false; // Если дата доступна для выбора
   };
 
   if (isDoctorsloading) {
@@ -237,7 +263,13 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
                     name="visitDate"
                     control={control}
                     render={({ field }) => {
-                      return <DatePicker onChange={field.onChange} value={dayjs(field.value).locale('ru')} />;
+                      return (
+                        <DatePicker
+                          onChange={field.onChange}
+                          value={dayjs(field.value).locale('ru')}
+                          shouldDisableDate={isDateBlocked}
+                        />
+                      );
                     }}
                   />
                 </Grid>

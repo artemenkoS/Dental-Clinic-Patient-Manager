@@ -1,8 +1,6 @@
 import { Button, Modal, Typography } from '@mui/material';
 import * as React from 'react';
 
-import { useAppSelector } from '../../store/hooks';
-import { deleteVisitModalSelector } from '../../store/slices/modalsSlice';
 import { ButtonWrapper, Container } from './styled';
 
 interface Props {
@@ -11,6 +9,7 @@ interface Props {
   cancelText?: string;
   submitText?: string;
   dialogText: string;
+  isOpen: boolean;
 }
 
 export const AlertDialog: React.FC<Props> = ({
@@ -19,12 +18,11 @@ export const AlertDialog: React.FC<Props> = ({
   submitText = 'Подтвердить',
   dialogText,
   handleClose,
+  isOpen,
 }) => {
-  const modalState = useAppSelector(deleteVisitModalSelector);
-
   return (
     <div>
-      <Modal keepMounted open={modalState.isOpen} onClose={handleClose}>
+      <Modal keepMounted open={isOpen} onClose={handleClose}>
         <Container>
           <Typography variant="h6">{dialogText}</Typography>
           <ButtonWrapper>

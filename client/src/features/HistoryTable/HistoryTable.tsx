@@ -69,7 +69,7 @@ export const HistoryTable = () => {
         paginationModel={paginationModel}
         rowCount={rowCount ?? 10}
         rows={rows}
-        onPaginationChange={onPaginationModelChange}
+        onPaginationModelChange={onPaginationModelChange}
         onSortModelChange={onSortModelChange}
       />
     )

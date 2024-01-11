@@ -2,6 +2,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
 import { patientApi } from '../../api/patient/patientApi';
+import { Vacation } from '../../api/vacation/types';
 import { Visit } from '../../api/visit/types';
 import { RootState } from '../store';
 
@@ -10,7 +11,9 @@ interface ModalState {
   deleteVisitModal: { isOpen: boolean; visit: Visit | null };
   editVisitModal: { isOpen: boolean; editableVisit: Visit | null; submitText: string };
   newVisitModal: { isOpen: boolean };
+  vacationModal: { isOpen: boolean; submitText: string };
   patientProfileModal: { isOpen: boolean; patientId: number | null };
+  deleteVacationModal: { isOpen: boolean; vacation: Vacation | null };
 }
 
 const initialState: ModalState = {
@@ -19,6 +22,8 @@ const initialState: ModalState = {
   editVisitModal: { isOpen: false, editableVisit: null, submitText: 'Создать запись' },
   newVisitModal: { isOpen: false },
   patientProfileModal: { isOpen: false, patientId: null },
+  vacationModal: { isOpen: false, submitText: 'Добавить отпуск' },
+  deleteVacationModal: { isOpen: false, vacation: null },
 };
 
 const modalsSlice = createSlice({
@@ -52,6 +57,18 @@ const modalsSlice = createSlice({
     setPatientProfile(state, action: PayloadAction<number | null>) {
       state.patientProfileModal.patientId = action.payload;
     },
+    setVacationModalOpened(state, action: PayloadAction<boolean>) {
+      state.vacationModal.isOpen = action.payload;
+    },
+    setVacationModalSubmitText(state, action: PayloadAction<string>) {
+      state.vacationModal.submitText = action.payload;
+    },
+    setDeleteVacationModalOpen(state, action: PayloadAction<boolean>) {
+      state.deleteVacationModal.isOpen = action.payload;
+    },
+    setDeleteVacationId(state, action: PayloadAction<Vacation | null>) {
+      state.deleteVacationModal.vacation = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addMatcher(patientApi.endpoints.updatePatient.matchFulfilled, (state) => {
@@ -70,6 +87,10 @@ export const {
   setEditVisitModalSubmitText,
   setPatientProfileModalOpened,
   setPatientProfile,
+  setVacationModalOpened,
+  setVacationModalSubmitText,
+  setDeleteVacationId,
+  setDeleteVacationModalOpen,
 } = modalsSlice.actions;
 
 export const newPatientModalSelector = (state: RootState) => state.modalsReducer.newPatientModal;
@@ -77,4 +98,6 @@ export const patientProfileModalSelector = (state: RootState) => state.modalsRed
 export const editVisitModalSelector = (state: RootState) => state.modalsReducer.editVisitModal;
 export const newVisitModalSelector = (state: RootState) => state.modalsReducer.newVisitModal;
 export const deleteVisitModalSelector = (state: RootState) => state.modalsReducer.deleteVisitModal;
+export const vacationModalSelector = (state: RootState) => state.modalsReducer.vacationModal;
+export const deleteVacationModal = (state: RootState) => state.modalsReducer.deleteVacationModal;
 export default modalsSlice.reducer;
