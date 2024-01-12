@@ -4,6 +4,7 @@ import dayjs from 'dayjs';
 import React from 'react';
 
 import { useGetPatientsQuery } from '../../api/patient/patientApi';
+import { useGetPaymentMethodsQuery } from '../../api/payment/paymentApi';
 import { useGetRolesQuery } from '../../api/role/rolesApi';
 import { Visit } from '../../api/visit/types';
 import { DeleteVisitButton } from '../../features/DeleteVisitModal/DeleteVisitButton';
@@ -29,6 +30,11 @@ export const HourSlots: React.FC<HourSlotsProps> = ({ visits }) => {
   const user = useAppSelector(userSelector);
   const { data: roles } = useGetRolesQuery();
   const doctorRole = React.useMemo(() => getDoctorRole(roles?.data), [roles]);
+  const { data: paymentMethods } = useGetPaymentMethodsQuery();
+
+  const withoutPayment = React.useMemo(() => {
+    return paymentMethods?.data.find((item) => item.label === 'Без оплаты');
+  }, [paymentMethods]);
 
   const patientIdsArray = createPatientsList(visits);
 
@@ -64,7 +70,7 @@ export const HourSlots: React.FC<HourSlotsProps> = ({ visits }) => {
                         elevation={4}
                         sx={{
                           backgroundColor: () => {
-                            if (visit.paymentMethodId === 7) {
+                            if (visit.paymentMethodId === withoutPayment?.id) {
                               return theme.palette.info.light;
                             } else if (visit.isPaid) {
                               return theme.palette.success.light;

@@ -32,6 +32,7 @@ import {
   setSelectedSlot,
   visitDateSelector,
 } from '../../store/slices/visitSlice';
+import { theme } from '../../styles/theme';
 import { LogStatus } from '../../types';
 import { ExtraProcedureForm } from '../ExtraProcedureForm/ExtraProcedureForm';
 import ProceduresTable from '../ProceduresTable/ProceduresTable';
@@ -268,6 +269,15 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
                           onChange={field.onChange}
                           value={dayjs(field.value).locale('ru')}
                           shouldDisableDate={isDateBlocked}
+                          slotProps={{
+                            day: {
+                              sx: {
+                                '&.MuiPickersDay-root.Mui-disabled': {
+                                  color: theme.palette.error.light,
+                                },
+                              },
+                            },
+                          }}
                         />
                       );
                     }}
