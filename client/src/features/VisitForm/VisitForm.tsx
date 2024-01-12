@@ -251,12 +251,12 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
           </form>
           <Grid container direction="column" spacing={2}>
             <Grid item>
-              <ExtraProcedureForm formSubmit={handleExtraProceduresFormSubmit} />
+              <ExtraProcedureForm formSubmit={handleExtraProceduresFormSubmit} disabled={formValues.isPaid} />
             </Grid>
             <Grid item>
               {extraProcedures && extraProcedures.length > 0 && (
                 <ProceduresTable
-                  disabled={!doctor}
+                  disabled={formValues.isPaid}
                   procedures={extraProcedures}
                   onDelete={(index) => {
                     const updatedProcedures = extraProcedures.filter((_, i) => i !== index);
