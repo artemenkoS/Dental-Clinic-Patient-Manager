@@ -196,6 +196,9 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
           return true;
         }
       }
+      if (date.day() === 0) {
+        return true;
+      }
     }
 
     return false;
