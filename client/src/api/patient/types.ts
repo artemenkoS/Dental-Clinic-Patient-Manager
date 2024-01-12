@@ -7,6 +7,7 @@ export interface Patient {
   phone: string;
   birthdate: string;
   address: string;
+  credit?: number | null;
 }
 
 export interface PatientsDto {

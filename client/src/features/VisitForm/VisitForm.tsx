@@ -1,5 +1,5 @@
 import { DevTool } from '@hookform/devtools';
-import { Button, Checkbox, FormControlLabel, Grid, MenuItem, Modal } from '@mui/material';
+import { Button, Checkbox, FormControlLabel, Grid, MenuItem, Modal, TextField, Typography } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import * as React from 'react';
@@ -7,6 +7,7 @@ import { Controller, useForm } from 'react-hook-form';
 
 import { useGetDoctorsQuery } from '../../api/doctor/doctorApi';
 import { useCreateLogRecordMutation } from '../../api/history/historyApi';
+import { useGetOnePatientQuery, useUpdatePatientMutation } from '../../api/patient/patientApi';
 import { useGetPaymentMethodsQuery } from '../../api/payment/paymentApi';
 import { useGetRolesQuery } from '../../api/role/rolesApi';
 import { useGetDoctorVacationsQuery } from '../../api/vacation/vacationApi';
@@ -76,6 +77,10 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
   const selectedTimeSlot = useAppSelector(selectedSlotSelector);
   const { data: paymentMethods } = useGetPaymentMethodsQuery();
 
+  const handleExtraProceduresFormSubmit = (data: Procedure) => {
+    setExtraProcedures((prev) => (prev ? [...prev, data] : [data]));
+  };
+
   const defaultFormValues: VisitFormValues = {
     doctorId: doctor ? doctor.id.toString() : '',
     patient: null,
@@ -86,10 +91,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
     extraProcedures: null,
     isPaid: false,
     paymentMethodId: '',
-  };
-
-  const handleExtraProceduresFormSubmit = (data: Procedure) => {
-    setExtraProcedures((prev) => (prev ? [...prev, data] : [data]));
+    credit: 0,
   };
 
   const {
@@ -97,6 +99,8 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
     control,
     watch,
     reset: resetForm,
+    register,
+    setValue,
     formState: { isValid },
   } = useForm<VisitFormValues>({ defaultValues: values ?? defaultFormValues });
 
@@ -111,10 +115,21 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
   const [createLogRecordMutate] = useCreateLogRecordMutation();
 
   const formValues = watch();
+  const { data: patient, isSuccess: isGetPatientSuccess } = useGetOnePatientQuery(formValues.patient?.id ?? 0, {
+    skip: !(formValues.patient && formValues.patient.id),
+  });
+
+  React.useEffect(() => {
+    if (patient && patient.data.credit) {
+      setValue('credit', patient?.data?.credit);
+    }
+  }, [patient, isGetPatientSuccess]);
 
   const { data: vacations } = useGetDoctorVacationsQuery(formValues.doctorId, {
     skip: !values?.doctorId && !formValues.doctorId,
   });
+
+  const [updatePatientMutation] = useUpdatePatientMutation();
 
   useGetVisitsQuery(
     {
@@ -125,7 +140,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
   );
 
   const formSubmit = (data: VisitFormValues) => {
-    if (user && data.patient) {
+    if (user && data.patient && patient?.data) {
       const time = selectedTimeSlot ? selectedTimeSlot.split(':') : ['0', '0'];
       const visitDate = dayjs(data.visitDate).hour(+time[0]).minute(+time[1]).second(0);
 
@@ -157,6 +172,9 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
         status: status,
         createdAt: new Date().toISOString(),
       });
+      if (data.credit) {
+        updatePatientMutation({ ...patient.data, credit: +data.credit });
+      }
       resetForm(defaultFormValues);
       handleClose();
     }
@@ -291,6 +309,15 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
             {!doctor && (
               <Grid item>
                 <Grid container gap={2}>
+                  <Grid item>
+                    <TextField
+                      type="number"
+                      label="Долг"
+                      InputLabelProps={{ shrink: true }}
+                      {...register('credit')}
+                      placeholder="Долг"
+                    />
+                  </Grid>
                   <Grid item xs>
                     <Controller
                       name="paymentMethodId"

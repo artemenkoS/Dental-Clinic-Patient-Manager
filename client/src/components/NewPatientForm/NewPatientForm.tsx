@@ -83,6 +83,7 @@ export const NewPatient: React.FC<Props> = ({ values }) => {
       birthdate: data.birthdate,
       address: data.address,
       id: values?.id ?? 0,
+      credit: values?.credit,
     });
     resetForm();
   };

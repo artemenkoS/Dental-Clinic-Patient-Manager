@@ -12,4 +12,5 @@ export interface VisitFormValues {
   extraProcedures: Procedure[] | null;
   isPaid: boolean;
   paymentMethodId: string;
+  credit: number | null;
 }
