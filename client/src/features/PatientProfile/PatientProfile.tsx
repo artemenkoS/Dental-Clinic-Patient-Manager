@@ -56,8 +56,6 @@ export const PatientProfile = () => {
 
   const visitsData = formatVisitsData(visits?.data ?? [], users?.data ?? []);
 
-  console.log(patient?.data);
-
   return (
     <>
       <Modal open={state.isOpen} onClose={handleClose}>

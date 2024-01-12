@@ -104,9 +104,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
     formState: { isValid },
   } = useForm<VisitFormValues>({ defaultValues: values ?? defaultFormValues });
 
-  React.useEffect(() => resetForm(values ?? defaultFormValues), [date, values]);
   React.useEffect(() => {
-    console.log(values?.extraProcedures);
     values?.extraProcedures && setExtraProcedures(values?.extraProcedures);
   }, [values]);
 
@@ -120,10 +118,12 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
   });
 
   React.useEffect(() => {
-    if (patient && patient.data.credit) {
+    if (patient && typeof patient.data.credit === 'number') {
       setValue('credit', patient?.data?.credit);
     }
   }, [patient, isGetPatientSuccess]);
+
+  React.useEffect(() => resetForm(values ?? defaultFormValues), [date, values]);
 
   const { data: vacations } = useGetDoctorVacationsQuery(formValues.doctorId, {
     skip: !values?.doctorId && !formValues.doctorId,
@@ -172,7 +172,8 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
         status: status,
         createdAt: new Date().toISOString(),
       });
-      if (data.credit) {
+      console.log(data.credit, typeof data.credit);
+      if (typeof data.credit === 'string') {
         updatePatientMutation({ ...patient.data, credit: +data.credit });
       }
       resetForm(defaultFormValues);

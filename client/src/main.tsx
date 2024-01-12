@@ -25,8 +25,6 @@ dayjs.extend(tz);
 dayjs.locale(ru);
 dayjs.tz.setDefault(userTimeZone);
 
-console.log(dayjs.locale());
-
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <>
     <ThemeProvider theme={theme}>

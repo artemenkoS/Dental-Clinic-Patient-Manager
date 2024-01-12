@@ -42,7 +42,6 @@ export const HourSlots: React.FC<HourSlotsProps> = ({ visits }) => {
 
   visits.forEach((visit) => {
     const hour = new Date(visit.visitDate).getHours().toString().padStart(2, '0');
-    console.log(visit, hour);
     if (!groupedVisits[hour]) {
       groupedVisits[hour] = [];
     }
