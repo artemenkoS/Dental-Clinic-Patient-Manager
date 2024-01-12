@@ -296,6 +296,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
                               sx: {
                                 '&.MuiPickersDay-root.Mui-disabled': {
                                   color: theme.palette.error.light,
+                                  opacity: 0.7,
                                 },
                               },
                             },
