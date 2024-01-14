@@ -367,7 +367,6 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
                 )}
               />
             )}
-
             <Grid item>
               <Button
                 type="submit"

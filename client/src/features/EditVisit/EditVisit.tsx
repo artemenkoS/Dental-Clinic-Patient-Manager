@@ -28,8 +28,6 @@ export const EditVisit = () => {
 
   console.log(visit);
 
-  const isOpen = useAppSelector(editVisitModalSelector).isOpen;
-
   const [updateVisit, { isSuccess: createVisitSuccess, reset }] = useUpdateVisitMutation();
 
   React.useEffect(() => {
@@ -42,6 +40,7 @@ export const EditVisit = () => {
   const handleSubmit = (body: VisitMutationBody, id?: number) => {
     id && updateVisit({ body, id });
   };
+
   return (
     visit &&
     patient &&
@@ -61,7 +60,7 @@ export const EditVisit = () => {
           payments: visit.payments,
         }}
         status="edit"
-        isOpen={isOpen}
+        isOpen
       />
     )
   );
