@@ -26,6 +26,8 @@ export const EditVisit = () => {
     date && dispatch(setSelectedSlot(date?.time));
   }, [date]);
 
+  console.log(visit);
+
   const isOpen = useAppSelector(editVisitModalSelector).isOpen;
 
   const [updateVisit, { isSuccess: createVisitSuccess, reset }] = useUpdateVisitMutation();
@@ -56,6 +58,7 @@ export const EditVisit = () => {
           visitDate: new Date(date?.date),
           extraProcedures: visit.extraProcedures,
           paymentMethodId: visit.paymentMethodId?.toString(),
+          payments: visit.payments,
         }}
         status="edit"
         isOpen={isOpen}

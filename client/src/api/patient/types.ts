@@ -8,6 +8,9 @@ export interface Patient {
   birthdate: string;
   address: string;
   credit?: number | null;
+  totalVisitSum?: string;
+  totalPayments?: string;
+  totalBalance?: number;
 }
 
 export interface PatientsDto {

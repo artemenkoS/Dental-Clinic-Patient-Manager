@@ -21,42 +21,44 @@ export const prepareSqlQuery = (reqQuery: ParsedQs) => {
         if (item.field === 'patientId') {
           sortQuery += `"patient"."surname" ${item.sort}`;
         } else {
-          sortQuery += `"visit"."${item.field}" ${item.sort}`;
+          sortQuery += `"visit_with_payments"."${item.field}" ${item.sort}`;
         }
       });
     }
   }
 
   if (patientId) {
-    whereClauses.push(`"visit"."patientId" = $${queryParams.length + 1}`);
+    whereClauses.push(`"visit_with_payments"."patientId" = $${queryParams.length + 1}`);
     queryParams.push(patientId);
     totalCountQueryParams.push(patientId);
   }
 
   if (name) {
-    whereClauses.push(`"visit"."name" = $${queryParams.length + 1}`);
+    whereClauses.push(`"visit_with_payments"."name" = $${queryParams.length + 1}`);
     queryParams.push(name);
     totalCountQueryParams.push(name);
   }
 
   if (surname) {
-    whereClauses.push(`"patient"."surname" = $${queryParams.length + 1}`);
+    whereClauses.push(`"visit_with_payments"."surname" = $${queryParams.length + 1}`);
     queryParams.push(surname);
     totalCountQueryParams.push(surname);
   }
 
   if (doctorId) {
-    whereClauses.push(`"visit"."doctorId" = $${queryParams.length + 1}`);
+    whereClauses.push(`"visit_with_payments"."doctorId" = $${queryParams.length + 1}`);
     queryParams.push(doctorId);
     totalCountQueryParams.push(doctorId);
   }
 
   if (startDate && endDate) {
-    whereClauses.push(`"visit"."visitDate" BETWEEN $${queryParams.length + 1} AND $${queryParams.length + 2}`);
+    whereClauses.push(
+      `"visit_with_payments"."visitDate" BETWEEN $${queryParams.length + 1} AND $${queryParams.length + 2}`
+    );
     queryParams.push(startDate, endDate);
     totalCountQueryParams.push(startDate, endDate);
   } else if (startDate) {
-    whereClauses.push(`DATE("visit"."visitDate") = $${queryParams.length + 1}`);
+    whereClauses.push(`DATE("visit_with_payments"."visitDate") = $${queryParams.length + 1}`);
     queryParams.push(startDate);
     totalCountQueryParams.push(startDate);
   }
@@ -64,12 +66,12 @@ export const prepareSqlQuery = (reqQuery: ParsedQs) => {
   const offset = (+page - 1) * +pageSize;
 
   let query = `
-    SELECT "visit".*, "patient"."surname"
-    FROM visit
-    JOIN patient ON "visit"."patientId" = "patient"."id"
+    SELECT "visit_with_payments".*, "patient"."surname"
+    FROM visit_with_payments
+    JOIN patient ON "visit_with_payments"."patientId" = "patient"."id"
   `;
 
-  let totalCountQuery = `SELECT count(*) FROM visit`;
+  let totalCountQuery = `SELECT count(*) FROM visit_with_payments`;
 
   if (whereClauses.length > 0) {
     query += ` WHERE ${whereClauses.join(' AND ')}`;

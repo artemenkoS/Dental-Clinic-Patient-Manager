@@ -92,7 +92,7 @@ export const HourSlots: React.FC<HourSlotsProps> = ({ visits }) => {
                         <ControlsContainer>
                           <DeleteVisitButton
                             visit={visit}
-                            disabled={user?.role === doctorRole?.id && visit.doctorId !== user?.id}
+                            disabled={(user?.role === doctorRole?.id && visit.doctorId !== user?.id) || visit.isPaid}
                           />
                           <EditVisitButton
                             visit={visit}

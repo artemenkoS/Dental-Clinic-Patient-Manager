@@ -10,7 +10,7 @@ const sendWsMessage = (message: string) => {
 };
 
 export const createVisit = async (req: Request, res: Response) => {
-  const { visitDate, doctorId, patientId, procedure, authorId, isRemindRequired, extraProcedures } = req.body;
+  const { visitDate, doctorId, patientId, procedure, authorId, isRemindRequired, extraProcedures, sum } = req.body;
 
   if (!visitDate || !doctorId || !patientId) {
     res.status(400).json({ message: 'Не все обязательные поля заполнены' });
@@ -27,8 +27,8 @@ export const createVisit = async (req: Request, res: Response) => {
     }
 
     const newVisit = await db.query(
-      `INSERT INTO visit ("visitDate", "doctorId", "patientId", "procedure", "authorId", "isRemindRequired", "extraProcedures") values ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-      [visitDate, doctorId, patientId, procedure, authorId, isRemindRequired, extraProcedures]
+      `INSERT INTO visit ("visitDate", "doctorId", "patientId", "procedure", "authorId", "isRemindRequired", "extraProcedures", "sum") values ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+      [visitDate, doctorId, patientId, procedure, authorId, isRemindRequired, extraProcedures, sum]
     );
     sendWsMessage(JSON.stringify({ type: 'newVisit', visitDate, authorId, doctorId }));
     authorId !== doctorId &&
@@ -84,7 +84,7 @@ export const getVisits = async (req: Request, res: Response) => {
 export const getOneVisit = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const visit = await db.query(`SELECT * FROM visit where id = $1`, [id]);
+    const visit = await db.query(`SELECT * FROM visit_with_payments where id = $1`, [id]);
     if (!visit.rows[0]) {
       res.status(404).json({ message: 'Запись не найдена.' });
     } else {
@@ -107,6 +107,7 @@ export const updateVisit = async (req: Request, res: Response) => {
     extraProcedures,
     isPaid,
     paymentMethodId,
+    sum,
   } = req.body;
   const id = req.params.id;
 
@@ -125,8 +126,8 @@ export const updateVisit = async (req: Request, res: Response) => {
 
     const updatedVisit = await db.query(
       `UPDATE visit 
-       SET "visitDate" = $1, "doctorId" = $2, "patientId" = $3, "procedure" = $4, "authorId" = $5, "isRemindRequired" = $6, "extraProcedures" = $7, "isPaid" = $8, "paymentMethodId" = $9
-       WHERE id = $10
+       SET "visitDate" = $1, "doctorId" = $2, "patientId" = $3, "procedure" = $4, "authorId" = $5, "isRemindRequired" = $6, "extraProcedures" = $7, "isPaid" = $8, "paymentMethodId" = $9, "sum" = $10
+       WHERE id = $11
        RETURNING *`,
       [
         visitDate,
@@ -138,6 +139,7 @@ export const updateVisit = async (req: Request, res: Response) => {
         extraProcedures,
         isPaid,
         paymentMethodId,
+        sum,
         id,
       ]
     );

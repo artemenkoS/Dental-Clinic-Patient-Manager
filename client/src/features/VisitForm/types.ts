@@ -1,3 +1,4 @@
+import { Payment } from '../../api/payment/types';
 import { Procedure } from '../../api/visit/types';
 import { AutocompleteOption } from '../../types';
 
@@ -13,4 +14,5 @@ export interface VisitFormValues {
   isPaid: boolean;
   paymentMethodId: string;
   credit: number | null;
+  payments: Payment[];
 }

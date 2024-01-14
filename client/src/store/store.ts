@@ -3,6 +3,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { apiSlice } from '../api/apiSlice';
 import userReducer from './slices/authSlice';
 import modalsSlice from './slices/modalsSlice';
+import paymentReducer from './slices/paymentSlice';
 import tablesReducer from './slices/tablesSlice';
 import visitReducer from './slices/visitSlice';
 
@@ -12,6 +13,7 @@ export const store = configureStore({
     modalsReducer: modalsSlice,
     visitReducer: visitReducer,
     tablesReducer: tablesReducer,
+    paymentReducer: paymentReducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(apiSlice.middleware),

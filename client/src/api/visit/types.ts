@@ -1,4 +1,5 @@
 import { Pagination } from '../../types';
+import { Payment } from '../payment/types';
 
 export interface Procedure {
   label: string;
@@ -16,6 +17,8 @@ export interface Visit {
   extraProcedures: Procedure[] | null;
   isPaid: boolean;
   paymentMethodId: number | null;
+  sum: number;
+  payments: Payment[] | null;
 }
 
 export interface VisitDto {
@@ -45,4 +48,5 @@ export interface VisitMutationBody {
   extraProcedures: Procedure[] | null;
   isPaid: boolean;
   paymentMethodId: number | null;
+  sum?: number;
 }

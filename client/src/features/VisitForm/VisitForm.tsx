@@ -1,5 +1,5 @@
 import { DevTool } from '@hookform/devtools';
-import { Button, Checkbox, FormControlLabel, Grid, MenuItem, Modal, TextField, Typography } from '@mui/material';
+import { Alert, Button, Checkbox, FormControlLabel, Grid, MenuItem, Modal } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import * as React from 'react';
@@ -8,7 +8,8 @@ import { Controller, useForm } from 'react-hook-form';
 import { useGetDoctorsQuery } from '../../api/doctor/doctorApi';
 import { useCreateLogRecordMutation } from '../../api/history/historyApi';
 import { useGetOnePatientQuery, useUpdatePatientMutation } from '../../api/patient/patientApi';
-import { useGetPaymentMethodsQuery } from '../../api/payment/paymentApi';
+import { useCreatePaymentsMutation, useGetPaymentsByVisitQuery } from '../../api/payment/paymentApi';
+import { Payment } from '../../api/payment/types';
 import { useGetRolesQuery } from '../../api/role/rolesApi';
 import { useGetDoctorVacationsQuery } from '../../api/vacation/vacationApi';
 import { Procedure, VisitMutationBody } from '../../api/visit/types';
@@ -36,6 +37,7 @@ import {
 import { theme } from '../../styles/theme';
 import { LogStatus } from '../../types';
 import { ExtraProcedureForm } from '../ExtraProcedureForm/ExtraProcedureForm';
+import { PaymentForm } from '../PaymentForm/PaymentForm';
 import ProceduresTable from '../ProceduresTable/ProceduresTable';
 import { Container } from './styled';
 import { VisitFormValues } from './types';
@@ -75,7 +77,6 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
   };
   const date = useAppSelector(visitDateSelector);
   const selectedTimeSlot = useAppSelector(selectedSlotSelector);
-  const { data: paymentMethods } = useGetPaymentMethodsQuery();
 
   const handleExtraProceduresFormSubmit = (data: Procedure) => {
     setExtraProcedures((prev) => (prev ? [...prev, data] : [data]));
@@ -92,6 +93,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
     isPaid: false,
     paymentMethodId: '',
     credit: 0,
+    payments: [],
   };
 
   const {
@@ -99,8 +101,6 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
     control,
     watch,
     reset: resetForm,
-    register,
-    setValue,
     formState: { isValid },
   } = useForm<VisitFormValues>({ defaultValues: values ?? defaultFormValues });
 
@@ -111,23 +111,23 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
   const { submitText } = useAppSelector(editVisitModalSelector);
 
   const [createLogRecordMutate] = useCreateLogRecordMutation();
+  const [createPaymentsMutate] = useCreatePaymentsMutation();
 
   const formValues = watch();
   const { data: patient, isSuccess: isGetPatientSuccess } = useGetOnePatientQuery(formValues.patient?.id ?? 0, {
     skip: !(formValues.patient && formValues.patient.id),
   });
 
-  React.useEffect(() => {
-    if (patient && typeof patient.data.credit === 'number') {
-      setValue('credit', patient?.data?.credit);
-    }
-  }, [patient, isGetPatientSuccess]);
-
   React.useEffect(() => resetForm(values ?? defaultFormValues), [date, values]);
 
   const { data: vacations } = useGetDoctorVacationsQuery(formValues.doctorId, {
     skip: !values?.doctorId && !formValues.doctorId,
   });
+
+  const { data: payments } = useGetPaymentsByVisitQuery(
+    { visitId: values?.id?.toString() ?? '' },
+    { skip: !values?.id }
+  );
 
   const [updatePatientMutation] = useUpdatePatientMutation();
 
@@ -138,6 +138,13 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
     },
     { skip: !formValues.doctorId }
   );
+
+  const updatePaymentsWithVisitId = (payments: Payment[]) => {
+    return payments.map((payment) => ({
+      ...payment,
+      visitId: values?.id,
+    }));
+  };
 
   const formSubmit = (data: VisitFormValues) => {
     if (user && data.patient && patient?.data) {
@@ -155,6 +162,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
           extraProcedures: extraProcedures,
           isPaid: data.isPaid,
           paymentMethodId: +data.paymentMethodId,
+          sum: extraProcedures?.reduce((acc, procedure) => acc + +procedure.sum, 0),
         },
         values?.id
       );
@@ -172,6 +180,9 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
         status: status,
         createdAt: new Date().toISOString(),
       });
+      {
+        !values?.isPaid && createPaymentsMutate(updatePaymentsWithVisitId(data.payments));
+      }
       console.log(data.credit, typeof data.credit);
       if (typeof data.credit === 'string') {
         updatePatientMutation({ ...patient.data, credit: +data.credit });
@@ -215,6 +226,12 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
         <Container>
           <form onSubmit={handleSubmit(formSubmit)} id="visit">
             <Grid container direction="column" spacing={2}>
+              {patient?.data && patient?.data.totalBalance !== 0 && (
+                <Grid item>
+                  <Alert severity="warning">Долг пациента {patient.data.totalBalance} ₸.</Alert>
+                </Grid>
+              )}
+
               <Grid item>
                 <Controller
                   name="doctorId"
@@ -313,56 +330,42 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
             </Grid>
             {!doctor && (
               <Grid item>
-                <Grid container gap={2}>
-                  <Grid item>
-                    <TextField
-                      type="number"
-                      label="Долг"
-                      InputLabelProps={{ shrink: true }}
-                      {...register('credit')}
-                      placeholder="Долг"
-                    />
-                  </Grid>
-                  <Grid item xs>
+                <FormControlLabel
+                  control={
                     <Controller
-                      name="paymentMethodId"
+                      name="isPaid"
                       control={control}
                       render={({ field }) => (
-                        <FormSelect
-                          label="Выберите способ оплаты"
-                          onChange={field.onChange}
-                          value={field.value}
+                        <Checkbox
+                          checked={field.value}
+                          onChange={(e) => field.onChange(e.target.checked)}
                           disabled={values?.isPaid}
-                        >
-                          {paymentMethods?.data.map((paymentMethod) => (
-                            <MenuItem value={paymentMethod.id.toString()} key={paymentMethod.id}>
-                              {paymentMethod.label}
-                            </MenuItem>
-                          ))}
-                        </FormSelect>
+                        />
                       )}
                     />
-                  </Grid>
+                  }
+                  label="Визит оплачен"
+                />
+              </Grid>
+            )}
+            {formValues.isPaid && (
+              <Controller
+                name="payments"
+                control={control}
+                render={({ field }) => (
                   <Grid item>
-                    <FormControlLabel
-                      control={
-                        <Controller
-                          name="isPaid"
-                          control={control}
-                          render={({ field }) => (
-                            <Checkbox
-                              checked={field.value}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                              disabled={values?.isPaid}
-                            />
-                          )}
-                        />
-                      }
-                      label="Визит оплачен"
+                    <PaymentForm
+                      control={control}
+                      disabled={values?.isPaid}
+                      initialPayments={values?.payments ?? []}
+                      visitId={values?.id}
+                      formSubmit={(payments) => {
+                        field.onChange(payments);
+                      }}
                     />
                   </Grid>
-                </Grid>
-              </Grid>
+                )}
+              />
             )}
 
             <Grid item>

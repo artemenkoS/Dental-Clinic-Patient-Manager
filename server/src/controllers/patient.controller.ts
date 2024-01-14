@@ -33,7 +33,7 @@ export const getPatients = async (req: Request, res: Response) => {
     const offset = (page - 1) * pageSize;
     const sort = req.query.sort as string;
 
-    let query = `SELECT * FROM patient`;
+    let query = `SELECT * FROM patient_summary`;
 
     const queryParams = [];
 
@@ -48,7 +48,7 @@ export const getPatients = async (req: Request, res: Response) => {
       const placeholders = ids.map((_, index) => `$${index + 1}`).join(',');
 
       query = `
-        SELECT * FROM patient
+        SELECT * FROM patient_summary
         WHERE id IN (${placeholders})
         LIMIT $${ids.length + 1}
         OFFSET $${ids.length + 2}
@@ -56,7 +56,7 @@ export const getPatients = async (req: Request, res: Response) => {
 
       const result = await db.query(query, [...ids, pageSize, offset]);
 
-      const totalCountQuery = await db.query(`SELECT COUNT(*) FROM patient WHERE id IN (${placeholders})`, ids);
+      const totalCountQuery = await db.query(`SELECT COUNT(*) FROM patient_summary WHERE id IN (${placeholders})`, ids);
       const totalCount = +totalCountQuery.rows[0].count;
       const totalPages = Math.ceil(totalCount / pageSize);
 
@@ -106,7 +106,7 @@ export const getPatients = async (req: Request, res: Response) => {
 export const getOnePatient = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const user = await db.query(`SELECT * FROM patient where id = $1`, [id]);
+    const user = await db.query(`SELECT * FROM patient_summary where id = $1`, [id]);
     if (!user.rows[0]) {
       res.status(404).json({ message: 'Пользователь не найден.' });
     } else {
