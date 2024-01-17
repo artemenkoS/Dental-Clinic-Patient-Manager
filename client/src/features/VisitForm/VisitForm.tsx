@@ -366,7 +366,12 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
                 type="submit"
                 variant="outlined"
                 fullWidth
-                disabled={!isValid || !selectedTimeSlot || (status === 'create' && busySlots.has(selectedTimeSlot))}
+                disabled={
+                  !isValid ||
+                  !selectedTimeSlot ||
+                  (status === 'create' && busySlots.has(selectedTimeSlot)) ||
+                  isDateBlocked(dayjs(formValues.visitDate))
+                }
                 form="visit"
               >
                 {submitText}
