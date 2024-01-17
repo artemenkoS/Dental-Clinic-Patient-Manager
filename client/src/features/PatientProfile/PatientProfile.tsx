@@ -18,6 +18,7 @@ import { Loader } from '../../components/Loader/Loader';
 import { NewPatient } from '../../components/NewPatientForm/NewPatientForm';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
+  newVisitModalSelector,
   patientProfileModalSelector,
   setNewPatientModalOpened,
   setPatientProfile,
@@ -44,6 +45,8 @@ export const PatientProfile = () => {
   } = useGetVisitsQuery({ patientId: state.patientId?.toString() }, { skip: !state.patientId });
 
   const { data: users } = useGetAllUsersQuery();
+
+  const { isOpen: isNewVisitOpen } = useAppSelector(newVisitModalSelector);
 
   const handleClose = () => {
     dispatch(setPatientProfileModalOpened(false));
@@ -105,7 +108,7 @@ export const PatientProfile = () => {
           )}
           {!isPatientLoading && !isPatientFetching && patient?.data && <NewPatient values={patient.data} />}
 
-          {!isPatientLoading && !isPatientFetching && patient?.data && (
+          {!isPatientLoading && !isPatientFetching && patient?.data && isNewVisitOpen && (
             <NewVisit
               values={{
                 patient: { id: patient.data.id, label: `${patient.data.name} ${patient.data.surname}` },

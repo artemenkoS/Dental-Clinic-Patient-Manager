@@ -5,18 +5,18 @@ import { NewVisitButton } from '../features/NewVisit/NewVisitButton';
 import { PatientProfile } from '../features/PatientProfile/PatientProfile';
 import { VisitsList } from '../features/VisitsList/VisitsList';
 import { useAppSelector } from '../store/hooks';
-import { editVisitModalSelector, patientProfileModalSelector } from '../store/slices/modalsSlice';
+import { editVisitModalSelector, newVisitModalSelector } from '../store/slices/modalsSlice';
 
 export const MainScreen = () => {
-  const state = useAppSelector(patientProfileModalSelector);
-  const isOpen = useAppSelector(editVisitModalSelector).isOpen;
+  const { isOpen: isEditVisitOpen } = useAppSelector(editVisitModalSelector);
+  const { isOpen: isNewVisitOpen } = useAppSelector(newVisitModalSelector);
 
   return (
     <>
       <VisitsList />
       <NewVisitButton />
-      {!state.patientId && <NewVisit values={null} />}
-      {isOpen && <EditVisit />}
+      {isNewVisitOpen && <NewVisit values={null} />}
+      {isEditVisitOpen && <EditVisit />}
       <DeleteVisitModal />
       <PatientProfile />
     </>

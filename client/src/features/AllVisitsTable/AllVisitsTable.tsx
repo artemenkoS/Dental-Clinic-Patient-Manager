@@ -1,4 +1,4 @@
-import { GridColDef, GridPaginationModel, GridSortModel } from '@mui/x-data-grid';
+import { GridPaginationModel, GridSortModel } from '@mui/x-data-grid';
 import React from 'react';
 
 import { useGetPatientsQuery } from '../../api/patient/patientApi';
@@ -14,6 +14,7 @@ import {
   visitsTableCurrentSortModelSelector,
   visitsTablePaginationSelector,
 } from '../../store/slices/tablesSlice';
+import { VISIT_COLUMNS } from './const';
 import { formatVisitsData } from './helpers';
 
 export const AllVisitsTable = () => {
@@ -58,14 +59,6 @@ export const AllVisitsTable = () => {
     dispatch(setVisitsTableSortModel(e));
   };
 
-  const columns: GridColDef[] = [
-    { field: 'visitDate', headerName: 'Время', flex: 1 },
-    { field: 'patientId', headerName: 'Пациент', flex: 1 },
-    { field: 'doctorId', headerName: 'Доктор', flex: 1 },
-    { field: 'authorId', headerName: 'Автор записи', flex: 1 },
-    { field: 'procedure', headerName: 'Процедура', flex: 1 },
-  ];
-
   if (isVisitsLoading || isPatientsLoading || rows?.some((patient) => !patient.patientId)) {
     return <Loader />;
   }
@@ -74,7 +67,7 @@ export const AllVisitsTable = () => {
     rows &&
     pagination && (
       <PaginatedTable
-        columns={columns}
+        columns={VISIT_COLUMNS}
         paginationModel={paginationModel}
         rowCount={totalCount ?? 10}
         rows={rows}

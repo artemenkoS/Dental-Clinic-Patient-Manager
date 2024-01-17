@@ -10,11 +10,7 @@ function App() {
   if (!user) {
     return <Loader />;
   }
-  return (
-    <>
-      <Layout />
-    </>
-  );
+  return <Layout />;
 }
 
 export default App;

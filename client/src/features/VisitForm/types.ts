@@ -14,5 +14,5 @@ export interface VisitFormValues {
   isPaid: boolean;
   paymentMethodId: string;
   credit: number | null;
-  payments: Payment[];
+  payments: Payment[] | null;
 }

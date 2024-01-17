@@ -24,11 +24,21 @@ export const createLogRecord = async (req: Request, res: Response) => {
     );
 
     if (status === 'delete') {
-      sendMessage(JSON.stringify({ type: 'cancelledVisit', visitDate, authorId, doctorId }));
+      const today = new Date();
+      const visitDateTime = new Date(visitDate);
+
+      if (
+        today.getDate() === visitDateTime.getDate() &&
+        today.getMonth() === visitDateTime.getMonth() &&
+        today.getFullYear() === visitDateTime.getFullYear()
+      ) {
+        sendMessage(JSON.stringify({ type: 'cancelledVisit', visitDate, authorId, doctorId }));
+      }
+
       doctorId !== authorId &&
         (await db.query(
-          `INSERT INTO notification ("isViewed","recipentId","createdAt","type", "visitDate") values ($1, $2, $3, $4, $5) RETURNING *`,
-          [false, doctorId, new Date(), 'cancelledVisit', visitDate]
+          `INSERT INTO notification ("isViewed", "recipentId", "createdAt", "type", "visitDate", "authorId") values ($1, $2, $3, $4, $5, $6) RETURNING *`,
+          [false, doctorId, new Date(), 'cancelledVisit', visitDate, authorId]
         ));
     }
 

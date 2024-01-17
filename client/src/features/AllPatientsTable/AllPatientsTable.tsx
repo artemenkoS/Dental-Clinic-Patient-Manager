@@ -1,4 +1,4 @@
-import { GridColDef, GridEventListener, GridPaginationModel, GridSortModel } from '@mui/x-data-grid';
+import { GridEventListener, GridPaginationModel, GridSortModel } from '@mui/x-data-grid';
 import * as React from 'react';
 
 import { useGetPatientsQuery } from '../../api/patient/patientApi';
@@ -14,6 +14,7 @@ import {
   setPatientsTableSortModel,
 } from '../../store/slices/tablesSlice';
 import { PatientSearch } from '../PatientSearch/PatientSearch';
+import { PATIENT_COLUMNS } from './const';
 
 export const AllPatientsTable = () => {
   const pagination = useAppSelector(patientsTablePaginationSelector);
@@ -56,12 +57,6 @@ export const AllPatientsTable = () => {
     };
   }, [dispatch]);
 
-  const columns: GridColDef[] = [
-    { field: 'surname', headerName: 'Фамилия', flex: 1 },
-    { field: 'name', headerName: 'Имя', flex: 1 },
-    { field: 'phone', headerName: 'Телефон', flex: 1 },
-  ];
-
   if (isLoading) {
     return <Loader />;
   }
@@ -70,7 +65,7 @@ export const AllPatientsTable = () => {
     rows &&
     pagination && (
       <PaginatedTable
-        columns={columns}
+        columns={PATIENT_COLUMNS}
         paginationModel={paginationModel}
         rowCount={totalCount ?? 10}
         rows={rows}

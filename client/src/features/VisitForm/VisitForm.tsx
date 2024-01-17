@@ -8,7 +8,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useGetDoctorsQuery } from '../../api/doctor/doctorApi';
 import { useCreateLogRecordMutation } from '../../api/history/historyApi';
 import { useGetOnePatientQuery, useUpdatePatientMutation } from '../../api/patient/patientApi';
-import { useCreatePaymentsMutation, useGetPaymentsByVisitQuery } from '../../api/payment/paymentApi';
+import { useCreatePaymentsMutation } from '../../api/payment/paymentApi';
 import { Payment } from '../../api/payment/types';
 import { useGetRolesQuery } from '../../api/role/rolesApi';
 import { useGetDoctorVacationsQuery } from '../../api/vacation/vacationApi';
@@ -114,7 +114,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
   const [createPaymentsMutate] = useCreatePaymentsMutation();
 
   const formValues = watch();
-  const { data: patient, isSuccess: isGetPatientSuccess } = useGetOnePatientQuery(formValues.patient?.id ?? 0, {
+  const { data: patient } = useGetOnePatientQuery(formValues.patient?.id ?? 0, {
     skip: !(formValues.patient && formValues.patient.id),
   });
 
@@ -123,11 +123,6 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
   const { data: vacations } = useGetDoctorVacationsQuery(formValues.doctorId, {
     skip: !values?.doctorId && !formValues.doctorId,
   });
-
-  const { data: payments } = useGetPaymentsByVisitQuery(
-    { visitId: values?.id?.toString() ?? '' },
-    { skip: !values?.id }
-  );
 
   const [updatePatientMutation] = useUpdatePatientMutation();
 
@@ -139,10 +134,10 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
     { skip: !formValues.doctorId }
   );
 
-  const updatePaymentsWithVisitId = (payments: Payment[]) => {
+  const updatePaymentsWithVisitId = (payments: Omit<Payment, 'visitId'>[]): Payment[] => {
     return payments.map((payment) => ({
       ...payment,
-      visitId: values?.id,
+      visitId: values?.id ?? 0,
     }));
   };
 
@@ -181,7 +176,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
         createdAt: new Date().toISOString(),
       });
       {
-        !values?.isPaid && createPaymentsMutate(updatePaymentsWithVisitId(data.payments));
+        !values?.isPaid && data.payments && createPaymentsMutate(updatePaymentsWithVisitId(data.payments));
       }
       console.log(data.credit, typeof data.credit);
       if (typeof data.credit === 'string') {
@@ -358,7 +353,6 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
                       control={control}
                       disabled={values?.isPaid}
                       initialPayments={values?.payments ?? []}
-                      visitId={values?.id}
                       formSubmit={(payments) => {
                         field.onChange(payments);
                       }}

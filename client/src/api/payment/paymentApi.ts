@@ -1,13 +1,10 @@
 import { apiSlice } from '../apiSlice';
-import { Payment, PaymentMethod, PaymentParams } from './types';
+import { Payment, PaymentMethod } from './types';
 
 interface PaymentMethodsDto {
   data: PaymentMethod[];
 }
 
-interface PaymentDto {
-  data: Payment[];
-}
 export const rolesApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getPaymentMethods: builder.query<PaymentMethodsDto, void>({
@@ -15,13 +12,7 @@ export const rolesApi = apiSlice.injectEndpoints({
         url: 'api/paymentMethods',
       }),
     }),
-    getPaymentsByVisit: builder.query<PaymentDto, PaymentParams>({
-      query: (params: PaymentParams) => ({
-        params: params,
-        url: 'api/payment',
-      }),
-      providesTags: ['Payment'],
-    }),
+
     updatePayment: builder.mutation<Payment, Payment>({
       query: (body: Payment) => ({
         body,
@@ -41,4 +32,4 @@ export const rolesApi = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useGetPaymentMethodsQuery, useGetPaymentsByVisitQuery, useCreatePaymentsMutation } = rolesApi;
+export const { useGetPaymentMethodsQuery, useCreatePaymentsMutation } = rolesApi;

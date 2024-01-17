@@ -55,11 +55,6 @@ export const Reports = () => {
                   });
                 });
 
-                const totalXray = Object.values(transformedObject).reduce(
-                  (total, value) => (typeof value === 'number' ? total + value : total),
-                  0
-                );
-
                 console.log(totalPayments);
 
                 return (

@@ -10,8 +10,4 @@ export interface Payment {
   paymentMethodId: number;
 }
 
-export interface PaymentParams {
-  visitId: string;
-}
-
 export type PaymentPayload = Omit<Payment, 'id'>;
