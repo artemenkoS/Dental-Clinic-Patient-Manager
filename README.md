@@ -1,3 +1,6 @@
+Без дампа БД приложение работать не будет.
+
+
 Для запуска в режиме разработки:
 `docker-compose -f docker-compose.dev.yml up --build`
 
