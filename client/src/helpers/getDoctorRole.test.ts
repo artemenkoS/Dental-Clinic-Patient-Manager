@@ -16,7 +16,7 @@ describe('getDoctorRole function', () => {
   });
 
   test('should return undefined when roles array is empty', () => {
-    const roles = [];
+    const roles: [] = [];
     expect(getDoctorRole(roles)).toBeUndefined();
   });
 

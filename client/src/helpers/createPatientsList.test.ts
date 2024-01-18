@@ -21,6 +21,8 @@ describe('createPatientsList function', () => {
         extraProcedures: null,
         isPaid: true,
         paymentMethodId: null,
+        sum: 54000,
+        payments: [],
       },
       {
         id: 2,
@@ -33,6 +35,8 @@ describe('createPatientsList function', () => {
         extraProcedures: null,
         isPaid: false,
         paymentMethodId: 401,
+        sum: 54000,
+        payments: [],
       },
       {
         id: 3,
@@ -45,15 +49,17 @@ describe('createPatientsList function', () => {
         extraProcedures: null,
         isPaid: true,
         paymentMethodId: 402,
+        sum: 54000,
+        payments: [],
       },
     ];
-    const expectedPatientList = [101, 102]; // Unique patient IDs
+    const expectedPatientList = [101, 102];
 
     expect(createPatientsList(visits)).toEqual(expectedPatientList);
   });
 
   test('should handle an empty visits array', () => {
-    const visits = [];
+    const visits: [] = [];
     expect(createPatientsList(visits)).toEqual([]);
   });
 });

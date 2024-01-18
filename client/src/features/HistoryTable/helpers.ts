@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import { LogRecord } from '../../api/history/types';
 import { User } from '../../api/user/types';
 
-const STATUSES = {
+export const STATUSES = {
   create: 'Cоздание',
   edit: 'Изменение',
   delete: 'Удаление',
