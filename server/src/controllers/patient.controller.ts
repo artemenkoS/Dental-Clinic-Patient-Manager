@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import db from '../db';
 
 export const createPatient = async (req: Request, res: Response) => {
-  const { name, surname, phone, birthdate, address } = req.body;
+  const { name, surname, phone, birthdate, address, credit } = req.body;
 
   if (!name || !surname || !phone || !birthdate || !address) {
     res.status(400).json('Не все обязательные поля заполнены');
@@ -12,8 +12,8 @@ export const createPatient = async (req: Request, res: Response) => {
 
   try {
     const newPatient = await db.query(
-      `INSERT INTO patient (name, surname, phone, birthdate, address) values ($1, $2, $3, $4, $5) RETURNING *`,
-      [name, surname, phone, birthdate, address]
+      `INSERT INTO patient (name, surname, phone, birthdate, address, credit) values ($1, $2, $3, $4, $5, $6) RETURNING *`,
+      [name, surname, phone, birthdate, address, credit]
     );
 
     res.status(201).json({
@@ -33,7 +33,7 @@ export const getPatients = async (req: Request, res: Response) => {
     const offset = (page - 1) * pageSize;
     const sort = req.query.sort as string;
 
-    let query = `SELECT * FROM patient`;
+    let query = `SELECT * FROM patient_summary`;
 
     const queryParams = [];
 
@@ -48,7 +48,7 @@ export const getPatients = async (req: Request, res: Response) => {
       const placeholders = ids.map((_, index) => `$${index + 1}`).join(',');
 
       query = `
-        SELECT * FROM patient
+        SELECT * FROM patient_summary
         WHERE id IN (${placeholders})
         LIMIT $${ids.length + 1}
         OFFSET $${ids.length + 2}
@@ -56,7 +56,7 @@ export const getPatients = async (req: Request, res: Response) => {
 
       const result = await db.query(query, [...ids, pageSize, offset]);
 
-      const totalCountQuery = await db.query(`SELECT COUNT(*) FROM patient WHERE id IN (${placeholders})`, ids);
+      const totalCountQuery = await db.query(`SELECT COUNT(*) FROM patient_summary WHERE id IN (${placeholders})`, ids);
       const totalCount = +totalCountQuery.rows[0].count;
       const totalPages = Math.ceil(totalCount / pageSize);
 
@@ -106,7 +106,7 @@ export const getPatients = async (req: Request, res: Response) => {
 export const getOnePatient = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const user = await db.query(`SELECT * FROM patient where id = $1`, [id]);
+    const user = await db.query(`SELECT * FROM patient_summary where id = $1`, [id]);
     if (!user.rows[0]) {
       res.status(404).json({ message: 'Пользователь не найден.' });
     } else {
@@ -119,12 +119,12 @@ export const getOnePatient = async (req: Request, res: Response) => {
 };
 
 export const updatePatient = async (req: Request, res: Response) => {
-  const { name, surname, phone, id, birthdate, address } = req.body;
+  const { name, surname, phone, id, birthdate, address, credit } = req.body;
 
   try {
     const newPatient = await db.query(
-      `UPDATE patient set name =  $1, surname = $2, phone= $3 , birthdate= $4, address= $5 where id = $6 RETURNING *`,
-      [name, surname, phone, birthdate, address, id]
+      `UPDATE patient set name =  $1, surname = $2, phone= $3 , birthdate= $4, address= $5, credit= $6 where id = $7 RETURNING *`,
+      [name, surname, phone, birthdate, address, credit, id]
     );
 
     res.status(201).json({

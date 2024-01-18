@@ -72,30 +72,36 @@ export const VacationForm: React.FC<Props> = ({ isOpen, onSubmit }) => {
                 />
               </Grid>
               <Grid item>
-                <Controller
-                  name="startDate"
-                  control={control}
-                  render={({ field }) => {
-                    return <DatePicker onChange={field.onChange} value={dayjs(field.value).locale('ru')} />;
-                  }}
-                />
+                <Grid container direction="row" spacing={2}>
+                  <Grid item>
+                    <Controller
+                      name="startDate"
+                      control={control}
+                      render={({ field }) => {
+                        return <DatePicker onChange={field.onChange} value={dayjs(field.value).locale('ru')} />;
+                      }}
+                    />
+                  </Grid>
+                  <Grid item>
+                    <Controller
+                      name="endDate"
+                      control={control}
+                      render={({ field }) => (
+                        <DatePicker
+                          label="Выберите конечную дату"
+                          value={dayjs(field.value).locale('ru')}
+                          onChange={field.onChange}
+                        />
+                      )}
+                    />
+                  </Grid>
+                </Grid>
               </Grid>
               <Grid item>
-                <Controller
-                  name="endDate"
-                  control={control}
-                  render={({ field }) => (
-                    <DatePicker
-                      label="Выберите конечную дату"
-                      value={dayjs(field.value).locale('ru')}
-                      onChange={field.onChange}
-                    />
-                  )}
-                />
+                <Button type="submit" variant="outlined" fullWidth>
+                  {submitText}
+                </Button>
               </Grid>
-              <Button type="submit" variant="outlined" fullWidth>
-                {submitText}
-              </Button>
             </Grid>
           </form>
         </Container>

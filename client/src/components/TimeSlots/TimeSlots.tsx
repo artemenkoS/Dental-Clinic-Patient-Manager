@@ -18,7 +18,6 @@ export const TimeSlots = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const [hours, minutes] = selectedSlot ? selectedSlot.split(':') : [];
-  console.log(selectedSlot);
 
   const handleTimeFieldChange = debounce((newValue: dayjs.Dayjs | null) => {
     if (newValue) {

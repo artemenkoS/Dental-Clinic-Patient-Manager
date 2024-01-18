@@ -35,12 +35,10 @@ export const VisitsList = () => {
     return docData.filter((item) => item.cabinet === user?.user.cabinet);
   };
 
-  console.log(user);
   if (!user?.user || !doctors?.data) {
     return <Loader />;
   }
   const sortedDoctors = sortedDoctorsByCabinet(doctors.data);
-  console.log(sortedDoctors);
 
   if (isVisitsLoading) {
     return <Loader />;

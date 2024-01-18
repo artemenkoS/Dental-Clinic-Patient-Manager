@@ -67,7 +67,7 @@ export const patientApi = apiSlice.injectEndpoints({
         }
       },
     }),
-    updatePatient: builder.mutation<PatientDto, Patient>({
+    updatePatient: builder.mutation<Patient, Patient>({
       query: (body: Patient) => ({
         body,
         url: 'api/patient',

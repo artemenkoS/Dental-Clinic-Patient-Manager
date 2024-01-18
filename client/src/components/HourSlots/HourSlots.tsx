@@ -4,6 +4,7 @@ import dayjs from 'dayjs';
 import React from 'react';
 
 import { useGetPatientsQuery } from '../../api/patient/patientApi';
+import { useGetPaymentMethodsQuery } from '../../api/payment/paymentApi';
 import { useGetRolesQuery } from '../../api/role/rolesApi';
 import { Visit } from '../../api/visit/types';
 import { DeleteVisitButton } from '../../features/DeleteVisitModal/DeleteVisitButton';
@@ -29,6 +30,11 @@ export const HourSlots: React.FC<HourSlotsProps> = ({ visits }) => {
   const user = useAppSelector(userSelector);
   const { data: roles } = useGetRolesQuery();
   const doctorRole = React.useMemo(() => getDoctorRole(roles?.data), [roles]);
+  const { data: paymentMethods } = useGetPaymentMethodsQuery();
+
+  const withoutPayment = React.useMemo(() => {
+    return paymentMethods?.data.find((item) => item.label === 'Без оплаты');
+  }, [paymentMethods]);
 
   const patientIdsArray = createPatientsList(visits);
 
@@ -36,7 +42,6 @@ export const HourSlots: React.FC<HourSlotsProps> = ({ visits }) => {
 
   visits.forEach((visit) => {
     const hour = new Date(visit.visitDate).getHours().toString().padStart(2, '0');
-    console.log(visit, hour);
     if (!groupedVisits[hour]) {
       groupedVisits[hour] = [];
     }
@@ -64,7 +69,7 @@ export const HourSlots: React.FC<HourSlotsProps> = ({ visits }) => {
                         elevation={4}
                         sx={{
                           backgroundColor: () => {
-                            if (visit.paymentMethodId === 5) {
+                            if (visit.paymentMethodId === withoutPayment?.id) {
                               return theme.palette.info.light;
                             } else if (visit.isPaid) {
                               return theme.palette.success.light;
@@ -87,7 +92,7 @@ export const HourSlots: React.FC<HourSlotsProps> = ({ visits }) => {
                         <ControlsContainer>
                           <DeleteVisitButton
                             visit={visit}
-                            disabled={user?.role === doctorRole?.id && visit.doctorId !== user?.id}
+                            disabled={(user?.role === doctorRole?.id && visit.doctorId !== user?.id) || visit.isPaid}
                           />
                           <EditVisitButton
                             visit={visit}

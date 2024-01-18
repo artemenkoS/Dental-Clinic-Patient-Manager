@@ -1,5 +1,5 @@
 import { DevTool } from '@hookform/devtools';
-import { Button, Checkbox, FormControlLabel, Grid, MenuItem, Modal } from '@mui/material';
+import { Alert, Button, Checkbox, FormControlLabel, Grid, MenuItem, Modal } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import * as React from 'react';
@@ -7,7 +7,9 @@ import { Controller, useForm } from 'react-hook-form';
 
 import { useGetDoctorsQuery } from '../../api/doctor/doctorApi';
 import { useCreateLogRecordMutation } from '../../api/history/historyApi';
-import { useGetPaymentMethodsQuery } from '../../api/payment/paymentApi';
+import { useGetOnePatientQuery, useUpdatePatientMutation } from '../../api/patient/patientApi';
+import { useCreatePaymentsMutation } from '../../api/payment/paymentApi';
+import { Payment } from '../../api/payment/types';
 import { useGetRolesQuery } from '../../api/role/rolesApi';
 import { useGetDoctorVacationsQuery } from '../../api/vacation/vacationApi';
 import { Procedure, VisitMutationBody } from '../../api/visit/types';
@@ -32,8 +34,10 @@ import {
   setSelectedSlot,
   visitDateSelector,
 } from '../../store/slices/visitSlice';
+import { theme } from '../../styles/theme';
 import { LogStatus } from '../../types';
 import { ExtraProcedureForm } from '../ExtraProcedureForm/ExtraProcedureForm';
+import { PaymentForm } from '../PaymentForm/PaymentForm';
 import ProceduresTable from '../ProceduresTable/ProceduresTable';
 import { Container } from './styled';
 import { VisitFormValues } from './types';
@@ -73,7 +77,10 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
   };
   const date = useAppSelector(visitDateSelector);
   const selectedTimeSlot = useAppSelector(selectedSlotSelector);
-  const { data: paymentMethods } = useGetPaymentMethodsQuery();
+
+  const handleExtraProceduresFormSubmit = (data: Procedure) => {
+    setExtraProcedures((prev) => (prev ? [...prev, data] : [data]));
+  };
 
   const defaultFormValues: VisitFormValues = {
     doctorId: doctor ? doctor.id.toString() : '',
@@ -85,10 +92,8 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
     extraProcedures: null,
     isPaid: false,
     paymentMethodId: '',
-  };
-
-  const handleExtraProceduresFormSubmit = (data: Procedure) => {
-    setExtraProcedures((prev) => (prev ? [...prev, data] : [data]));
+    credit: 0,
+    payments: [],
   };
 
   const {
@@ -99,21 +104,27 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
     formState: { isValid },
   } = useForm<VisitFormValues>({ defaultValues: values ?? defaultFormValues });
 
-  React.useEffect(() => resetForm(values ?? defaultFormValues), [date, values]);
   React.useEffect(() => {
-    console.log(values?.extraProcedures);
     values?.extraProcedures && setExtraProcedures(values?.extraProcedures);
   }, [values]);
 
   const { submitText } = useAppSelector(editVisitModalSelector);
 
   const [createLogRecordMutate] = useCreateLogRecordMutation();
+  const [createPaymentsMutate] = useCreatePaymentsMutation();
 
   const formValues = watch();
+  const { data: patient } = useGetOnePatientQuery(formValues.patient?.id ?? 0, {
+    skip: !(formValues.patient && formValues.patient.id),
+  });
+
+  React.useEffect(() => resetForm(values ?? defaultFormValues), [date, values]);
 
   const { data: vacations } = useGetDoctorVacationsQuery(formValues.doctorId, {
     skip: !values?.doctorId && !formValues.doctorId,
   });
+
+  const [updatePatientMutation] = useUpdatePatientMutation();
 
   useGetVisitsQuery(
     {
@@ -123,8 +134,15 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
     { skip: !formValues.doctorId }
   );
 
+  const updatePaymentsWithVisitId = (payments: Omit<Payment, 'visitId'>[]): Payment[] => {
+    return payments.map((payment) => ({
+      ...payment,
+      visitId: values?.id ?? 0,
+    }));
+  };
+
   const formSubmit = (data: VisitFormValues) => {
-    if (user && data.patient) {
+    if (user && data.patient && patient?.data) {
       const time = selectedTimeSlot ? selectedTimeSlot.split(':') : ['0', '0'];
       const visitDate = dayjs(data.visitDate).hour(+time[0]).minute(+time[1]).second(0);
 
@@ -139,6 +157,7 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
           extraProcedures: extraProcedures,
           isPaid: data.isPaid,
           paymentMethodId: +data.paymentMethodId,
+          sum: extraProcedures?.reduce((acc, procedure) => acc + +procedure.sum, 0),
         },
         values?.id
       );
@@ -156,30 +175,40 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
         status: status,
         createdAt: new Date().toISOString(),
       });
+      {
+        !values?.isPaid && data.payments && createPaymentsMutate(updatePaymentsWithVisitId(data.payments));
+      }
+      console.log(data.credit, typeof data.credit);
+      if (typeof data.credit === 'string') {
+        updatePatientMutation({ ...patient.data, credit: +data.credit });
+      }
       resetForm(defaultFormValues);
       handleClose();
     }
   };
 
   const isDateBlocked = (day: Dayjs) => {
-    const date = day.toDate();
-    console.log(date);
-    console.log(vacations?.data);
+    const date = dayjs(day);
 
     if (!vacations || !vacations.data || vacations.data.length === 0) {
-      return false; // Если нет данных о каникулах, все даты разблокированы
+      return false;
     }
 
     for (const { startDate, endDate } of vacations.data) {
-      const parsedStartDate = new Date(startDate);
-      const parsedEndDate = new Date(endDate);
+      const parsedStartDate = dayjs(startDate);
+      const parsedEndDate = dayjs(endDate);
 
-      if (date >= parsedStartDate && date <= parsedEndDate) {
-        return true; // Если дата входит в интервал от startDate до endDate, она заблокирована
+      if (date.isSame(parsedStartDate, 'day') || date.isAfter(parsedStartDate, 'day')) {
+        if (date.isSame(parsedEndDate, 'day') || date.isBefore(parsedEndDate, 'day')) {
+          return true;
+        }
+      }
+      if (date.day() === 0) {
+        return true;
       }
     }
 
-    return false; // Если дата доступна для выбора
+    return false;
   };
 
   if (isDoctorsloading) {
@@ -192,6 +221,12 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
         <Container>
           <form onSubmit={handleSubmit(formSubmit)} id="visit">
             <Grid container direction="column" spacing={2}>
+              {patient?.data && patient?.data.totalBalance !== 0 && (
+                <Grid item>
+                  <Alert severity="warning">Долг пациента {patient.data.totalBalance} ₸.</Alert>
+                </Grid>
+              )}
+
               <Grid item>
                 <Controller
                   name="doctorId"
@@ -228,12 +263,12 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
           </form>
           <Grid container direction="column" spacing={2}>
             <Grid item>
-              <ExtraProcedureForm formSubmit={handleExtraProceduresFormSubmit} />
+              <ExtraProcedureForm formSubmit={handleExtraProceduresFormSubmit} disabled={formValues.isPaid} />
             </Grid>
             <Grid item>
               {extraProcedures && extraProcedures.length > 0 && (
                 <ProceduresTable
-                  disabled={!doctor}
+                  disabled={formValues.isPaid}
                   procedures={extraProcedures}
                   onDelete={(index) => {
                     const updatedProcedures = extraProcedures.filter((_, i) => i !== index);
@@ -268,6 +303,16 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
                           onChange={field.onChange}
                           value={dayjs(field.value).locale('ru')}
                           shouldDisableDate={isDateBlocked}
+                          slotProps={{
+                            day: {
+                              sx: {
+                                '&.MuiPickersDay-root.Mui-disabled': {
+                                  color: theme.palette.error.light,
+                                  opacity: 0.7,
+                                },
+                              },
+                            },
+                          }}
                         />
                       );
                     }}
@@ -280,55 +325,53 @@ export const VisitForm: React.FC<Props> = ({ onSubmit, values, status, isOpen })
             </Grid>
             {!doctor && (
               <Grid item>
-                <Grid container gap={2}>
-                  <Grid item xs>
+                <FormControlLabel
+                  control={
                     <Controller
-                      name="paymentMethodId"
+                      name="isPaid"
                       control={control}
                       render={({ field }) => (
-                        <FormSelect
-                          label="Выберите способ оплаты"
-                          onChange={field.onChange}
-                          value={field.value}
+                        <Checkbox
+                          checked={field.value}
+                          onChange={(e) => field.onChange(e.target.checked)}
                           disabled={values?.isPaid}
-                        >
-                          {paymentMethods?.data.map((paymentMethod) => (
-                            <MenuItem value={paymentMethod.id.toString()} key={paymentMethod.id}>
-                              {paymentMethod.label}
-                            </MenuItem>
-                          ))}
-                        </FormSelect>
+                        />
                       )}
                     />
-                  </Grid>
-                  <Grid item>
-                    <FormControlLabel
-                      control={
-                        <Controller
-                          name="isPaid"
-                          control={control}
-                          render={({ field }) => (
-                            <Checkbox
-                              checked={field.value}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                              disabled={values?.isPaid}
-                            />
-                          )}
-                        />
-                      }
-                      label="Визит оплачен"
-                    />
-                  </Grid>
-                </Grid>
+                  }
+                  label="Визит оплачен"
+                />
               </Grid>
             )}
-
+            {formValues.isPaid && (
+              <Controller
+                name="payments"
+                control={control}
+                render={({ field }) => (
+                  <Grid item>
+                    <PaymentForm
+                      control={control}
+                      disabled={values?.isPaid}
+                      initialPayments={values?.payments ?? []}
+                      formSubmit={(payments) => {
+                        field.onChange(payments);
+                      }}
+                    />
+                  </Grid>
+                )}
+              />
+            )}
             <Grid item>
               <Button
                 type="submit"
                 variant="outlined"
                 fullWidth
-                disabled={!isValid || !selectedTimeSlot || (status === 'create' && busySlots.has(selectedTimeSlot))}
+                disabled={
+                  !isValid ||
+                  !selectedTimeSlot ||
+                  (status === 'create' && busySlots.has(selectedTimeSlot)) ||
+                  isDateBlocked(dayjs(formValues.visitDate))
+                }
                 form="visit"
               >
                 {submitText}

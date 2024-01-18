@@ -32,12 +32,19 @@ export const Reports = () => {
               if (filteredVisits.length > 0) {
                 const transformedObject: Record<string, number> = {};
                 transformedObject['xray'] = 0;
-                paymentMethods?.data.forEach((item) => (transformedObject[item.id] = 0));
+
+                const totalPayments = filteredVisits.reduce((total, visit) => {
+                  return total + (visit.payments?.reduce((sum, payment) => sum + payment.amount, 0) || 0);
+                }, 0);
 
                 filteredVisits.forEach((visit) => {
-                  if (!transformedObject[visit.paymentMethodId?.toString() ?? 0]) {
-                    transformedObject[visit.paymentMethodId?.toString() ?? 0] = 0;
-                  }
+                  visit.payments?.forEach((payment) => {
+                    if (!transformedObject[payment.paymentMethodId?.toString() ?? 0]) {
+                      transformedObject[payment.paymentMethodId?.toString() ?? 0] = 0;
+                    }
+
+                    transformedObject[payment.paymentMethodId ?? 0] += +payment.amount;
+                  });
 
                   visit.extraProcedures?.forEach((procedure) => {
                     if (!procedure.label.toLowerCase().includes('рентген')) {
@@ -48,10 +55,7 @@ export const Reports = () => {
                   });
                 });
 
-                const totalXray = Object.values(transformedObject).reduce(
-                  (total, value) => (typeof value === 'number' ? total + value : total),
-                  0
-                );
+                console.log(totalPayments);
 
                 return (
                   <Grid item key={doctor.id} spacing={4}>
@@ -65,9 +69,8 @@ export const Reports = () => {
                           {item.label} {+transformedObject[item.id] || 0}
                         </ListItem>
                       ))}
-                      <ListItem>
-                        Рентген {+transformedObject['xray'] || 0} (Итого: {totalXray || 0})
-                      </ListItem>
+                      <ListItem>(Рентген {+transformedObject['xray'] || 0})</ListItem>
+                      <ListItem>Итого по платежам: {totalPayments || 0}</ListItem>
                     </List>
                   </Grid>
                 );

@@ -2,8 +2,6 @@ import * as React from 'react';
 
 import { VisitMutationBody } from '../../api/visit/types';
 import { useCreateVisitMutation } from '../../api/visit/visitApi';
-import { useAppSelector } from '../../store/hooks';
-import { newVisitModalSelector } from '../../store/slices/modalsSlice';
 import { VisitFormValues } from '../VisitForm/types';
 import { VisitForm } from '../VisitForm/VisitForm';
 
@@ -13,7 +11,6 @@ interface Props {
 
 export const NewVisit: React.FC<Props> = ({ values }) => {
   const [createVisit, { isSuccess: createVisitSuccess, reset }] = useCreateVisitMutation();
-  const isOpen = useAppSelector(newVisitModalSelector).isOpen;
 
   React.useEffect(() => {
     if (createVisitSuccess) {
@@ -25,5 +22,5 @@ export const NewVisit: React.FC<Props> = ({ values }) => {
     createVisit({ body });
   };
 
-  return <VisitForm onSubmit={handleSubmit} status="create" values={values} isOpen={isOpen} />;
+  return <VisitForm onSubmit={handleSubmit} status="create" values={values} isOpen />;
 };

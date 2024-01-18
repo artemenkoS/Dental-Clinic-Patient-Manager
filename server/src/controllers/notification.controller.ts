@@ -10,7 +10,7 @@ export const getNotifications = async (req: Request, res: Response) => {
 
     const result = await db.query(
       `SELECT * FROM notification 
-  WHERE "recipentId" = $1 AND DATE("visitDate") = $2`,
+  WHERE "authorId" <> $1 AND DATE("visitDate") = $2`,
       [id, today]
     );
 
